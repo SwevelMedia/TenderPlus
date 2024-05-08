@@ -471,22 +471,26 @@
 <section class="bg-white">
     <div class="container">
         <div class="row">
-            <div class="col">
+            <div class="col md-12">
                 <div class="card-select wow fadeInUp">
-                    <div class="select-custom container-fluid">
+                    <div class="select-custom container-fluid mt-5">
                         <div class="row">
-                            <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:5px">
+                            <div class=" col-sm-2 form-select-custom" style="padding:5px; padding-left:24px; margin-right:10px;">
+                                <input id="keyword" type="text" class="form-input-custom" style="border:none;" placeholder="Cari nama tender atau pemenang">
+                                <img src="<?= base_url('assets\img\icon_search.svg') ?>" width="20" style="float:right;padding-top:3px;margin-right:10px">
+                            </div>
+                            <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:10px">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
                                 <select class="select2-wilayah" id="wilayah" style="border:none;">
                                 </select>
                             </div>
-                            <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:5px">
+                            <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:10px">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
                                 <select class="select2-jenis-pengadaan" style="border:none;">
                                 </select>
                             </div>
                             <!-- Select Trigger Filter Nilai Penawaran -->
-                            <div id="dropdownHPS" class="col-sm-2 form-select-custom d-flex" style="width: 180px;margin-right:5px" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            <div id="dropdownHPS" class="col-sm-2 form-select-custom d-flex" style="width: 180px;margin-right:10px" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
                                 <button style="border:none;background-color: white;padding-top: 2px">Nilai Penawaran</button>
                             </div>
@@ -521,7 +525,7 @@
                                 </div>
                             </ul>
                             <!-- Filtering -->
-                            <div class="col-sm-1 dropdown dropdown-profile dropdown-sorting" style="width: 8%;padding-left: 0;padding-right: 7px;">
+                            <div class="col-sm-1 dropdown dropdown-profile dropdown-sorting" style="width: 5%;padding-left:15px;padding-right: 0;">
                                 <a class="form-select-custom d-flex" style="width:40px;" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <img src="<?= base_url('assets\img\filtering.svg') ?>" width="40" style="padding:5px" alt="">
                                 </a>
@@ -533,10 +537,10 @@
                                 </ul>
                             </div>
                             <!-- Search Nama -->
-                            <div class=" col-sm-1 form-select-custom" style="padding:5px; padding-left:30px; margin-right:60px;">
+                            <!-- <div class=" col-sm-1 form-select-custom" style="padding:5px; padding-left:30px; margin-right:60px;">
                                 <input id="keyword" type="text" class="form-input-custom" style="border:none;" placeholder="Cari nama tender atau pemenang">
                                 <img src="<?= base_url('assets\img\icon_search.svg') ?>" width="20" style="float:right;padding-top:3px;margin-right:10px">
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
