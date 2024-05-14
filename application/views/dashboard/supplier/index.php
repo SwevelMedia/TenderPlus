@@ -714,10 +714,9 @@
     $(document).ready(function() {
         $('.form-select2').select2();
         Grafikpemenang(2024);
+        let id_pengguna = Cookies.get('id_pengguna');
 
         var total_leads;
-        // let id_pengguna = Cookies.get('id_pengguna');
-        let id_pengguna = 484;
         var basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
 
         function addAuthorizationHeader(xhr) {
@@ -766,7 +765,7 @@
             data: {
                 id_pengguna: id_pengguna
             },
-            success: function(data){
+            success: function(data) {
                 // console.log('belum di ploting : '+ data);
                 $('#leads_belum_ploting').html(data);
 
@@ -783,7 +782,7 @@
             data: {
                 id_pengguna: id_pengguna
             },
-            success: function(data){
+            success: function(data) {
                 // console.log('belum di ploting : '+ data);
                 $('#leads_terbaru').html(data);
 
@@ -795,13 +794,13 @@
     });
 
     // ajax grafik pemenang
-    function Grafikpemenang( selectedYear = $("#tahunSelect").val() ){
+    function Grafikpemenang(selectedYear = $("#tahunSelect").val()) {
         $.ajax({
             url: "<?= base_url() ?>DashboardUserSupplier/getDataGrafikPemenang",
             type: "GET",
             dataType: "JSON",
-            data:{
-                tahun : selectedYear,
+            data: {
+                tahun: selectedYear,
             },
             success: function(data) {
                 updateRiwayatPemenangChart(data)
