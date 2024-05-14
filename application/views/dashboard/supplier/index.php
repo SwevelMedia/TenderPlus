@@ -338,7 +338,7 @@
                                 </div>
                                 <div class="d-flex wow fadeInUp pb-3" data-wow-delay="0.3s">
                                     <img src="<?= base_url('assets\img\icon_card_people_peserta.svg') ?>" class="card-img" alt="">
-                                    <h1 class="card-text wow fadeInUp" data-wow-delay="0.3s" id="leads_terbaru">10</h1>
+                                    <h1 class="card-text wow fadeInUp" data-wow-delay="0.3s" id="leads_terbaru">0</h1>
                                 </div>
                             </div>
                         </div>
@@ -364,7 +364,7 @@
                                 </div>
                                 <div class="d-flex wow fadeInUp pb-3" data-wow-delay="0.3s">
                                     <img src="<?= base_url('assets\img\icon_card_people_peserta_(1).svg') ?>" class="card-img" alt="">
-                                    <h1 class="card-text wow fadeInUp belum-lengkap" data-wow-delay="0.3s" id="total-today">0</h1>
+                                    <h1 class="card-text wow fadeInUp belum-lengkap" data-wow-delay="0.3s" id="belum-lengkap">0</h1>
                                 </div>
                             </div>
                         </div>
@@ -377,7 +377,7 @@
                                 </div>
                                 <div class="d-flex wow fadeInUp pb-3" data-wow-delay="0.3s">
                                     <img src="<?= base_url('assets\img\icon_card_people_peserta_(3).svg') ?>" class="card-img" alt="">
-                                    <h1 class="card-text wow fadeInUp total-leads" data-wow-delay="0.3s" id="total-today"></h1>
+                                    <h1 class="card-text wow fadeInUp total-leads" data-wow-delay="0.3s" id="total-today">0</h1>
                                 </div>
                             </div>
                         </div>
@@ -393,11 +393,15 @@
                                         <h3 style="font-size: 18px; text-align: left ;margin-top: 10px;">Riwayat Peserta Menang</h3>
 
                                         <!-- Select dropdown for year -->
-                                        <select id="tahunSelect" onchange="updateRiwayatPemenangChart()" class="form-select2" style="margin-top: 10px; margin-right: 15px;">
+                                        <select id="tahunSelect" onchange="Grafikpemenang()" class="form-select2" style="margin-top: 10px; margin-right: 15px;">
                                             <option value="2024" selected>2024</option>
                                             <option value="2023">2023</option>
                                             <option value="2022">2022</option>
                                             <option value="2021">2021</option>
+                                            <option value="2020">2020</option>
+                                            <option value="2019">2019</option>
+                                            <option value="2018">2018</option>
+                                            <option value="2017">2017</option>
                                             <!-- Add more options as needed -->
                                         </select>
                                     </div>
@@ -709,8 +713,11 @@
     // Inisialisasi Select2 pada dropdown select
     $(document).ready(function() {
         $('.form-select2').select2();
+        Grafikpemenang(2024);
+
         var total_leads;
-        let id_pengguna = Cookies.get('id_pengguna');
+        // let id_pengguna = Cookies.get('id_pengguna');
+        let id_pengguna = 484;
         var basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
 
         function addAuthorizationHeader(xhr) {
@@ -725,7 +732,7 @@
             },
             beforeSend: addAuthorizationHeader,
             success: function(data) {
-                $('.belum-lengkap').html(data.data.jumlah);
+                $('#belum-lengkap').html(data.data.jumlah);
                 // $('.belum-lengkap').html(data.data.belum_lengkap);
                 var belum = data.data.jumlah
                 $.ajax({
@@ -750,10 +757,60 @@
                 console.log(textStatus, errorThrown);
             }
         })
-    });
-    // Function to update Riwayat Peserta Menang Chart and adjust canvas height
 
-    function updateRiwayatPemenangChart() {
+        // GET DATA LEADS BELUM DI PLOTING
+        $.ajax({
+            url: "<?= base_url('DashboardUserSupplier/getLeadsBelumPloting') ?>",
+            type: "GET",
+            dataType: "JSON",
+            data: {
+                id_pengguna: id_pengguna
+            },
+            success: function(data){
+                // console.log('belum di ploting : '+ data);
+                $('#leads_belum_ploting').html(data);
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        })
+        // get Recent DATA Leads
+        $.ajax({
+            url: "<?= base_url('DashboardUserSupplier/getRecentLeads') ?>",
+            type: "GET",
+            dataType: "JSON",
+            data: {
+                id_pengguna: id_pengguna
+            },
+            success: function(data){
+                // console.log('belum di ploting : '+ data);
+                $('#leads_terbaru').html(data);
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        })
+    });
+
+    // ajax grafik pemenang
+    function Grafikpemenang( selectedYear = $("#tahunSelect").val() ){
+        $.ajax({
+            url: "<?= base_url() ?>DashboardUserSupplier/getDataGrafikPemenang",
+            type: "GET",
+            dataType: "JSON",
+            data:{
+                tahun : selectedYear,
+            },
+            success: function(data) {
+                updateRiwayatPemenangChart(data)
+            },
+            error: function(jqXHR, textStatus, errorThrown) {}
+        });
+    }
+    // Function to update Riwayat Peserta Menang Chart and adjust canvas height
+    function updateRiwayatPemenangChart(data) {
         var selectedYear = document.getElementById("tahunSelect").value;
         var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -764,7 +821,8 @@
                 label: "Peserta Menang",
                 backgroundColor: "rgba(75,192,192,0.4)",
                 borderColor: "rgba(75,192,192,1)",
-                data: [65, 59, 80, 81, 56, 55, 40, 30, 20, 15, 10, 5], // Mock data, replace with actual data
+                // data: [65, 59, 80, 81, 56, 55, 40, 30, 20, 15, 10, 5], // Mock data, replace with actual data
+                data: data,
             }]
         };
 

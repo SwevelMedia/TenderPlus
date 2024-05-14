@@ -938,4 +938,52 @@ class DashboardUserSupplier extends CI_Controller
         $items = $this->Supplier_model->getListJenisTender();
         echo json_encode($items);
     }
+
+    public function getDataGrafikPemenang(){
+        // echo 'halo bro yang semangat ya ';
+        $tahun = $this->input->get('tahun');
+        $data = $this->Supplier_model->getDataGrafikPemenang($tahun);
+        
+        // Inisialisasi array untuk menyimpan jumlah pemenang per bulan
+        $jumlahPemenangPerBulan = array_fill(0, 12, 0); // Array dengan 12 elemen, semua bernilai 0
+        
+        // Proses data untuk menghitung jumlah pemenang per bulan
+        foreach ($data as $row) {
+            $bulan = (int)date('n', strtotime($row['tgl_pemenang'])) - 1; // Mendapatkan indeks bulan (0-11)
+            if (isset($jumlahPemenangPerBulan[$bulan])) {
+                $jumlahPemenangPerBulan[$bulan]++;
+            }
+        }
+        
+        // Mengembalikan hasil dalam format JSON
+        $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json')
+            ->set_output(json_encode(array_values($jumlahPemenangPerBulan), JSON_PRETTY_PRINT));
+
+    }
+
+    public function getLeadsBelumPloting(){
+        $id_pengguna = $this->input->get('id_pengguna');
+        // $id_pengguna = 484;
+        $data = $this->Supplier_api->getLeadsBelumPloting($id_pengguna);
+
+        // Menghitung jumlah total data
+        $belum_ploting = count($data);
+
+        // Mengembalikan jumlah total data sebagai JSON
+        echo json_encode($belum_ploting);
+    }
+    public function getRecentLeads(){
+        // $id_pengguna = $this->input->get('id_pengguna');
+        $id_pengguna = 484;
+        $data = $this->Supplier_api->getRecentLeads($id_pengguna);
+
+        // Menghitung jumlah total data
+        $getRecentLeads = count($data);
+
+        // Mengembalikan jumlah total data sebagai JSON
+        echo json_encode($getRecentLeads);
+    }
+
 }
