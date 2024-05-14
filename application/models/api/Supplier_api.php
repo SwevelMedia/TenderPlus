@@ -294,4 +294,30 @@ AND (data_leads.id_lead NOT IN (SELECT id_lead FROM plot_tim) OR data_leads.id_l
         $query = $this->db->get();
         return $query->row_array();
     }
+
+    public function getLeadsBelumPloting($id_pengguna){
+        $this->db->select('data_leads.id_lead,plot_tim.id_tim');
+        $this->db->from('plot_tim');
+        $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead', 'right'); // Use right join to include all leads
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+        $this->db->where('plot_tim.id_plot IS  NULL');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
+
+    public function getRecentLeads($id_pengguna) {
+        $this->db->select('data_leads.id_pemenang');
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'data_leads.id_pemenang = pemenang.id_pemenang');
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+        $this->db->where('pemenang.tgl_pemenang >=', 'DATE_SUB(CURDATE(), INTERVAL 3 DAY)', FALSE);
+
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 }
