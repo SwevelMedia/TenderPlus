@@ -146,6 +146,10 @@
     font-size: 1rem;
   }
 
+  .form-select {
+    background-image: none !important;
+  }
+
   .form-select-custom {
     color: #CCCCCC;
     border-radius: 20px;
@@ -809,64 +813,35 @@
         var hasMultipleContacts = value.jumlah_kontak > 1 ? 'visible' : 'hidden';
         leads +=
           `<tr>
-                    <td style="text-align:center">` + rowNumber + `</td>
-                    <td class="perusahaan">` + (value.nama_perusahaan || '') + `</td>
-                    <td>${value.no_telp || ''}<a href="tel:` + value.no_telp + `"><img class="custom-img-table float-right" src="<?= base_url('assets/img/icon_kontak_table.svg') ?>" width="20" alt="" style="" ></a></td>
-                    <td>
-                    
-                    <select class="form-select form-select-sm bg-transparent border-none shadow-none" style="--form-select-indicator: none;" aria-label="Default select example">
-                      <option class="fst-italic text-decoration-underline" selected disabled>Klik untuk set status</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
-                    </select>
-                 
+                <td style="text-align:center">` + rowNumber + `</td>
+                <td class="perusahaan">` + (value.nama_perusahaan || '') + `</td>
+                <td>${value.no_telp || ''}<a href="tel:` + value.no_telp + `"><img class="custom-img-table float-right" src="<?= base_url('assets/img/icon_kontak_table.svg') ?>" width="20" alt="" style="" ></a></td>
+                <td>
+                
+                <select class="form-select form-select-sm bg-transparent border-none shadow-none" style="--form-select-indicator: none;" aria-label="Default select example">
+                  <option class="fst-italic text-decoration-underline" selected disabled>Klik untuk set status</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+             
 
-                    </td>
-                    <td>This Date</td>
-                    <td>This Schedule</td>
-                    <td class="text-center">
-                    <div>
-                    <a><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"><a/>
-                    <a><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>"style="width: 20px"><a/>
-                    <a><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>"style="width: 20px"><a/>
-                    
-                    </div>
-                    </td>
-                    
-                </tr>`;
+                </td>
+                <td>This Date</td>
+                <td>This Schedule</td>
+                <td class="text-center">
+                <div>
+                <a><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"><a/>
+                <a><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>"style="width: 20px"><a/>
+                <a><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>"style="width: 20px"><a/>
+                
+                </div>
+                </td>
+                
+            </tr>`;
       });
 
       $("#data-leads").html(leads);
-      // console.log(leads);
-
-      //get data kontak
-      // $("#data-leads").on("click", ".contact", function() {
-      //   var id_lead = $(this).data("id");
-      //   $.ajax({
-      //     url: "<?= site_url('DashboardUserSupplier/getKontakLeadById/') ?>" + id_lead,
-      //     type: "GET",
-      //     dataType: "json",
-      //     success: function(data) {
-      //       var kontak = "";
-
-      //       $.each(data, function(index, value) {
-      //         kontak +=
-      //           `<tr>
-      //                               <td>` + value.nama + `</td>
-      //                               <td>` + value.posisi + `</td>
-      //                               <td>` + value.email + `</td>
-      //                               <td>` + value.no_telp + `</td>
-      //                           </tr>`;
-      //       });
-
-      //       $("#infoKontakModal .data-kontak").html(kontak);
-      //     },
-      //     error: function() {
-      //       alert("Terjadi kesalahan saat mengambil data kontak.");
-      //     }
-      //   });
-      // });
 
       return leads;
     }

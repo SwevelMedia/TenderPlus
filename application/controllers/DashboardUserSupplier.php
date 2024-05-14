@@ -540,6 +540,12 @@ class DashboardUserSupplier extends CI_Controller
         $json_data = json_encode($data);
         $this->output->set_content_type('application/json')->set_output($json_data);
     }
+    public function getPlotTimById_lead()
+    {
+        $data = $this->Supplier_model->getPlotTimById_lead();
+        $json_data = json_encode($data);
+        $this->output->set_content_type('application/json')->set_output($json_data);
+    }
     public function getTimMarketing()
     {
         $data = $this->Supplier_model->getTimMarketing();

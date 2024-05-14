@@ -145,6 +145,9 @@ $route['api/supplier/jumlah-pemenang'] = 'DashboardUserSupplier/getJumlahPemenan
 $route['api/supplier/jumlah-pemenang-terbaru'] = 'DashboardUserSupplier/getJumlahPemenangTenderTerbaru';
 $route['api/supplier/tim'] = 'DashboardUserSupplier/getTimMarketing';
 $route['api/supplier/plot-tim'] = 'DashboardUserSupplier/getPlotTim';
+//tambah
+$route['api/supplier/getPlotTimById'] = 'DashboardUserSupplier/getPlotTimById_lead';
+//
 $route['api/supplier/tim-suplier'] = 'DashboardUserSupplier/getTimMarketingByIdSupplier';
 $route['api/supplier/lead/tim'] = 'DashboardUserSupplier/getLeadByIdTim';
 $route['api/supplier/tim/add'] = 'DashboardUserSupplier/addTimMarketing';

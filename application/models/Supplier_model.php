@@ -312,7 +312,7 @@ class Supplier_model extends CI_Model
         // $n++;
         return print_r(json_encode($option));
     }
-    
+
     public function getJumlahPemenangTender()
     {
         $sql = "SELECT
@@ -323,7 +323,7 @@ class Supplier_model extends CI_Model
 
         return $this->db->query($sql);
     }
-    
+
     public function getJumTender()
     {
         // $sql = "SELECT COUNT(kode_tender) AS jum_tender FROM tender_terbaru WHERE akhir_daftar>=CURRENT_TIMESTAMP";
@@ -481,6 +481,13 @@ class Supplier_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+    public function getPlotTimById_lead($id_lead)
+    {
+        $this->db->select('*');
+        $this->db->from('plot_tim');
+        $query = $this->db->where('id_lead', $id_lead);
+        return $query->result_array();
+    }
     public function insertUpdatePlotTim($id_lead, $id_tim)
     {
         $this->db->select('*');
@@ -560,5 +567,4 @@ class Supplier_model extends CI_Model
         $this->db->insert('tim_marketing', $data);
         return $this->db->affected_rows();
     }
-
 }
