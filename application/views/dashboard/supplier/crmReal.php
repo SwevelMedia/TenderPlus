@@ -625,7 +625,7 @@
         <div class="col-3 form-select-custom-status d-flex">
           <img src="<?= base_url('assets\img\icon_filter_status.svg') ?>" width="20" alt="">
           <h6 style="margin-right: 10px;color: var(--primary-red-500, #D21B1B);margin-bottom: 0px;align-self: center;padding-left: 5px;text-align: center;font-weight: bold;">Status :</h6>
-          <select id="select-status" class="" style="border:none;color: var(--primary-red-500, #D21B1B);">
+          <select id="select-status" class="" style="border:none;outline:none;background:transparent;color: var(--primary-red-500, #D21B1B);">
             <option class="select-status-option" value="" selected>All</option>
             <option class="select-status-option" value="sedang_dihubungi">Sedang Dihubungi</option>
             <option class="select-status-option" value="proses_negosiasi">Proses Negosiasi</option>
@@ -813,7 +813,15 @@
                     <td class="perusahaan">` + (value.nama_perusahaan || '') + `</td>
                     <td>${value.no_telp || ''}<a href="tel:` + value.no_telp + `"><img class="custom-img-table float-right" src="<?= base_url('assets/img/icon_kontak_table.svg') ?>" width="20" alt="" style="" ></a></td>
                     <td>
-                    <a class="d-flex justify-content-center border rounded-pill py-1 px-4" style="background-color: purple">Done</a>
+                    
+                    <select class="form-select form-select-sm bg-transparent border-none shadow-none" style="--form-select-indicator: none;" aria-label="Default select example">
+                      <option class="fst-italic text-decoration-underline" selected disabled>Klik untuk set status</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                 
+
                     </td>
                     <td>This Date</td>
                     <td>This Schedule</td>
