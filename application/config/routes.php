@@ -118,7 +118,7 @@ $route['lupa/ubah/pass/(:any)'] = 'auth/LupaPassword/ubahPass/$1';
 $route['user-dashboard/chart']['POST'] = 'DashboardUser/chart';
 $route['user-dashboard/win-lose']['POST'] = 'DashboardUser/updateMenangKalahByMonth';
 $route['user-dashboard/data-by-status']['POST'] = 'DashboardUser/updateDataByStatus';
-
+$route['suplier/crmReal'] = 'DashboardUserSupplier/crmReal';
 $route['user-dashboard'] = 'DashboardUser';
 $route['user-dashboard/list-tender'] = 'DashboardUser/listTenderPage';
 $route['suplier'] = 'DashboardUserSupplier';

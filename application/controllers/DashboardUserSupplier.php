@@ -37,7 +37,7 @@ class DashboardUserSupplier extends CI_Controller
         $this->load->view('dashboard/supplier/index');
         $this->load->view('templates/footer');
     }
-    
+
     public function dataLeads()
     {
         $data = [
@@ -480,6 +480,17 @@ class DashboardUserSupplier extends CI_Controller
         redirect('suplier/leads');
     }
 
+    //crm
+    public function crmReal()
+    {
+        $data = [
+            'title' => 'CRM Page'
+        ];
+        $this->load->view('templates/header', $data);
+        $this->load->view('profile_pengguna/templates/navbar');
+        $this->load->view('dashboard/supplier/crmReal');
+        $this->load->view('templates/footer');
+    }
     public function CRM()
     {
         // $data = $this->Supplier_model->insertUpdatePlotTim(1, 12);
