@@ -578,6 +578,21 @@ class Supplier_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+    public function getTabelTimMarketing($id_supplier)
+    {
+        $this->db->select('
+            tim_marketing.id_tim, 
+            tim_marketing.nama_tim, 
+            tim_marketing.alamat, 
+            COUNT(plot_tim.id_lead) as jumlah_perusahaan');
+        $this->db->from('tim_marketing');
+        $this->db->join('plot_tim', 'tim_marketing.id_tim = plot_tim.id_tim', 'left');
+        $this->db->where('tim_marketing.id_supplier', $id_supplier);
+        $this->db->group_by('tim_marketing.id_tim, tim_marketing.nama_tim, tim_marketing.alamat');
+        $query = $this->db->get();
+
+        return $query->result_array();
+    }
     public function getDataLeadCRM($id_pengguna)
     {
         $sql = "SELECT
