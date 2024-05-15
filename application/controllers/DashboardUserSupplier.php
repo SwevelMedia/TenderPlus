@@ -943,7 +943,8 @@ class DashboardUserSupplier extends CI_Controller
     {
         // echo 'halo bro yang semangat ya ';
         $tahun = $this->input->get('tahun');
-        $data = $this->Supplier_model->getDataGrafikPemenang($tahun);
+        $id_pengguna = $this->input->get('id_pengguna');
+        $data = $this->Supplier_model->getDataGrafikPemenang($tahun, $id_pengguna);
 
         // Inisialisasi array untuk menyimpan jumlah pemenang per bulan
         $jumlahPemenangPerBulan = array_fill(0, 12, 0); // Array dengan 12 elemen, semua bernilai 0

@@ -465,6 +465,21 @@ class ApiSupplier extends RestController
 
         exit;
     }
+    public function getDataLeadCRM_get()
+    {
+        $id_pengguna = $this->input->get('id_pengguna');
+        $page_size = $_GET['pageSize'];
+        $page_number = ($_GET['pageNumber'] - 1) * $page_size;
+        $response = $this->Supplier_api->getDataLeadCRM($id_pengguna, $page_size, $page_number)->result();
+
+        $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response, JSON_PRETTY_PRINT))
+            ->_display();
+
+        exit;
+    }
     public function getCRMLeads_get()
     {
         $id_pengguna = $this->input->get('id_pengguna');
@@ -514,5 +529,14 @@ class ApiSupplier extends RestController
                 'message' => 'Data tidak ditemukan'
             ], RestController::HTTP_NOT_FOUND);
         }
+    }
+    public function getLeadRiwayat_get()
+    {
+        $id_lead = $this->input->get('id_lead');
+        $data = $this->Supplier_api->getRiwayatByIdLead($id_lead); // Implementasikan metode ini di model
+        $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
     }
 }

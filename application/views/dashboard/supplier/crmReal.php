@@ -759,7 +759,7 @@
         total_leads = data.data;
 
         $('#pagination-container').pagination({
-          dataSource: "<?= base_url() ?>api/supplier/getLead",
+          dataSource: "<?= base_url() ?>api/supplier/getDataLeadCRM",
           locator: '',
           totalNumber: total_leads,
           pageSize: 10,
@@ -773,6 +773,7 @@
             type: "GET",
             data: {
               id_pengguna: id_pengguna
+
             },
             headers: {
               Authorization: `Basic ${basicAuth}`
@@ -812,38 +813,58 @@
         var rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
         var hasMultipleContacts = value.jumlah_kontak > 1 ? 'visible' : 'hidden';
         leads +=
-          `<tr>
+          `<tr data-id="` + value.id + `">
                 <td style="text-align:center">` + rowNumber + `</td>
                 <td class="perusahaan">` + (value.nama_perusahaan || '') + `</td>
                 <td>${value.no_telp || ''}<a href="tel:` + value.no_telp + `"><img class="custom-img-table float-right" src="<?= base_url('assets/img/icon_kontak_table.svg') ?>" width="20" alt="" style="" ></a></td>
-                <td>
-                
-                <select class="form-select form-select-sm bg-transparent border-none shadow-none" style="--form-select-indicator: none;" aria-label="Default select example">
-                  <option class="fst-italic text-decoration-underline" selected disabled>Klik untuk set status</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
-                </select>
-             
-
-                </td>
-                <td>This Date</td>
-                <td>This Schedule</td>
+                <td>${value.status}</td>
+                <td>${value.jadwal}</td>
+                <td>${value.catatan}</td>
                 <td class="text-center">
                 <div>
-                <a><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"><a/>
-                <a><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>"style="width: 20px"><a/>
-                <a><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>"style="width: 20px"><a/>
-                
+                <a><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
+                <a><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
+                <a class="riwayat-icon" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px" ></a>
                 </div>
                 </td>
-                
+            </tr>
+            <tr class="riwayat-row" data-id="` + value.id + `" style="display:none;">
+                <td colspan="7" class="riwayat-content"></td>
             </tr>`;
       });
 
       $("#data-leads").html(leads);
-
       return leads;
     }
+    $(document).on('click', '.riwayat-icon', function() {
+      var idLead = $(this).data('id');
+      var $riwayatRow = $('tr.riwayat-row[data-id="' + idLead + '"]');
+      var $riwayatContent = $riwayatRow.find('.riwayat-content');
+
+      if ($riwayatRow.is(':visible')) {
+        $riwayatRow.hide();
+      } else {
+        $.ajax({
+          url: '<?= base_url('api/supplier/getLeadRiwayat') ?>', // Ganti dengan URL endpoint Anda
+          type: 'GET',
+          data: {
+            id_lead: idLead
+          },
+          success: function(response) {
+            // Asumsikan response adalah objek dengan riwayat status, jadwal, dan catatan
+            var content = '<ul>';
+            $.each(response, function(key, value) {
+              content += '<li>' + key + ': ' + value + '</li>';
+            });
+            content += '</ul>';
+            $riwayatContent.html(content);
+            $riwayatRow.show();
+          },
+          error: function(xhr, status, error) {
+            console.error('Error fetching riwayat:', error);
+          }
+        });
+      }
+    });
   });
 </script>

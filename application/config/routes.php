@@ -145,9 +145,6 @@ $route['api/supplier/jumlah-pemenang'] = 'DashboardUserSupplier/getJumlahPemenan
 $route['api/supplier/jumlah-pemenang-terbaru'] = 'DashboardUserSupplier/getJumlahPemenangTenderTerbaru';
 $route['api/supplier/tim'] = 'DashboardUserSupplier/getTimMarketing';
 $route['api/supplier/plot-tim'] = 'DashboardUserSupplier/getPlotTim';
-//tambah
-$route['api/supplier/getPlotTimById'] = 'DashboardUserSupplier/getPlotTimById_lead';
-//
 $route['api/supplier/tim-suplier'] = 'DashboardUserSupplier/getTimMarketingByIdSupplier';
 $route['api/supplier/lead/tim'] = 'DashboardUserSupplier/getLeadByIdTim';
 $route['api/supplier/tim/add'] = 'DashboardUserSupplier/addTimMarketing';
@@ -429,6 +426,8 @@ $route['api/supplier/getCount'] = 'api/ApiSupplier/getCountLeadNull';
 $route['api/supplier/getTotal'] = 'api/ApiSupplier/getTotalLeads';
 $route['api/supplier/getLead'] = 'api/ApiSupplier/getLeads';
 $route['api/supplier/getCRMLeads'] = 'api/ApiSupplier/getCRMLeads';
+$route['api/supplier/getDataLeadCRM'] = 'api/ApiSupplier/getDataLeadCRM';
+$route['api/supplier/getLeadRiwayat'] = 'api/ApiSupplier/getLeadRiwayat';
 
 //restAPI route for DaftarHItam
 $route['api/daftarhitambynpwp'] = 'api/ApiDaftarHitam/daftarhitambynpwp';

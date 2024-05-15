@@ -225,7 +225,38 @@ class Supplier_api extends CI_Model
 
         return $this->db->query($sql);
     }
-    
+    public function getDataLeadCRM($id_pengguna, $page_size, $page_number)
+    {
+
+        $sql = "SELECT
+        data_leads.id_lead AS id,
+        id_pengguna,
+        nama_perusahaan,
+        data_leads.npwp,
+        profil,
+        pemenang.*,
+        kontak_lead.*,
+        COUNT(kontak_lead.id_kontak) AS jumlah_kontak,
+        plot_tim.*
+        FROM
+            data_leads
+        LEFT JOIN
+            pemenang ON data_leads.id_pemenang = pemenang.id_pemenang
+        LEFT JOIN
+            kontak_lead ON data_leads.id_lead = kontak_lead.id_lead
+		LEFT JOIN
+			plot_tim ON data_leads.id_lead = plot_tim.id_lead
+        WHERE
+            data_leads.id_pengguna = $id_pengguna
+        GROUP BY
+            data_leads.id_lead
+        ORDER BY
+            id DESC
+        LIMIT {$page_number},{$page_size}";
+
+        return $this->db->query($sql);
+    }
+
     public function getCRMLeads($id_pengguna)
     {
 
@@ -295,7 +326,8 @@ AND (data_leads.id_lead NOT IN (SELECT id_lead FROM plot_tim) OR data_leads.id_l
         return $query->row_array();
     }
 
-    public function getLeadsBelumPloting($id_pengguna){
+    public function getLeadsBelumPloting($id_pengguna)
+    {
         $this->db->select('data_leads.id_lead,plot_tim.id_tim');
         $this->db->from('plot_tim');
         $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead', 'right'); // Use right join to include all leads
@@ -310,13 +342,22 @@ AND (data_leads.id_lead NOT IN (SELECT id_lead FROM plot_tim) OR data_leads.id_l
         }
     }
 
-    public function getRecentLeads($id_pengguna) {
+    public function getRecentLeads($id_pengguna)
+    {
         $this->db->select('data_leads.id_pemenang');
         $this->db->from('data_leads');
         $this->db->join('pemenang', 'data_leads.id_pemenang = pemenang.id_pemenang');
         $this->db->where('data_leads.id_pengguna', $id_pengguna);
         $this->db->where('pemenang.tgl_pemenang >=', 'DATE_SUB(CURDATE(), INTERVAL 3 DAY)', FALSE);
 
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getRiwayatByIdLead($id_lead)
+    {
+        $this->db->select('status, jadwal, catatan');
+        $this->db->from('plot_tim'); // Ganti dengan nama tabel riwayat Anda
+        $this->db->where('id_lead', $id_lead);
         $query = $this->db->get();
         return $query->result_array();
     }
