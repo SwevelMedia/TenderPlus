@@ -936,7 +936,8 @@ class DashboardUserSupplier extends CI_Controller
     public function getDataGrafikPemenang(){
         // echo 'halo bro yang semangat ya ';
         $tahun = $this->input->get('tahun');
-        $data = $this->Supplier_model->getDataGrafikPemenang($tahun);
+        $id_pengguna = $this->input->get('id_pengguna');
+        $data = $this->Supplier_model->getDataGrafikPemenang($tahun,$id_pengguna);
         
         // Inisialisasi array untuk menyimpan jumlah pemenang per bulan
         $jumlahPemenangPerBulan = array_fill(0, 12, 0); // Array dengan 12 elemen, semua bernilai 0
@@ -969,8 +970,8 @@ class DashboardUserSupplier extends CI_Controller
         echo json_encode($belum_ploting);
     }
     public function getRecentLeads(){
-        // $id_pengguna = $this->input->get('id_pengguna');
-        $id_pengguna = 484;
+        $id_pengguna = $this->input->get('id_pengguna');
+        // $id_pengguna = 484;
         $data = $this->Supplier_api->getRecentLeads($id_pengguna);
 
         // Menghitung jumlah total data
@@ -978,6 +979,14 @@ class DashboardUserSupplier extends CI_Controller
 
         // Mengembalikan jumlah total data sebagai JSON
         echo json_encode($getRecentLeads);
+    }
+
+    public function getTabelTimMarketing(){
+        $id_pengguna = $this->input->get('id_pengguna');
+        // $id_pengguna = 350;
+        $data = $this->Supplier_model->getTabelTimMarketing($id_pengguna);
+
+        echo json_encode($data);
     }
 
 }

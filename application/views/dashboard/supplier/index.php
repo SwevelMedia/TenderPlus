@@ -424,27 +424,11 @@
                                 </div>
                                 <div style="max-height: 300px; overflow-y: auto;">
                                     <table class="table custom-table-container">
-                                        <tbody id="tender-ikut">
-                                            <tr>
+                                        <tbody id="tim-marketing">
+                                            <!-- <tr>
                                                 <td><strong>Arjunanda</strong><br>Sleman, D.I Yogyakarta</td>
                                                 <td><span class="circle">90</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Ahmad</strong><br>Sleman, D.I Yogyakarta</td>
-                                                <td><span class="circle">90</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Iqbal</strong><br>Sleman, D.I Yogyakarta</td>
-                                                <td><span class="circle">90</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Arjunanda</strong><br>Sleman, D.I Yogyakarta</td>
-                                                <td><span class="circle">90</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Ahmad</strong><br>Sleman, D.I Yogyakarta</td>
-                                                <td><span class="circle">90</span></td>
-                                            </tr>
+                                            </tr> -->
                                             <!-- Tambahkan baris lainnya di sini -->
                                         </tbody>
                                     </table>
@@ -717,7 +701,7 @@
 
         var total_leads;
         // let id_pengguna = Cookies.get('id_pengguna');
-        let id_pengguna = 484;
+        let id_pengguna = 350;
         var basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
 
         function addAuthorizationHeader(xhr) {
@@ -792,16 +776,57 @@
                 console.log(textStatus, errorThrown);
             }
         })
+        
+        // get data untuk tabel tim marketing
+        $.ajax({
+            url: "<?= base_url('DashboardUserSupplier/getTabelTimMarketing') ?>",
+            type: "GET",
+            dataType: "JSON",
+            data: {
+                id_pengguna: id_pengguna
+            },
+            success: function(data){
+                // console.log(JSON.stringify(data, null, 2));
+                
+                // Fungsi untuk mengubah huruf pertama setiap kata menjadi huruf besar
+                function capitalizeFirstLetter(string) {
+                    return string.replace(/\b\w/g, function(l) { return l.toUpperCase() });
+                }
+
+                let rows = '';
+                data.forEach(function(item) {
+                    let namaTim = capitalizeFirstLetter(item.nama_tim);
+                    let alamat = capitalizeFirstLetter(item.alamat);
+
+                    rows += `
+                        <tr>
+                            <td><strong>${namaTim}</strong><br>${alamat}</td>
+                            <td><span class="circle">${item.jumlah_perusahaan}</span></td>
+                        </tr>
+                    `;
+                });
+                $('#tim-marketing').html(rows);  
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        })
+
     });
+
 
     // ajax grafik pemenang
     function Grafikpemenang( selectedYear = $("#tahunSelect").val() ){
+        let id_pengguna = 350;
+
         $.ajax({
             url: "<?= base_url() ?>DashboardUserSupplier/getDataGrafikPemenang",
             type: "GET",
             dataType: "JSON",
             data:{
                 tahun : selectedYear,
+                id_pengguna : id_pengguna,
             },
             success: function(data) {
                 updateRiwayatPemenangChart(data)
