@@ -567,11 +567,14 @@ class Supplier_model extends CI_Model
         $this->db->insert('tim_marketing', $data);
         return $this->db->affected_rows();
     }
-    public function getDataGrafikPemenang($tahun)
+
+    public function getDataGrafikPemenang($tahun, $id_pengguna)
     {
-        $this->db->select('kode_tender, tgl_pemenang');
+        $this->db->select('pemenang.kode_tender, pemenang.tgl_pemenang');
         $this->db->from('pemenang');
-        $this->db->where('YEAR(tgl_pemenang)', $tahun);
+        $this->db->join('data_leads', 'data_leads.id_pemenang = pemenang.id_pemenang');
+        $this->db->where('YEAR(pemenang.tgl_pemenang)', $tahun);
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
         $query = $this->db->get();
         return $query->result_array();
     }
