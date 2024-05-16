@@ -1079,9 +1079,18 @@ class Tender extends CI_Controller
         exit;
     }
 
+    public function tumbal(){
+        $data = $this->input->post();
+
+        $response = $this->Tender_model->getKatalogPemenangTerbaruByPengguna1($data)->result();
+
+        echo json_encode($response);
+
+    }
+
     public function getJumKatalogTenderTerbaru()
     {
-        $response = $this->Tender_model->getJumKatalogTenderTerbaru()->row();
+        $response = $this->Tender_model->getKatalogPemenangTerbaruByPengguna1()->row();
 
         $this->output
             ->set_status_header(200)

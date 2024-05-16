@@ -350,7 +350,7 @@ class Tender_model extends CI_Model
                 FROM preferensi, pemenang p
                 LEFT JOIN data_leads dl ON p.npwp = dl.npwp AND {$id_pengguna} = dl.id_pengguna
                 WHERE preferensi.id_pengguna={$id_pengguna} AND DATEDIFF(CURRENT_DATE,tgl_pemenang) <= {$this->interval_pemenang} AND preferensi.status='1' AND (IF(preferensi.id_lpse='',p.id_lpse<>'',p.id_lpse IN ({$preferensi->id_lpse})) AND IF(preferensi.jenis_pengadaan='',p.jenis_tender<>'',p.jenis_tender IN ({$preferensi->jenis_pengadaan})) AND IF(keyword='',nama_tender<>'',nama_tender REGEXP keyword) AND IF(nilai_hps_awal=0 AND nilai_hps_akhir=0,harga_penawaran<>'',harga_penawaran BETWEEN nilai_hps_awal AND nilai_hps_akhir))
-                AND p.tgl_pemenang >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                AND p.tgl_pemenang >= DATE_SUB(NOW(), INTERVAL 3000000 DAY)
                 AND p.tgl_pemenang < NOW()
                 AND (dl.npwp IS NULL OR dl.id_pengguna IS NULL)
                 GROUP BY p.npwp;";

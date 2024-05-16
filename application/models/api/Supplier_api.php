@@ -361,4 +361,19 @@ AND (data_leads.id_lead NOT IN (SELECT id_lead FROM plot_tim) OR data_leads.id_l
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    public function getDonatChart($id_pengguna){
+        $this->db->select('plot_tim.id_plot, plot_tim.id_tim, plot_tim.status, data_leads.id_lead,data_leads.id_pengguna');
+        $this->db->from('plot_tim');
+        $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead', 'right');
+        $this->db->where('id_pengguna', $id_pengguna);
+        
+        $query = $this->db->get();
+        
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
 }

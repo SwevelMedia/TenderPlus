@@ -949,7 +949,7 @@ class DashboardUserSupplier extends CI_Controller
         // Inisialisasi array untuk menyimpan jumlah pemenang per bulan
         $jumlahPemenangPerBulan = array_fill(0, 12, 0); // Array dengan 12 elemen, semua bernilai 0
 
-        // Proses data untuk menghitung jumlah pemenang per bulan
+        // proses data untuk menghitung jumlah pemenang per bulan
         foreach ($data as $row) {
             $bulan = (int)date('n', strtotime($row['tgl_pemenang'])) - 1; // Mendapatkan indeks bulan (0-11)
             if (isset($jumlahPemenangPerBulan[$bulan])) {
@@ -996,5 +996,48 @@ class DashboardUserSupplier extends CI_Controller
         $data = $this->Supplier_model->getTabelTimMarketing($id_pengguna);
 
         echo json_encode($data);
+    }
+
+    public function getDonatChart(){
+         $id_pengguna = $this->input->get('id_pengguna');
+        // $id_pengguna = 350;
+        $data = $this->Supplier_api->getDonatChart($id_pengguna);
+
+        // Inisialisasi hasil dengan nilai default 0
+        $result = [
+            'sedang-dihubungi' => 0,
+            'proses-negosiasi' => 0,
+            'diterima' => 0,
+            'ditolak' => 0,
+            'tanpa-status' => 0
+        ];
+
+        if (!empty($data)) {
+            // Jika data tidak kosong, hitung jumlah item berdasarkan status
+            foreach ($data as $item) {
+                switch ($item['status']) {
+                    case 'sedang dihubungi':
+                        $result['sedang-dihubungi']++;
+                        break;
+                    case 'proses negosiasi':
+                        $result['proses-negosiasi']++;
+                        break;
+                    case 'diterima':
+                        $result['diterima']++;
+                        break;
+                    case 'ditolak':
+                        $result['ditolak']++;
+                        break;
+                    default:
+                        $result['tanpa-status']++;
+                        break;
+                }
+            }
+        }
+
+        // Set content type to JSON and output the data
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
     }
 }
