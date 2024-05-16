@@ -814,29 +814,29 @@
         var hasMultipleContacts = value.jumlah_kontak > 1 ? 'visible' : 'hidden';
         leads +=
           `<tr data-id="` + value.id + `">
-                <td style="text-align:center">` + rowNumber + `</td>
-                <td class="perusahaan">` + (value.nama_perusahaan || '') + `</td>
-                <td>${value.no_telp || ''}<a href="tel:` + value.no_telp + `"><img class="custom-img-table float-right" src="<?= base_url('assets/img/icon_kontak_table.svg') ?>" width="20" alt="" style="" ></a></td>
-                <td>${value.status}</td>
-                <td>${value.jadwal}</td>
-                <td>${value.catatan}</td>
-                <td class="text-center">
-                <div>
-                <a><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
-                <a><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
-                <a class="riwayat-icon" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px" ></a>
-                </div>
-                </td>
-            </tr>
-            <tr class="riwayat-row" data-id="` + value.id + `" style="display:none;">
-                <td colspan="7" class="riwayat-content"></td>
-            </tr>`;
+                    <td style="text-align:center">` + rowNumber + `</td>
+                    <td class="perusahaan">` + (value.nama_perusahaan || '') + `</td>
+                    <td>${value.no_telp || ''}<a href="tel:` + value.no_telp + `"><img class="custom-img-table float-right" src="<?= base_url('assets/img/icon_kontak_table.svg') ?>" width="20" alt="" style="" ></a></td>
+                    <td>${value.status}</td>
+                    <td>${value.jadwal}</td>
+                    <td>${value.catatan}</td>
+                    <td class="text-center">
+                    <div>
+                    <a><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
+                    <a><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
+                    <a class="riwayat" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px" ></a>
+                    </div>
+                    </td>
+                </tr>
+                <tr class="riwayat-row" data-id="` + value.id + `" style="display:none;">
+                    <td colspan="7" class="riwayat-content"></td>
+                </tr>`;
       });
 
       $("#data-leads").html(leads);
       return leads;
     }
-    $(document).on('click', '.riwayat-icon', function() {
+    $(document).on('click', '.riwayat', function() {
       var idLead = $(this).data('id');
       var $riwayatRow = $('tr.riwayat-row[data-id="' + idLead + '"]');
       var $riwayatContent = $riwayatRow.find('.riwayat-content');
@@ -852,11 +852,24 @@
           },
           success: function(response) {
             // Asumsikan response adalah objek dengan riwayat status, jadwal, dan catatan
-            var content = '<ul>';
-            $.each(response, function(key, value) {
-              content += '<li>' + key + ': ' + value + '</li>';
+            let content = `<div class="row justify-content-center">
+            <table class="table custom-table-leads col-8 align-items-center">`;
+            content += `<thead class="thead text-left">
+            <tr>
+            <th class="custom-padding" width="20%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_filter_table.svg') ?>" width="20" alt="" style=""></a>Status</th>
+            <th class="custom-padding" width="20%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_jadwal.svg') ?>" width="20" alt="" style=""></a>Jadwal</th>
+            <th class="custom-padding" width="40%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_catatan.svg') ?>" width="20" alt="" style=""></a>Catatan</th>
+            </tr>
+            </thead>
+            <tbody>`;
+            $.each(response, function(index, item) {
+              content += `<tr>
+              <td>  ${item.status}  </td>
+              <td>  ${item.jadwal}  </td>
+              <td>  ${item.catatan}  </td>
+              </tr>`;
             });
-            content += '</ul>';
+            content += '</tbody></table></div>';
             $riwayatContent.html(content);
             $riwayatRow.show();
           },
@@ -866,5 +879,6 @@
         });
       }
     });
+
   });
 </script>
