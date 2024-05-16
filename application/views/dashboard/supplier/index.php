@@ -454,11 +454,26 @@
                 <!-- Keterangan -->
                 <div class="col">
                     <div class="keterangan" style="margin-top:10px; padding:0">
-                        <p id="" class="crmstats-summary" style="margin-left: 10%;"><span style="border-left: 4px solid orange; font-size:11px; margin-right:4px"></span><span class="crmstats-summary-number">0</span> Tanpa Status</p>
-                        <p id="" class="crmstats-summary" style="margin-left: 10%;"><span style="border-left: 4px solid lightblue; font-size:11px; margin-right:4px"></span><span class="crmstats-summary-number">0</span> Sedang Dihubungi</p>
-                        <p id="" class="crmstats-summary" style="margin-left: 10%;"><span style="border-left: 4px solid purple; font-size:11px; margin-right:4px"></span><span class="crmstats-summary-number">0</span> Proses Negosiasi</p>
-                        <p id="" class="crmstats-summary" style="margin-left: 10%;"><span style="border-left: 4px solid green; font-size:11px; margin-right:4px"></span><span class="crmstats-summary-number">0</span> Diterima</p>
-                        <p id="" class="crmstats-summary" style="margin-left: 10%;"><span style="border-left: 4px solid red; font-size:11px; margin-right:4px"></span><span class="crmstats-summary-number">0</span> Ditolak</p>
+                        <p id="tanpa-status" class="crmstats-summary" style="margin-left: 10%;">
+                            <span style="border-left: 4px solid orange; font-size:11px; margin-right:4px"></span>
+                            <span class="crmstats-summary-number">0</span> Tanpa Status
+                        </p>
+                        <p id="sedang-dihubungi" class="crmstats-summary" style="margin-left: 10%;">
+                            <span style="border-left: 4px solid lightblue; font-size:11px; margin-right:4px"></span>
+                            <span class="crmstats-summary-number">0</span> Sedang Dihubungi
+                        </p>
+                        <p id="proses-negosiasi" class="crmstats-summary" style="margin-left: 10%;">
+                            <span style="border-left: 4px solid purple; font-size:11px; margin-right:4px"></span>
+                            <span class="crmstats-summary-number">0</span> Proses Negosiasi
+                        </p>
+                        <p id="diterima" class="crmstats-summary" style="margin-left: 10%;">
+                            <span style="border-left: 4px solid green; font-size:11px; margin-right:4px"></span>
+                            <span class="crmstats-summary-number">0</span> Diterima
+                        </p>
+                        <p id="ditolak" class="crmstats-summary" style="margin-left: 10%;">
+                            <span style="border-left: 4px solid red; font-size:11px; margin-right:4px"></span>
+                            <span class="crmstats-summary-number">0</span> Ditolak
+                        </p>
                     </div>
                 </div>
             </div>
@@ -473,6 +488,9 @@
             <div class="col md-12">
                 <div class="card-select wow fadeInUp">
                     <div class="select-custom container-fluid mt-5">
+                        <div class="text-center mb-3">
+                            <h3 class="tender-title text-center wow fadeInUp d-inline-block px-3 pb-2" data-wow-delay="0.5s">Pemenang Tender</h3>
+                        </div> 
                         <div class="row">
                             <div class=" col-sm-2 form-select-custom" style="padding:5px; padding-left:24px; margin-right:10px;">
                                 <input id="keyword" type="text" class="form-input-custom" style="border:none;" placeholder="Cari nama tender atau pemenang">
@@ -758,6 +776,7 @@
                 console.log(textStatus, errorThrown);
             }
         })
+
         // get Recent DATA Leads
         $.ajax({
             url: "<?= base_url('DashboardUserSupplier/getRecentLeads') ?>",
@@ -814,7 +833,26 @@
             }
         })
 
-    });
+        // ajax  mengambil data untuk membuat grafik donat
+        $.ajax({
+            url: "<?= base_url('DashboardUserSupplier/getDonatChart') ?>",
+            type: "GET",
+            dataType: "JSON",
+            data: {
+                id_pengguna: id_pengguna
+            },
+            success: function(data) {
+                // console.log(data)
+                // panggil fungsi menamilkan grafik donan + keterangannya
+                GrafikDonat(data)
+                updateKeterangan(data)
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        })
+
+    });//akhir ready function
 
 
     // ajax grafik pemenang
@@ -891,76 +929,94 @@
 
     // Donat Chart status Leads
     // Data untuk chart
-    var data = {
-        labels: ["Tanpa Status", "Sedang dihubungi", "Proses Negosiasi", "Diterima", "Ditolak"],
-        datasets: [{
-            data: [10, 20, 15, 30, 5 /* Isi dengan jumlah data untuk masing-masing label */ ],
-            backgroundColor: [
-                'orange', // Tanpa Status
-                'lightblue', // Sedang dihubungi
-                'purple', // Proses Negosiasi
-                'green', // Diterima
-                'red' // Ditolak
-            ]
-        }]
-    };
+    function GrafikDonat(data){
+        var data = {
+            labels: ["Tanpa Status", "Sedang dihubungi", "Proses Negosiasi", "Diterima", "Ditolak"],
+            datasets: [{
+                data:[
+                    data['tanpa-status'],
+                    data['sedang-dihubungi'],
+                    data['proses-negosiasi'],
+                    data['diterima'],
+                    data['ditolak']
+                    ],
+                backgroundColor: [
+                    'orange', // Tanpa Status
+                    'lightblue', // Sedang dihubungi
+                    'purple', // Proses Negosiasi
+                    'green', // Diterima
+                    'red' // Ditolak
+                ]
+            }]
+        };
 
-    // Pengaturan chart
-    var options = {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutoutPercentage: 70,
-        legend: {
-            display: true,
-            position: 'bottom',
-            labels: {
-                fontColor: 'black',
-                fontSize: 14
+        // Pengaturan chart
+        var options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutoutPercentage: 70,
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    fontColor: 'black',
+                    fontSize: 14
+                }
+            },
+            title: {
+                display: false
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
             }
-        },
-        title: {
-            display: false
-        },
-        animation: {
-            animateScale: true,
-            animateRotate: true
-        }
-    };
+        };
 
-    // Mendapatkan elemen canvas
-    var ctx = document.getElementById("grafikCRM").getContext("2d");
+        // Mendapatkan elemen canvas
+        var ctx = document.getElementById("grafikCRM").getContext("2d");
 
-    // Membuat doughnut chart
-    var myDoughnutChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: data,
-        options: options
-    });
+        // Membuat doughnut chart
+        var myDoughnutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: data,
+            options: options
+        });
+    }
+
+    function updateKeterangan(data) {
+        $("#tanpa-status .crmstats-summary-number").text(data['tanpa-status']);
+        $("#sedang-dihubungi .crmstats-summary-number").text(data['sedang-dihubungi']);
+        $("#proses-negosiasi .crmstats-summary-number").text(data['proses-negosiasi']);
+        $("#diterima .crmstats-summary-number").text(data['diterima']);
+        $("#ditolak .crmstats-summary-number").text(data['ditolak']);
+    }
+
+
 </script>
 
 
 <script>
     var keyword = '',
         jenis_pengadaan = '',
-        hps_awal = 0,
-        hps_akhir = 0,
+        hps_awal = '',
+        hps_akhir = '',
         prov = '',
         kab = '',
         jum_pemenang, timer;
 
     $(document).ready(function() {
-        $.ajax({
-            url: "<?= base_url() ?>api/supplier/jumlah-pemenang",
-            type: "GET",
-            dataType: "JSON",
-            success: function(data) {
-                $('#total-today').html(data.total_today);
-                $('#total-month').html(data.total_month);
-                $('#total-year').html(data.total_year);
-                // console.log(data.total_today);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {}
-        });
+        // $.ajax({
+        //     url: "<?= base_url() ?>api/supplier/jumlah-pemenang",
+        //     type: "GET",
+        //     dataType: "JSON",
+        //     success: function(data) {
+        //         $('#total-today').html(data.total_today);
+        //         $('#total-month').html(data.total_month);
+        //         $('#total-year').html(data.total_year);
+        //         // console.log(data.total_today);
+        //     },
+        //     error: function(jqXHR, textStatus, errorThrown) {}
+        // });
 
         $.ajax({
             url: "<?= base_url() ?>api/getPreferensiPengguna/" + id_pengguna,
