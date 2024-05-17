@@ -489,9 +489,9 @@
                 <div class="card-select wow fadeInUp">
                     <div class="select-custom container-fluid mt-5">
                         <div class="text-center mb-3">
-                            <h3 class="tender-title text-center wow fadeInUp d-inline-block px-3 pb-2" data-wow-delay="0.5s">Pemenang Tender</h3>
+                            <h3 class="tender-title text-center wow fadeInUp d-inline-block px-3 pb-2" data-wow-delay="0.5s">Pemenang Tender Terbaru</h3>
                         </div> 
-                        <div class="row">
+                        <div class="row" id="filter-pemenang">
                             <div class=" col-sm-2 form-select-custom" style="padding:5px; padding-left:24px; margin-right:10px;">
                                 <input id="keyword" type="text" class="form-input-custom" style="border:none;" placeholder="Cari nama tender atau pemenang">
                                 <img src="<?= base_url('assets\img\icon_search.svg') ?>" width="20" style="float:right;padding-top:3px;margin-right:10px">
@@ -715,6 +715,8 @@
     // Inisialisasi Select2 pada dropdown select
     $(document).ready(function() {
         $('.form-select2').select2();
+        $('#filter-pemenang').hide();
+
         Grafikpemenang(2024);
         let id_pengguna = Cookies.get('id_pengguna');
 
@@ -751,11 +753,14 @@
 
                         var jumlah = total - belum
                         $('.total').html(jumlah);
+                        
+                        $('#filter-pemenang').show();
                     }
                 })
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(textStatus, errorThrown);
+
             }
         })
 
@@ -1005,6 +1010,74 @@
         jum_pemenang, timer;
 
     $(document).ready(function() {
+        $.ajax({
+                // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
+                url : "<?= base_url() ?>Tender/tumbal",
+                type: "GET",
+                dataType: "JSON",
+                success : function(data){
+                    jum_pemenang = data.jumlah;
+                                    
+                    if (jum_pemenang > 0) {
+                        $('#pagination-container').pagination({
+                            // dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna/"+id_pengguna+"/"+jum_pemenang,
+                            dataSource: "<?= base_url() ?>api/get_pemenang_terbaru/"+id_pengguna+"/"+jum_pemenang,
+                            locator: '',
+                            totalNumber: jum_pemenang,
+                            pageSize: 10,
+                            autoHidePrevious: true,
+                            autoHideNext: true,
+                            showNavigator: true,
+                            formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
+                            position: 'bottom',
+                            className: 'paginationjs-theme-red paginationjs-big',
+                            ajax: {
+                                beforeSend: function(xhr, settings) {
+                                    const url = settings.url
+                                    const params = new URLSearchParams(url)
+                                    let currentPageNum = params.get('pageNumber')
+                                    currentPageNum = parseInt(currentPageNum)
+                                    if (currentPageNum >= 2 && id_pengguna == 0) {
+                                        window.location.href = `${base_url}login`
+                                        return false
+                                    }
+                                            
+                                    $('#list-pemenang').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
+                                }
+                            },
+                            callback: function(data, pagination) {
+                                console.log(data.length);
+                                $('#sec-pemenang-terbaru').show();
+                                if (data != '') {
+                                    let html = template(data);
+                                    $('#list-pemenang').html(html);
+                                }
+                            }
+                        });
+                    } else {
+                        $('#list-pemenang').html(`
+                            <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
+                                <div class="col-md-2 p-3 text-center text-md-end">
+                                    <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
+                                </div>
+                                <div class="col-md-8 p-3 text-center text-md-start">
+                                    <h4 class="mb-2">Pemenang tender kosong!</h4>
+                                    <p class="m-0">Belum ada pemenang tender sesuai preferensi yang Anda tentukan.<br>Silakan bisa coba atur ulang preferensi Anda menggunakan kata kunci lain untuk mendapatkan hasil lebih baik.</p>
+                                </div>
+                                <div class="col-md-2 p-3 text-center">
+                                    <a href="<?= base_url() ?>preferensi" class="btn btn-danger m-1">Pengaturan</a>
+                                </div>
+                            </div>
+                        `);
+                        
+                        $('#pagination-container').hide();
+                    }
+                },error: function (jqXHR, textStatus, errorThrown){
+
+                }
+        
+        });
+
         // $.ajax({
         //     url: "<?= base_url() ?>api/supplier/jumlah-pemenang",
         //     type: "GET",
@@ -1018,93 +1091,93 @@
         //     error: function(jqXHR, textStatus, errorThrown) {}
         // });
 
-        $.ajax({
-            url: "<?= base_url() ?>api/getPreferensiPengguna/" + id_pengguna,
-            type: "GET",
-            dataType: "JSON",
-            success: function(data) {
-                if (data != null) {
-                    $('#sec-set-preferensi').hide();
+        // $.ajax({
+        //     url: "<?= base_url() ?>api/getPreferensiPengguna/" + id_pengguna,
+        //     type: "GET",
+        //     dataType: "JSON",
+        //     success: function(data) {
+        //         if (data != null) {
+        //             $('#sec-set-preferensi').hide();
 
-                    setTimeout(function() {
-                        let status = $('#status_user').val();
+        //             setTimeout(function() {
+        //                 let status = $('#status_user').val();
 
-                        if (status == '0') {
-                            $('#sec-upgrade-paket').show();
-                            $('#sec-pemenang-terbaru').hide();
-                        } else {
-                            $('#sec-upgrade-paket').hide();
-                            $('#sec-pemenang-terbaru').show();
+        //                 if (status == '0') {
+        //                     $('#sec-upgrade-paket').show();
+        //                     $('#sec-pemenang-terbaru').hide();
+        //                 } else {
+        //                     $('#sec-upgrade-paket').hide();
+        //                     $('#sec-pemenang-terbaru').show();
 
-                            filterTender();
+        //                     filterTender();
 
-                            /*$.ajax({
-                                url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
-                                type: "GET",
-                    			dataType: "JSON",
-                                success : function(data){
-                                    jum_pemenang = data.jumlah;
+        //                     /*$.ajax({
+        //                         url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
+        //                         type: "GET",
+        //             			dataType: "JSON",
+        //                         success : function(data){
+        //                             jum_pemenang = data.jumlah;
                                     
-                                    if (jum_pemenang > 0) {
-                                        $('#pagination-container').pagination({
-                                            dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna/"+id_pengguna+"/"+jum_pemenang,
-                                            locator: '',
-                                            totalNumber: jum_pemenang,
-                                            pageSize: 10,
-                                            autoHidePrevious: true,
-                                            autoHideNext: true,
-                                            showNavigator: true,
-                                            formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
-                                            position: 'bottom',
-                                            className: 'paginationjs-theme-red paginationjs-big',
-                                            ajax: {
-                                                beforeSend: function(xhr, settings) {
-                                                    const url = settings.url
-                                                    const params = new URLSearchParams(url)
-                                                    let currentPageNum = params.get('pageNumber')
-                                                    currentPageNum = parseInt(currentPageNum)
-                                                    if (currentPageNum >= 2 && id_pengguna == 0) {
-                                                        window.location.href = `${base_url}login`
-                                                        return false
-                                                    }
+        //                             if (jum_pemenang > 0) {
+        //                                 $('#pagination-container').pagination({
+        //                                     dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna/"+id_pengguna+"/"+jum_pemenang,
+        //                                     locator: '',
+        //                                     totalNumber: jum_pemenang,
+        //                                     pageSize: 10,
+        //                                     autoHidePrevious: true,
+        //                                     autoHideNext: true,
+        //                                     showNavigator: true,
+        //                                     formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
+        //                                     position: 'bottom',
+        //                                     className: 'paginationjs-theme-red paginationjs-big',
+        //                                     ajax: {
+        //                                         beforeSend: function(xhr, settings) {
+        //                                             const url = settings.url
+        //                                             const params = new URLSearchParams(url)
+        //                                             let currentPageNum = params.get('pageNumber')
+        //                                             currentPageNum = parseInt(currentPageNum)
+        //                                             if (currentPageNum >= 2 && id_pengguna == 0) {
+        //                                                 window.location.href = `${base_url}login`
+        //                                                 return false
+        //                                             }
                         
-                                                    $('#list-pemenang').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
-                                                }
-                                            },
-                                            callback: function(data, pagination) {
-                                                if (data != '') {
-                                                    let html = template(data);
-                                                    $('#list-pemenang').html(html);
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                        $('#list-pemenang').html(`
-                                            <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
-                                                <div class="col-md-2 p-3 text-center text-md-end">
-                                                    <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
-                                                </div>
-                                                <div class="col-md-8 p-3 text-center text-md-start">
-                                                    <h4 class="mb-2">Pemenang tender kosong!</h4>
-                                                    <p class="m-0">Belum ada pemenang tender sesuai preferensi yang Anda tentukan.<br>Silakan bisa coba atur ulang preferensi Anda menggunakan kata kunci lain untuk mendapatkan hasil lebih baik.</p>
-                                                </div>
-                                                <div class="col-md-2 p-3 text-center">
-                                                    <a href="<?= base_url() ?>preferensi" class="btn btn-danger m-1">Pengaturan</a>
-                                                </div>
-                                            </div>
-                                        `);
+        //                                             $('#list-pemenang').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
+        //                                         }
+        //                                     },
+        //                                     callback: function(data, pagination) {
+        //                                         if (data != '') {
+        //                                             let html = template(data);
+        //                                             $('#list-pemenang').html(html);
+        //                                         }
+        //                                     }
+        //                                 });
+        //                             } else {
+        //                                 $('#list-pemenang').html(`
+        //                                     <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
+        //                                         <div class="col-md-2 p-3 text-center text-md-end">
+        //                                             <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
+        //                                         </div>
+        //                                         <div class="col-md-8 p-3 text-center text-md-start">
+        //                                             <h4 class="mb-2">Pemenang tender kosong!</h4>
+        //                                             <p class="m-0">Belum ada pemenang tender sesuai preferensi yang Anda tentukan.<br>Silakan bisa coba atur ulang preferensi Anda menggunakan kata kunci lain untuk mendapatkan hasil lebih baik.</p>
+        //                                         </div>
+        //                                         <div class="col-md-2 p-3 text-center">
+        //                                             <a href="<?= base_url() ?>preferensi" class="btn btn-danger m-1">Pengaturan</a>
+        //                                         </div>
+        //                                     </div>
+        //                                 `);
                                         
-                                        $('#pagination-container').hide();
-                                    }
-                                },
-                                error: function (jqXHR, textStatus, errorThrown){}
-                            });*/
-                        }
-                    }, 1000);
-                } else $('#sec-set-preferensi').show();
-            },
-            error: function(jqXHR, textStatus, errorThrown) {}
-        });
+        //                                 $('#pagination-container').hide();
+        //                             }
+        //                         },
+        //                         error: function (jqXHR, textStatus, errorThrown){}
+        //                     });*/
+        //                 }
+        //             }, 1000);
+        //         } else $('#sec-set-preferensi').show();
+        //     },
+        //     error: function(jqXHR, textStatus, errorThrown) {}
+        // });
     });
 
     function filterTender(sort = '3') {
@@ -1120,7 +1193,8 @@
         };
 
         $.ajax({
-            url: "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna1",
+            // url: "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna1",
+            url: "<?= base_url() ?>Tender/tumbal",
             type: "POST",
             dataType: "JSON",
             data: params,

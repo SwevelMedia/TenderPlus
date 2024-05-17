@@ -1080,12 +1080,35 @@ class Tender extends CI_Controller
     }
 
     public function tumbal(){
-        $data = $this->input->post();
+        // $data = $this->input->post('id_pengguna');
+        // $response = $this->Tender_model->getJumKatalogPemenangTerbaruByPengguna($data)->result();
 
-        $response = $this->Tender_model->getKatalogPemenangTerbaruByPengguna1($data)->result();
-
+        $response = [
+            'jumlah'=>73,
+        ];
         echo json_encode($response);
 
+    }
+
+    public function get_pemenang_terbaru($id_pengguna,$jum_pemenang){
+
+        $page_size = $_GET['pageSize'];
+        $page_number = ($_GET['pageNumber'] - 1) * $page_size;
+        $response = $this->Tender_model->get_pemenang_terbaru($id_pengguna,$jum_pemenang,$page_number, $page_size);
+        // $response = [
+        //     'page_size'=>$page_size,
+        //     'jum_pemenang'=>$jum_pemenang,
+        //     'page_number'=>$page_number,
+        //     'id_pengguna'=>$id_pengguna
+        // ];
+
+        $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response, JSON_PRETTY_PRINT))
+            ->_display();
+
+        exit;
     }
 
     public function getJumKatalogTenderTerbaru()
