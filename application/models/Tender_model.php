@@ -301,6 +301,22 @@ class Tender_model extends CI_Model
 
         return $this->db->query($sql);
     }
+
+    public function get_pemenang_terbaru($id_pengguna,$jum_pemenang,$page_number, $page_size){
+        // Hitung limit untuk pagination
+        $limit = $jum_pemenang > 10 ? "LIMIT {$page_number},{$page_size}" : "";
+
+
+        // Buat kueri dengan pagination
+        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender, pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang');
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+        
+
+        $query = $this->db->get();
+        return $query->result_array();
+    }
     
     public function getKatalogPemenangTerbaruByPengguna1($data)
     {
@@ -345,7 +361,7 @@ class Tender_model extends CI_Model
                 ORDER BY {$order}
                 LIMIT {$page_number},{$page_size}";
                 
-                $sql2 = "INSERT INTO data_leads (id_pemenang, nama_perusahaan, npwp, id_pengguna)
+        $sql2 = "INSERT INTO data_leads (id_pemenang, nama_perusahaan, npwp, id_pengguna)
                 SELECT p.id_pemenang, p.nama_pemenang, p.npwp, {$id_pengguna}
                 FROM preferensi, pemenang p
                 LEFT JOIN data_leads dl ON p.npwp = dl.npwp AND {$id_pengguna} = dl.id_pengguna
@@ -355,7 +371,7 @@ class Tender_model extends CI_Model
                 AND (dl.npwp IS NULL OR dl.id_pengguna IS NULL)
                 GROUP BY p.npwp;";
 
-                $this->db->query($sql2);
+            $this->db->query($sql2);
 
         return $this->db->query($sql);
     }

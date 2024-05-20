@@ -257,6 +257,7 @@ $route['api/getKatalogTenderTerbaru'] = 'Tender/getKatalogTenderTerbaru';
 $route['api/getKatalogTenderTerbaruByPengguna/(:num)/(:num)'] = 'Tender/getKatalogTenderTerbaruByPengguna/$1/$2';
 $route['api/getKatalogTenderTerbaruByPengguna1'] = 'Tender/getKatalogTenderTerbaruByPengguna1';
 $route['api/getKatalogPemenangTerbaruByPengguna/(:num)/(:num)'] = 'Tender/getKatalogPemenangTerbaruByPengguna/$1/$2';
+$route['api/get_pemenang_terbaru/(:num)/(:num)'] = 'Tender/get_pemenang_terbaru/$1/$2';
 $route['api/getKatalogPemenangTerbaruByPengguna1'] = 'Tender/getKatalogPemenangTerbaruByPengguna1';
 $route['api/getJumKatalogTenderTerbaru'] = 'Tender/getJumKatalogTenderTerbaru';
 $route['api/getJumKatalogTenderTerbaruByPengguna/(:num)'] = 'Tender/getJumKatalogTenderTerbaruByPengguna/$1';
