@@ -66,7 +66,13 @@ class Supplier_api extends CI_Model
         $this->db->delete('tim_marketing', ['id_tim' => $id]);
         return $this->db->affected_rows();
     }
-
+    public function getPlotTimByIdLead($id_lead)
+    {
+        $this->db->select('*');
+        $this->db->from('plot_tim');
+        $query = $this->db->where('id_lead', $id_lead);
+        return $query->get()->result_array();
+    }
     public function insertPlotting($data)
     {
         $this->db->insert('plot_tim', $data);
@@ -256,6 +262,11 @@ class Supplier_api extends CI_Model
 
         return $this->db->query($sql);
     }
+    public function updateDataLeadCRM($data, $id)
+    {
+        $this->db->update('plot_tim', $data, ['id_lead' => $id]);
+        return $this->db->affected_rows();
+    }
 
     public function getCRMLeads($id_pengguna)
     {
@@ -362,14 +373,15 @@ AND (data_leads.id_lead NOT IN (SELECT id_lead FROM plot_tim) OR data_leads.id_l
         return $query->result_array();
     }
 
-    public function getDonatChart($id_pengguna){
+    public function getDonatChart($id_pengguna)
+    {
         $this->db->select('plot_tim.id_plot, plot_tim.id_tim, plot_tim.status, data_leads.id_lead,data_leads.id_pengguna');
         $this->db->from('plot_tim');
         $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead', 'right');
         $this->db->where('id_pengguna', $id_pengguna);
-        
+
         $query = $this->db->get();
-        
+
         if ($query->num_rows() > 0) {
             return $query->result_array();
         } else {

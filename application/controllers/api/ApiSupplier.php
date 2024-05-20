@@ -539,4 +539,39 @@ class ApiSupplier extends RestController
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
     }
+    public function getPlotTimByIdLead_get()
+    {
+        $id_lead = $this->input->get('id_lead');
+        $data = $this->Supplier_api->getPlotTimByIdLead($id_lead); // Implementasikan metode ini di model
+        $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
+    }
+    public function editDataLeadCRM_post($id)
+    {
+        // $this->load->helper('url');
+        $data = [
+            'jadwal' => $this->post('jadwal'),
+            'catatan' => $this->post('catatan'),
+            'status' => $this->post('status'),
+        ];
+
+        if ($id === null) {
+            $this->response([
+                'status' => false,
+                'message' => 'Berikan id'
+            ], RestController::HTTP_BAD_REQUEST);
+        } else if ($this->Supplier_api->updateDataLeadCRM($data, $id) > 0) {
+            $this->response([
+                'status' => true,
+                'message' => 'Data berhasil diubah'
+            ], RestController::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Data gagal diubah'
+            ], RestController::HTTP_BAD_REQUEST);
+        }
+    }
 }

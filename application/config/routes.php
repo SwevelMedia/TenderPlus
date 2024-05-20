@@ -428,7 +428,8 @@ $route['api/supplier/getLead'] = 'api/ApiSupplier/getLeads';
 $route['api/supplier/getCRMLeads'] = 'api/ApiSupplier/getCRMLeads';
 $route['api/supplier/getDataLeadCRM'] = 'api/ApiSupplier/getDataLeadCRM';
 $route['api/supplier/getLeadRiwayat'] = 'api/ApiSupplier/getLeadRiwayat';
-
+$route['api/supplier/updateDataLeadCRM/(:num)'] = 'api/ApiSupplier/editDataLeadCRM/$1';
+$route['api/supplier/getPlotTimByIdLead'] = 'api/ApiSupplier/getPlotTimByIdLead';
 //restAPI route for DaftarHItam
 $route['api/daftarhitambynpwp'] = 'api/ApiDaftarHitam/daftarhitambynpwp';
 

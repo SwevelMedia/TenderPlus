@@ -27,7 +27,7 @@
   td.custom-padding {
     border: none;
     vertical-align: middle !important;
-    height: 60px !important;
+    /* height: 60px !important; */
     text-align: left;
   }
 
@@ -59,13 +59,13 @@
     padding: 1rem;
   }
 
-  .custom-table-leads {
-    border-radius: 10px 10px 10px 10px;
-    overflow: hidden;
-    border: 1px solid var(--neutral-100, #F0E2E2);
+  .table-responsive.custom-table-scroll {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0.75em;
   }
 
-  .shadow-sm {
+  s .shadow-sm {
     border-radius: 10px;
   }
 
@@ -213,12 +213,7 @@
     }
   }
 
-  .custom-table-container {
-    border-radius: 10px 10px 10px 10px;
-    overflow: hidden;
-    border: 1px solid var(--neutral-100, #F0E2E2);
 
-  }
 
   @media (max-width: 767px) {
     .col-4 {
@@ -347,6 +342,13 @@
   .custom-img-tabel {
     width: 20px;
     height: 20px;
+  }
+
+  .custom-table-container {
+    border-radius: 10px 10px 10px 10px;
+    overflow: hidden;
+    border: 1px solid var(--neutral-100, #F0E2E2);
+
   }
 </style>
 
@@ -657,8 +659,8 @@
 
     <div class="row">
       <div class="col">
-        <div class="table-responsive">
-          <table class="table custom-table-leads table-striped">
+        <div class="row table-responsive my-4">
+          <table class="table custom-table-container">
             <thead class="thead">
               <tr>
                 <th class="custom-padding" style="width: 5%">No.</th>
@@ -684,24 +686,12 @@
 <script src="<?= base_url() ?>assets/js/home/pagination.min.js" type="text/javascript"></script>
 <script>
   $(document).ready(function() {
-
     let id_pengguna = Cookies.get('id_pengguna');
     let currentPage = 1;
     let itemsPerPage = 10;
     let total_leads;
-    // var filterElement = document.getElementById("input-cari-tender");
     const basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
 
-    // function addAuthorizationHeader(xhr) {
-    //   xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
-    // }
-    // var status = this.value;
-    // var button = document.getElementById('status-button');
-    // if (status !== '') {
-    //   button.textContent = 'Status: ' + status.charAt(0).toUpperCase() + status.slice(1);
-    // } else {
-    //   button.textContent = 'Status: All';
-    // }
     // Get total leads
     $.ajax({
       url: "<?= base_url('api/supplier/getCount') ?>",
@@ -713,11 +703,9 @@
       data: {
         id_pengguna: id_pengguna
       },
-      // beforeSend: addAuthorizationHeader,
       success: function(data) {
         $('.belum-lengkap').html(data.data.jumlah);
-        // $('.belum-lengkap').html(data.data.belum_lengkap);
-        let belum = data.data.jumlah
+        let belum = data.data.jumlah;
         $.ajax({
           url: "<?= base_url('api/supplier/getTotal') ?>",
           type: "GET",
@@ -728,22 +716,19 @@
           data: {
             id_pengguna: id_pengguna
           },
-          // beforeSend: addAuthorizationHeader,
           success: function(data) {
-            // $('.total-leads').html(data.total_leads);
             $('.total-leads').html(data.data);
-            let total = data.data
-
-            let jumlah = total - belum
+            let total = data.data;
+            let jumlah = total - belum;
             $('.total').html(jumlah);
-            // console.log(jumlah);
           }
-        })
+        });
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(textStatus, errorThrown);
       }
-    })
+    });
+
     $.ajax({
       url: "<?= base_url('api/supplier/getTotal') ?>",
       type: "GET",
@@ -754,7 +739,6 @@
       data: {
         id_pengguna: id_pengguna
       },
-      // beforeSend: addAuthorizationHeader,
       success: function(data) {
         total_leads = data.data;
 
@@ -773,20 +757,18 @@
             type: "GET",
             data: {
               id_pengguna: id_pengguna
-
             },
             headers: {
               Authorization: `Basic ${basicAuth}`
             },
-            // beforeSend: addAuthorizationHeader,
             function(xhr, settings) {
-              const url = settings.url
-              const params = new URLSearchParams(url)
-              let currentPageNum = params.get('pageNumber')
-              currentPageNum = parseInt(currentPageNum)
+              const url = settings.url;
+              const params = new URLSearchParams(url);
+              let currentPageNum = params.get('pageNumber');
+              currentPageNum = parseInt(currentPageNum);
               if (currentPageNum >= 2 && id_pengguna == null) {
-                window.location.href = `${base_url}login`
-                return false
+                window.location.href = `${base_url}login`;
+                return false;
               }
 
               $('#data-leads').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan tender terbaru...</span></div>');
@@ -802,13 +784,12 @@
         });
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        //   toastr.error('Terjadi masalah saat pengambilan data.', 'Kesalahan', opsi_toastr);
+        console.log(textStatus, errorThrown);
       }
     });
 
     function setTableLeads(data) {
       var leads = "";
-
       $.each(data, function(index, value) {
         var rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
         var hasMultipleContacts = value.jumlah_kontak > 1 ? 'visible' : 'hidden';
@@ -816,16 +797,16 @@
           `<tr data-id="` + value.id + `">
                     <td style="text-align:center">` + rowNumber + `</td>
                     <td class="perusahaan">` + (value.nama_perusahaan || '') + `</td>
-                    <td>${value.no_telp || ''}<a href="tel:` + value.no_telp + `"><img class="custom-img-table float-right" src="<?= base_url('assets/img/icon_kontak_table.svg') ?>" width="20" alt="" style="" ></a></td>
+                    <td>${value.no_telp || ''}<a href="tel:` + value.no_telp + `"><img class="custom-img-table float-right" src="<?= base_url('assets/img/icon_kontak_table.svg') ?>" width="20" alt=""></a></td>
                     <td>${value.status}</td>
                     <td>${value.jadwal}</td>
                     <td>${value.catatan}</td>
                     <td class="text-center">
-                    <div>
-                    <a><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
-                    <a><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
-                    <a class="riwayat" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px" ></a>
-                    </div>
+                        <div>
+                            <a class="edit-lead" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
+                            <a><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
+                            <a class="riwayat" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px"></a>
+                        </div>
                     </td>
                 </tr>
                 <tr class="riwayat-row" data-id="` + value.id + `" style="display:none;">
@@ -834,51 +815,120 @@
       });
 
       $("#data-leads").html(leads);
-      return leads;
-    }
-    $(document).on('click', '.riwayat', function() {
-      var idLead = $(this).data('id');
-      var $riwayatRow = $('tr.riwayat-row[data-id="' + idLead + '"]');
-      var $riwayatContent = $riwayatRow.find('.riwayat-content');
+      $(document).on('click', '.riwayat', function() {
+        var idLead = $(this).data('id');
+        var $riwayatRow = $('tr.riwayat-row[data-id="' + idLead + '"]');
+        var $riwayatContent = $riwayatRow.find('.riwayat-content');
 
-      if ($riwayatRow.is(':visible')) {
-        $riwayatRow.hide();
-      } else {
+        if ($riwayatRow.is(':visible')) {
+          $riwayatRow.hide();
+        } else {
+          $.ajax({
+            url: '<?= base_url('api/supplier/getLeadRiwayat') ?>',
+            type: 'GET',
+            headers: {
+              Authorization: `Basic ${basicAuth}`
+            },
+            data: {
+              id_lead: idLead
+            },
+            success: function(response) {
+              let content = `<div class="row table justify-content-center">
+                        <table class="table custom-table-container col-8 align-items-center">
+                            <thead class="thead text-left">
+                                <tr>
+                                    <th width="20%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_filter_table.svg') ?>" width="20" alt=""></a>Status</th>
+                                    <th width="20%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_jadwal.svg') ?>" width="20" alt=""></a>Jadwal</th>
+                                    <th width="40%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_catatan.svg') ?>" width="20" alt=""></a>Catatan</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+              $.each(response, function(index, item) {
+                content += `<tr>
+                                        <td>  ${item.status}  </td>
+                                        <td>  ${item.jadwal}  </td>
+                                        <td>  ${item.catatan}  </td>
+                                    </tr>`;
+              });
+              content += '</tbody></table></div>';
+              $riwayatContent.html(content);
+              $riwayatRow.show();
+            },
+            error: function(xhr, status, error) {
+              console.error('Error fetching riwayat:', error);
+            }
+          });
+        }
+      });
+
+      // Create edit modal HTML
+      const editModal = `
+        <div class="modal fade" id="editLeadModal" tabindex="-1" role="dialog" aria-labelledby="editLeadModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editLeadModalLabel">Edit Lead</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editLeadForm">
+                            <input type="hidden" id="editLeadId" name="id">
+                            <div class="form-group">
+                                <label for="editStatus">Status</label>
+                                <input type="text" class="form-control" id="editStatus" name="status" value=""required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editJadwal">Jadwal</label>
+                                <input type="date" class="form-control" id="editJadwal" name="jadwal" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editCatatan">Catatan</label>
+                                <textarea class="form-control" id="editCatatan" name="catatan" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+      $('body').append(editModal);
+
+      // Handle edit icon click
+      $(document).on('click', '.edit-lead', function() {
+        var idLead = $(this).data('id');
+        // console.log(idLead);
+
+        // Get lead data and populate the modal
         $.ajax({
-          url: '<?= base_url('api/supplier/getLeadRiwayat') ?>', // Ganti dengan URL endpoint Anda
+          url: '<?= base_url('api/supplier/getPlotTimByIdLead') ?>',
           type: 'GET',
+          headers: {
+            Authorization: `Basic ${basicAuth}`
+          },
           data: {
             id_lead: idLead
           },
-          success: function(response) {
-            // Asumsikan response adalah objek dengan riwayat status, jadwal, dan catatan
-            let content = `<div class="row justify-content-center">
-            <table class="table custom-table-leads col-8 align-items-center">`;
-            content += `<thead class="thead text-left">
-            <tr>
-            <th class="custom-padding" width="20%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_filter_table.svg') ?>" width="20" alt="" style=""></a>Status</th>
-            <th class="custom-padding" width="20%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_jadwal.svg') ?>" width="20" alt="" style=""></a>Jadwal</th>
-            <th class="custom-padding" width="40%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_catatan.svg') ?>" width="20" alt="" style=""></a>Catatan</th>
-            </tr>
-            </thead>
-            <tbody>`;
-            $.each(response, function(index, item) {
-              content += `<tr>
-              <td>  ${item.status}  </td>
-              <td>  ${item.jadwal}  </td>
-              <td>  ${item.catatan}  </td>
-              </tr>`;
-            });
-            content += '</tbody></table></div>';
-            $riwayatContent.html(content);
-            $riwayatRow.show();
+          success: function(data) {
+            $('#editLeadId').val(data.idLead);
+            $('#editStatus').val(data.status);
+            $('#editJadwal').val(data.jadwal);
+            $('#editCatatan').val(data.catatan);
+            $('#editLeadModal').modal('show');
           },
           error: function(xhr, status, error) {
-            console.error('Error fetching riwayat:', error);
+            console.error('Error fetching lead data:', error);
           }
         });
-      }
-    });
+      });
+      return leads;
+    }
+
+
+
+    // Handle form submission
 
   });
 </script>
