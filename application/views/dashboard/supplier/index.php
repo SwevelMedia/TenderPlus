@@ -302,6 +302,14 @@
         width: 100%;
         /* Mengisi lebar kontainer */
     }
+    
+    @media (max-width: 576px) {
+        .sec-pemenang-terbaru {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+    }
     #nav-pemenang{
         background-color: #FCD9D9;
         border-top-right-radius: 20px;
@@ -320,14 +328,6 @@
     .custom-nav .nav-link.active {
         background-color: #D21B1B !important; /* Warna background ketika aktif */
         color: white !important; /* Warna teks ketika aktif */
-    }
-
-    @media (max-width: 576px) {
-        .sec-pemenang-terbaru {
-            margin-left: auto;
-            margin-right: auto;
-        }
-
     }
 </style>
 
@@ -523,6 +523,11 @@
                             <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:10px">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
                                 <select class="select2-jenis-pengadaan" style="border:none;">
+                                        <!-- <option value="">Semua Pengadaan</option>
+
+                                    <?php foreach ($jenisTender as $jenisTender) : ?>
+                                        <option value="<?= $jenisTender['id_jenis'] ?>"><?php echo $jenisTender['jenis_tender'] ?></option>
+                                    <?php endforeach; ?> -->
                                 </select>
                             </div>
                             <!-- Select Trigger Filter Nilai Penawaran -->
@@ -988,6 +993,59 @@
         $("#ditolak .crmstats-summary-number").text(data['ditolak']);
     }
 
+    //=========== FILTER PEMENANG TENDER ==================
+    $('#keyword').on('keyup', function() {
+        clearTimeout(timer);
+
+        timer = setTimeout(function() {
+            keyword = $('#keyword').val();
+            filterTender();
+            // console.log(keyword);
+        }, 1000);
+    });
+
+    $('.dropdown-sorting .dropdown-item').on('click', function() {
+        let sort = $(this).data('sort');
+
+        // filterTender(sort);
+    });
+
+    $('#checkallhps').on('click', function() {
+        let allhps = this.checked;
+        $('#nilai_hps_awal, #nilai_hps_akhir').prop('disabled', allhps);
+
+        if (allhps) hps_awal = hps_akhir = 0;
+        else {
+            $('#nilai_hps_awal').focus();
+            hps_awal = $('#nilai_hps_awal').val();
+            hps_akhir = $('#nilai_hps_akhir').val();
+        }
+        // console.log(hps_awal,"+",hps_akhir)
+        filterTender();
+    });
+
+    $('#nilai_hps_awal, #nilai_hps_akhir').inputmask('decimal', {
+        'alias': 'numeric',
+        'groupSeparator': '.',
+        'autoGroup': true,
+        'digits': 0,
+        'digitsOptional': false,
+        'allowMinus': false,
+        'placeholder': '0',
+        'rightAlign': false,
+        'autoUnmask': true
+    }).on('keyup', function() {
+        hps_awal = $('#nilai_hps_awal').val();
+        hps_akhir = $('#nilai_hps_akhir').val();
+
+        if (parseInt(hps_akhir) < parseInt(hps_awal)) $('#nilai_hps_akhir').addClass('is-invalid');
+        else {
+            $('#nilai_hps_akhir').removeClass('is-invalid');
+            filterTender();
+            // console.log(hps_awal,"+",hps_akhir)
+        }
+    });
+
 
 </script>
 
@@ -1072,107 +1130,6 @@
                 }
         
         });
-
-        // $.ajax({
-        //     url: "<?= base_url() ?>api/supplier/jumlah-pemenang",
-        //     type: "GET",
-        //     dataType: "JSON",
-        //     success: function(data) {
-        //         $('#total-today').html(data.total_today);
-        //         $('#total-month').html(data.total_month);
-        //         $('#total-year').html(data.total_year);
-        //         // console.log(data.total_today);
-        //     },
-        //     error: function(jqXHR, textStatus, errorThrown) {}
-        // });
-
-        // $.ajax({
-        //     url: "<?= base_url() ?>api/getPreferensiPengguna/" + id_pengguna,
-        //     type: "GET",
-        //     dataType: "JSON",
-        //     success: function(data) {
-        //         if (data != null) {
-        //             $('#sec-set-preferensi').hide();
-
-        //             setTimeout(function() {
-        //                 let status = $('#status_user').val();
-
-        //                 if (status == '0') {
-        //                     $('#sec-upgrade-paket').show();
-        //                     $('#sec-pemenang-terbaru').hide();
-        //                 } else {
-        //                     $('#sec-upgrade-paket').hide();
-        //                     $('#sec-pemenang-terbaru').show();
-
-        //                     filterTender();
-
-        //                     /*$.ajax({
-        //                         url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
-        //                         type: "GET",
-        //             			dataType: "JSON",
-        //                         success : function(data){
-        //                             jum_pemenang = data.jumlah;
-                                    
-        //                             if (jum_pemenang > 0) {
-        //                                 $('#pagination-container').pagination({
-        //                                     dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna/"+id_pengguna+"/"+jum_pemenang,
-        //                                     locator: '',
-        //                                     totalNumber: jum_pemenang,
-        //                                     pageSize: 10,
-        //                                     autoHidePrevious: true,
-        //                                     autoHideNext: true,
-        //                                     showNavigator: true,
-        //                                     formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
-        //                                     position: 'bottom',
-        //                                     className: 'paginationjs-theme-red paginationjs-big',
-        //                                     ajax: {
-        //                                         beforeSend: function(xhr, settings) {
-        //                                             const url = settings.url
-        //                                             const params = new URLSearchParams(url)
-        //                                             let currentPageNum = params.get('pageNumber')
-        //                                             currentPageNum = parseInt(currentPageNum)
-        //                                             if (currentPageNum >= 2 && id_pengguna == 0) {
-        //                                                 window.location.href = `${base_url}login`
-        //                                                 return false
-        //                                             }
-                        
-        //                                             $('#list-pemenang').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
-        //                                         }
-        //                                     },
-        //                                     callback: function(data, pagination) {
-        //                                         if (data != '') {
-        //                                             let html = template(data);
-        //                                             $('#list-pemenang').html(html);
-        //                                         }
-        //                                     }
-        //                                 });
-        //                             } else {
-        //                                 $('#list-pemenang').html(`
-        //                                     <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
-        //                                         <div class="col-md-2 p-3 text-center text-md-end">
-        //                                             <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
-        //                                         </div>
-        //                                         <div class="col-md-8 p-3 text-center text-md-start">
-        //                                             <h4 class="mb-2">Pemenang tender kosong!</h4>
-        //                                             <p class="m-0">Belum ada pemenang tender sesuai preferensi yang Anda tentukan.<br>Silakan bisa coba atur ulang preferensi Anda menggunakan kata kunci lain untuk mendapatkan hasil lebih baik.</p>
-        //                                         </div>
-        //                                         <div class="col-md-2 p-3 text-center">
-        //                                             <a href="<?= base_url() ?>preferensi" class="btn btn-danger m-1">Pengaturan</a>
-        //                                         </div>
-        //                                     </div>
-        //                                 `);
-                                        
-        //                                 $('#pagination-container').hide();
-        //                             }
-        //                         },
-        //                         error: function (jqXHR, textStatus, errorThrown){}
-        //                     });*/
-        //                 }
-        //             }, 1000);
-        //         } else $('#sec-set-preferensi').show();
-        //     },
-        //     error: function(jqXHR, textStatus, errorThrown) {}
-        // });
     });
 
     function filterTender(sort = '3') {
@@ -1187,20 +1144,25 @@
             'sort': sort
         };
 
+        // console.log("param :",params);
+        // return
+
         $.ajax({
             // url: "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna1",
-            url: "<?= base_url() ?>Tender/tumbal",
+            url: "<?= base_url() ?>Tender/getPemenangFillter/",
             type: "POST",
             dataType: "JSON",
             data: params,
             success: function(data) {
-                jum_pemenang = data.jumlah;
+                jum_filter = data;
+                // console.log(data)
+                // return
 
-                if (jum_pemenang > 0) {
+                if (jum_filter > 0) {
                     $('#pagination-container').pagination({
-                        dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna1",
+                        dataSource: "<?= base_url() ?>Tender/getHasilFilterPemenangTerbaru/"+id_pengguna,
                         locator: '',
-                        totalNumber: jum_pemenang,
+                        totalNumber: jum_filter,
                         pageSize: 10,
                         autoHidePrevious: true,
                         autoHideNext: true,
@@ -1228,6 +1190,8 @@
                             if (data != '') {
                                 let html = template(data);
                                 $('#list-pemenang').html(html);
+
+                                console.log("hasil filter: ",data);
                             }
                         }
                     });
@@ -1309,55 +1273,55 @@
         return pemenang;
     }
 
-    $('.dropdown-sorting .dropdown-item').on('click', function() {
-        let sort = $(this).data('sort');
+    // $('.dropdown-sorting .dropdown-item').on('click', function() {
+    //     let sort = $(this).data('sort');
 
-        filterTender(sort);
-    });
+    //     filterTender(sort);
+    // });
 
-    $('#checkallhps').on('click', function() {
-        let allhps = this.checked;
-        $('#nilai_hps_awal, #nilai_hps_akhir').prop('disabled', allhps);
+    // $('#checkallhps').on('click', function() {
+    //     let allhps = this.checked;
+    //     $('#nilai_hps_awal, #nilai_hps_akhir').prop('disabled', allhps);
 
-        if (allhps) hps_awal = hps_akhir = 0;
-        else {
-            $('#nilai_hps_awal').focus();
-            hps_awal = $('#nilai_hps_awal').val();
-            hps_akhir = $('#nilai_hps_akhir').val();
-        }
+    //     if (allhps) hps_awal = hps_akhir = 0;
+    //     else {
+    //         $('#nilai_hps_awal').focus();
+    //         hps_awal = $('#nilai_hps_awal').val();
+    //         hps_akhir = $('#nilai_hps_akhir').val();
+    //     }
 
-        filterTender();
-    });
+    //     filterTender();
+    // });
 
-    $('#nilai_hps_awal, #nilai_hps_akhir').inputmask('decimal', {
-        'alias': 'numeric',
-        'groupSeparator': '.',
-        'autoGroup': true,
-        'digits': 0,
-        'digitsOptional': false,
-        'allowMinus': false,
-        'placeholder': '0',
-        'rightAlign': false,
-        'autoUnmask': true
-    }).on('keyup', function() {
-        hps_awal = $('#nilai_hps_awal').val();
-        hps_akhir = $('#nilai_hps_akhir').val();
+    // $('#nilai_hps_awal, #nilai_hps_akhir').inputmask('decimal', {
+    //     'alias': 'numeric',
+    //     'groupSeparator': '.',
+    //     'autoGroup': true,
+    //     'digits': 0,
+    //     'digitsOptional': false,
+    //     'allowMinus': false,
+    //     'placeholder': '0',
+    //     'rightAlign': false,
+    //     'autoUnmask': true
+    // }).on('keyup', function() {
+    //     hps_awal = $('#nilai_hps_awal').val();
+    //     hps_akhir = $('#nilai_hps_akhir').val();
 
-        if (parseInt(hps_akhir) < parseInt(hps_awal)) $('#nilai_hps_akhir').addClass('is-invalid');
-        else {
-            $('#nilai_hps_akhir').removeClass('is-invalid');
-            filterTender();
-        }
-    });
+    //     if (parseInt(hps_akhir) < parseInt(hps_awal)) $('#nilai_hps_akhir').addClass('is-invalid');
+    //     else {
+    //         $('#nilai_hps_akhir').removeClass('is-invalid');
+    //         filterTender();
+    //     }
+    // });
 
-    $('#keyword').on('keyup', function() {
-        clearTimeout(timer);
+    // $('#keyword').on('keyup', function() {
+    //     clearTimeout(timer);
 
-        timer = setTimeout(function() {
-            keyword = $('#keyword').val();
-            filterTender();
-        }, 1000);
-    });
+    //     timer = setTimeout(function() {
+    //         keyword = $('#keyword').val();
+    //         filterTender();
+    //     }, 1000);
+    // });
 
     function formatData(data) {
         if (!data.id) return data.text;

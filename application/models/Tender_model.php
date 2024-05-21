@@ -325,6 +325,131 @@ class Tender_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    public function getHasilFilterPemenangTerbaru($id_pengguna,$offset, $limit,$data){
+        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender, lpse.nama_lpse, jenis_tender.jenis_tender, pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang');
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
+        $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
+        $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+
+        // Adding additional criteria based on available filters
+        if (!empty($data['keyword'])) {
+            $this->db->group_start(); // Open bracket for grouping OR conditions
+            $this->db->like('pemenang.nama_tender', $data['keyword']);
+            $this->db->group_end(); // Close bracket
+        }
+
+        if (!empty($data['jenis_pengadaan'])) {
+            $this->db->where('jenis_tender.jenis_tender', $data['jenis_pengadaan']);
+        }
+
+        if (!empty($data['nilai_hps_awal'])) {
+            $this->db->where('pemenang.harga_penawaran >=', $data['nilai_hps_awal']);
+        }
+
+        if (!empty($data['nilai_hps_akhir'])) {
+            $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
+        }
+
+        if (!empty($data['prov'])) {
+            $this->db->where('pemenang.prov', $data['prov']);
+        }
+
+        if (!empty($data['kab'])) {
+            $this->db->where('pemenang.kab', $data['kab']);
+        }
+
+        // Sorting criteria
+        switch ($data['sort']) {
+            case '1':
+                $this->db->order_by('pemenang.harga_penawaran', 'ASC');
+                break;
+            case '2':
+                $this->db->order_by('pemenang.harga_penawaran', 'DESC');
+                break;
+            case '3':
+                $this->db->order_by('pemenang.tgl_pemenang', 'ASC');
+                break;
+            case '4':
+                $this->db->order_by('pemenang.tgl_pemenang', 'DESC');
+                break;
+            default:
+                // Default sorting logic if any
+                break;
+        }
+
+        // Apply limit and offset for pagination
+        $this->db->limit($limit, $offset);
+
+        // Execute the query and get the result
+        $query = $this->db->get();
+        return $query->result(); // Return the result as an array of objects
+
+    }
+
+    public function getPemenangFillter($data){
+        // Construct the SQL query
+        $this->db->select('COUNT(*) as total');
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
+        $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
+        $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
+        $this->db->where('data_leads.id_pengguna', $data['id_pengguna']);
+
+        // Adding additional criteria based on available filters
+        if (!empty($data['keyword'])) {
+            $this->db->group_start(); // Open bracket for grouping OR conditions
+            $this->db->like('pemenang.nama_tender', $data['keyword']);
+            $this->db->group_end(); // Close bracket
+        }
+
+        if (!empty($data['jenis_pengadaan'])) {
+            $this->db->where('jenis_tender.jenis_tender', $data['jenis_pengadaan']);
+        }
+
+        if (!empty($data['nilai_hps_awal'])) {
+            $this->db->where('pemenang.harga_penawaran >=', $data['nilai_hps_awal']);
+        }
+
+        if (!empty($data['nilai_hps_akhir'])) {
+            $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
+        }
+
+        if (!empty($data['prov'])) {
+            $this->db->where('pemenang.prov', $data['prov']);
+        }
+
+        if (!empty($data['kab'])) {
+            $this->db->where('pemenang.kab', $data['kab']);
+        }
+
+        // Sorting criteria
+        switch ($data['sort']) {
+            case '1':
+                $this->db->order_by('pemenang.harga_penawaran', 'ASC');
+                break;
+            case '2':
+                $this->db->order_by('pemenang.harga_penawaran', 'DESC');
+                break;
+            case '3':
+                $this->db->order_by('pemenang.tgl_pemenang', 'ASC');
+                break;
+            case '4':
+                $this->db->order_by('pemenang.tgl_pemenang', 'DESC');
+                break;
+            default:
+                // Default sorting logic if any
+                break;
+        }
+
+        // Execute the query and get the result
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result->total;
+
+    }
     
     public function getKatalogPemenangTerbaruByPengguna1($data)
     {
@@ -539,6 +664,10 @@ class Tender_model extends CI_Model
 
         return $this->db->query($sql);
     }*/
+
+    public function getListLokasiPekerjaan2(){
+
+    }
     
     public function getListLokasiPekerjaan($keyword, $id_pengguna, $jenis, $page, $limit){
         $preferensi = $this->getPreferensiPengguna($id_pengguna);
@@ -2181,5 +2310,15 @@ class Tender_model extends CI_Model
 
             return $emitter->iterate();
         });
+    }
+
+    public function getAllJenisTender(){
+        $this->db->select("*");
+        $this->db->from("jenis_tender");
+
+        $query = $this->db->get();
+
+        return $query->result_array();
+
     }
 }

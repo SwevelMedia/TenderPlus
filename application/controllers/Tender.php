@@ -1065,6 +1065,35 @@ class Tender extends CI_Controller
         exit;
     }
     
+    public function getPemenangFillter(){
+
+        parse_str(file_get_contents('php://input'), $data);
+        
+        $response = $this->Tender_model->getPemenangFillter($data);
+
+        echo json_encode($response);
+    }
+
+    public function getHasilFilterPemenangTerbaru($id_pengguna){
+
+        parse_str(file_get_contents('php://input'), $data);
+
+        $page_size = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 10; // Default page size 10
+        $page_number = isset($_GET['pageNumber']) ? (int)$_GET['pageNumber'] : 1; // Default page number 1
+        $offset = ($page_number - 1) * $page_size;
+
+        $response = $this->Tender_model->getHasilFilterPemenangTerbaru($id_pengguna,$offset, $page_size,$data);
+        
+        
+        // $response = [
+        //     'page_size'=>$page_size,
+        //     'page_number'=>$page_number,
+        //     'id_pengguna'=>$id_pengguna
+        // ];
+
+        echo json_encode($response);
+    }
+
     public function getKatalogPemenangTerbaruByPengguna1()
     {
         parse_str(file_get_contents('php://input'), $data);
@@ -1200,13 +1229,20 @@ class Tender extends CI_Controller
     public function getListLokasiPekerjaan(){
 	    $response = array(
 	      "total_count" => $this->Tender_model->getJumlahListLokasiPekerjaan($this->input->get("q"), $this->input->get("id_pengguna"), $this->input->get("jenis")),
-	      "results" => $this->Tender_model->getListLokasiPekerjaan(
+	      "results" => $this->Tender_model->getListLokasiPekerjaan2(
 	      					$this->input->get("q"),
 	      					$this->input->get("id_pengguna"),
-	      					$this->input->get("jenis"),
+	      					// $this->input->get("jenis"),
 	      					$this->input->get("page") * $this->input->get("page_limit"),
 	      					$this->input->get("page_limit")
 	      			   )
+	    //   "results" => $this->Tender_model->getListLokasiPekerjaan(
+	    //   					$this->input->get("q"),
+	    //   					$this->input->get("id_pengguna"),
+	    //   					$this->input->get("jenis"),
+	    //   					$this->input->get("page") * $this->input->get("page_limit"),
+	    //   					$this->input->get("page_limit")
+	    //   			   )
 	    );
 
 	    $this->output
