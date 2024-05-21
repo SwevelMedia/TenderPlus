@@ -172,6 +172,16 @@ class Tender_model extends CI_Model
 
         return $this->db->query($sql);
     }*/
+    
+    // Get total data leads
+    public function getTotalDataLeads($id_pengguna)
+    {
+        $this->db->select('COUNT(*) as total');
+        $this->db->from('data_leads');
+        $this->db->where('id_pengguna', $id_pengguna);
+        $query = $this->db->get();
+        return $query->row()->total;
+    }
 	
 	public function getJumlahTenderTerbaru($id_pengguna)
 	{
@@ -302,17 +312,15 @@ class Tender_model extends CI_Model
         return $this->db->query($sql);
     }
 
-    public function get_pemenang_terbaru($id_pengguna,$jum_pemenang,$page_number, $page_size){
-        // Hitung limit untuk pagination
-        $limit = $jum_pemenang > 10 ? "LIMIT {$page_number},{$page_size}" : "";
-
-
+    public function get_pemenang_terbaru($id_pengguna, $offset, $limit){
         // Buat kueri dengan pagination
-        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender, pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang');
+        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender,lpse.nama_lpse,jenis_tender.jenis_tender,pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang');
         $this->db->from('data_leads');
         $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
+        $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
+        $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
         $this->db->where('data_leads.id_pengguna', $id_pengguna);
-        
+        $this->db->limit($limit, $offset);
 
         $query = $this->db->get();
         return $query->result_array();

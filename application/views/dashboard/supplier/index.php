@@ -302,6 +302,25 @@
         width: 100%;
         /* Mengisi lebar kontainer */
     }
+    #nav-pemenang{
+        background-color: #FCD9D9;
+        border-top-right-radius: 20px;
+        border-top-left-radius: 20px;
+    }
+    .nav-item {
+        border-top-right-radius: 20px;
+        border-top-left-radius: 20px;
+    }
+    .custom-nav .nav-link {
+        color: black;
+        background-color: #FCD9D9;
+        border-radius: 20px 20px 0 0; /* Menjaga border radius pada tab */
+    }
+
+    .custom-nav .nav-link.active {
+        background-color: #D21B1B !important; /* Warna background ketika aktif */
+        color: white !important; /* Warna teks ketika aktif */
+    }
 
     @media (max-width: 576px) {
         .sec-pemenang-terbaru {
@@ -422,7 +441,7 @@
                                 <div h1 class="card-title wow fadeInUp" data-wow-delay="0.5s">
                                     <h3>Tim Marketing</h3>
                                 </div>
-                                <div style="max-height: 300px; overflow-y: auto;">
+                                <div style="height: 310px;max-height: 310px; overflow-y: auto;">
                                     <table class="table custom-table-container">
                                         <tbody id="tim-marketing">
                                             <!-- <tr>
@@ -642,64 +661,37 @@
 <section>
     <div class="pt-3 pb-3 mt-5 bg-white">
         <div id="sec-pemenang-terbaru" style="display: none; margin-left: 6%; margin-right: 6%;">
-            <!-- <div class="text-center mb-3">
-                <h3 class="tender-title text-center wow fadeInUp d-inline-block px-3 pb-2" data-wow-delay="0.5s">Pemenang Tender</h3>
-            </div> -->
-
-            <!-- <div class="row wow fadeInUp justify-content-center px-1 filter" data-wow-delay="0.5s">
-                <input type="text" class="filter-item" id="keyword" placeholder="Nama Tender atau Nama Pemenang" style="padding: 0 14px;width: 30%;border: none;margin-left: 6px;">
-
-                <select class="my-lg-2 my-1 select2-wilayah" id="wilayah" style="width: 25%;"></select>
-
-                <select class="my-lg-2 my-1 select2-jenis-pengadaan" id="jenis-pengadaan" style="width: 25%;"></select>
-
-                <div class="col-lg filter-item mx-1 my-lg-2 my-1" id="dropdownHPS" style="margin: 8px 12px !important;cursor: pointer;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                    <div class="d-flex px-lg-1 px-2">
-                        <a class="col-lg-11 col-md-11 col-11 float-left text-start text-body">Nilai Penawaran</a>
-                        <a class="col-lg-1 col-md-1 col-1 text-end" style="color: #bf0d0b;"><i class="bi bi-caret-down-fill"></i></a>
-                    </div>
-                </div>
-                <ul class="dropdown-menu overflow-auto dropdownHPS" id="myDropdown3" style="max-height: 250px; width: 750px;" aria-labelledby="dropdownHPS">
-                    <div class="row m-0 formset-hps justify-content-center">
-                        <div class="col-12 text-center" style="border-bottom: 1px solid #ddd;">
-                            <div class="form-check p-0">
-                                <input class="form-check-input" style="float: none;" type="checkbox" id="checkallhps" name="checkallhps" checked>
-                                <label class="form-check-label ps-1" for="checkallhps">Semua</label>
-                                <div class="form-text mt-0 mb-2">Centang untuk menampilkan semua nilai penawaran</div>
-                            </div>
-                        </div>
-                        <div class="col-12 text-center">
-                            <p class="my-3">Silakan atur rentang nilai penawaran pada kolom di bawah ini:</p>
-                        </div>
-                        <div class="col-sm-5 pe-sm-0">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Nilai Awal (Rp)</span>
-                                <input class="form-control" type="text" name="nilai_hps_awal" id="nilai_hps_awal" value="0" disabled>
-                            </div>
-                        </div>
-                        <div class="col-sm-1 text-center py-1 px-0 d-none d-sm-block">-</div>
-                        <div class="col-sm-5 ps-sm-0">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Nilai Akhir (Rp)</span>
-                                <input class="form-control" type="text" name="nilai_hps_akhir" id="nilai_hps_akhir" value="0" disabled>
-                                <div class="invalid-feedback">Nilai penawaran akhir harus lebih besar!</div>
-                            </div>
-                        </div>
-                    </div>
-                </ul>
-
-                <div class="dropdown dropdown-profile dropdown-sorting" style="width: 4%;padding-left: 0;padding-right: 7px;">
-                    <a class="nav-link dropdown-toggle link-danger text-center p-2 rounded-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-filter-circle" style="font-size: 27px;"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end my-2 py-2 rounded-3">
-                        <li class="dropdown-item d-flex text-dropdown" data-sort="1">Nilai Penawaran Terendah</li>
-                        <li class="dropdown-item d-flex text-dropdown" data-sort="2">Nilai Penawaran Tertinggi</li>
-                        <li class="dropdown-item d-flex text-dropdown" data-sort="3">Penetapan Pemenang Terdekat</li>
-                        <li class="dropdown-item d-flex text-dropdown" data-sort="4">Penetapan Pemenang Terlama</li>
-                    </ul>
-                </div>
-            </div> -->
+            <div class="row wow fadeInUp justify-content-center px-1" data-wow-delay="0.5s">
+                <div class="row">
+					<div class="col-12">
+						<div class="pemenang-info">
+							<div id="nav-pemenang" class="nav-main mt-3 custom-nav ">
+								<!-- Tab Nav -->
+								<ul class="nav nav-tab justify-content-center" id="myTab" role="tablist">
+									<li class="nav-item col-6 text-center"><a class="nav-link active " data-toggle="tab" href="#m" role="tab">Pemenang Tender</a></li>
+									<li class="nav-item col-6 text-center"><a class="nav-link" data-toggle="tab" href="#w" role="tab">Tender Anggota INKINDO</a></li>
+								</ul>
+								<!--/ End Tab Nav -->
+							</div>
+							<div class="tab-content" id="myTabContent">
+								<!-- Start Single Tab -->
+								<div class="tab-pane fade show active" id="man" role="tabpanel">
+									<div class="tab-single">
+										
+									</div>
+								</div>
+								<!--/ End Single Tab -->
+								<!-- Start Single Tab -->
+								<div class="tab-pane fade" id="women" role="tabpanel">
+									<div class="tab-single">
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
 
             <div class="row wow fadeInUp mx-0 my-2" id="list-pemenang" data-wow-delay="0.5s"></div>
             <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s"></div>
@@ -1012,7 +1004,7 @@
     $(document).ready(function() {
         $.ajax({
                 // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
-                url : "<?= base_url() ?>Tender/tumbal",
+                url : "<?= base_url() ?>Tender/gatJumLogPemenangTerbaru/"+id_pengguna,
                 type: "GET",
                 dataType: "JSON",
                 success : function(data){
@@ -1055,6 +1047,7 @@
                             }
                         });
                     } else {
+                        $('#sec-pemenang-terbaru').show();
                         $('#list-pemenang').html(`
                             <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
                                 <div class="col-md-2 p-3 text-center text-md-end">
@@ -1073,7 +1066,9 @@
                         $('#pagination-container').hide();
                     }
                 },error: function (jqXHR, textStatus, errorThrown){
-
+                    $('#sec-pemenang-terbaru').show();
+                    $('#list-pemenang').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
+                    console.error(`Error: ${textStatus}, ${errorThrown}`);
                 }
         
         });
@@ -1297,7 +1292,7 @@
                                 <tr>
                                     <td class="th">Nama Pemenang</td>
                                     <td>:</td>
-                                    <td><div class="badge badge-akhirdaftar">` + data[i].nama_pemenang + `</div></td>
+                                    <td><div class="badge badge-akhirdaftar">` + data[i].nama_perusahaan + `</div></td>
                                 </tr>
                             </tbody>
                         </table>
