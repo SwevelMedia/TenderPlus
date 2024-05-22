@@ -350,6 +350,15 @@
     border: 1px solid var(--neutral-100, #F0E2E2);
 
   }
+
+  input[type="date"] {
+    border: none;
+    /* Remove the border */
+    /* Additional styling if needed */
+    outline: none;
+    /* Remove the outline */
+    /* Add any other custom styles */
+  }
 </style>
 
 <style>
@@ -602,6 +611,10 @@
     margin-top: 0;
     /* height: 2rem; */
   }
+
+  .hidden {
+    display: none;
+  }
 </style>
 
 <section class="bg-white pt-5 mt-5">
@@ -788,147 +801,92 @@
       }
     });
 
+    function formatDate(date) {
+      if (!date) return '';
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+
     function setTableLeads(data) {
       var leads = "";
       $.each(data, function(index, value) {
         var rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
-        var hasMultipleContacts = value.jumlah_kontak > 1 ? 'visible' : 'hidden';
         leads +=
           `<tr data-id="` + value.id + `">
-                    <td style="text-align:center">` + rowNumber + `</td>
-                    <td class="perusahaan">` + (value.nama_perusahaan || '') + `</td>
-                    <td>${value.no_telp || ''}<a href="tel:` + value.no_telp + `"><img class="custom-img-table float-right" src="<?= base_url('assets/img/icon_kontak_table.svg') ?>" width="20" alt=""></a></td>
-                    <td>${value.status}</td>
-                    <td>${value.jadwal}</td>
-                    <td>${value.catatan}</td>
-                    <td class="text-center">
-                        <div>
-                            <a class="edit-lead" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
-                            <a><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
-                            <a class="riwayat" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px"></a>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="riwayat-row" data-id="` + value.id + `" style="display:none;">
-                    <td colspan="7" class="riwayat-content"></td>
-                </tr>`;
+          <td style="text-align:center">` + rowNumber + `</td>
+          <td class="perusahaan" >` + (value.nama_perusahaan || '') + `</td>
+          <td class="no_telp" >${value.no_telp || ''}</td>
+          <td class="status" contenteditable="false">${value.status}</td>
+          <td class="jadwal " contenteditable="false">
+                <input type="date" value="${formatDate(value.jadwal)}" disabled />
+            </td>
+          <td class="catatan" contenteditable="false">${value.catatan}</td>
+          <td class="text-center">
+              <a class="edit-lead" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
+              <a class="save-lead hidden" ><img src="<?= base_url('assets/img/icon_check_table.svg') ?>" style="width: 20px"></a>
+              <a class="cancel-lead hidden" ><img src="<?= base_url('assets/img/icon_cancel_table.svg') ?>" style="width: 20px"></a>
+          </td>
+      </tr>`;
       });
 
       $("#data-leads").html(leads);
-      $(document).on('click', '.riwayat', function() {
-        var idLead = $(this).data('id');
-        var $riwayatRow = $('tr.riwayat-row[data-id="' + idLead + '"]');
-        var $riwayatContent = $riwayatRow.find('.riwayat-content');
 
-        if ($riwayatRow.is(':visible')) {
-          $riwayatRow.hide();
-        } else {
-          $.ajax({
-            url: '<?= base_url('api/supplier/getLeadRiwayat') ?>',
-            type: 'GET',
-            headers: {
-              Authorization: `Basic ${basicAuth}`
-            },
-            data: {
-              id_lead: idLead
-            },
-            success: function(response) {
-              let content = `<div class="row table justify-content-center">
-                        <table class="table custom-table-container col-8 align-items-center">
-                            <thead class="thead text-left">
-                                <tr>
-                                    <th width="20%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_filter_table.svg') ?>" width="20" alt=""></a>Status</th>
-                                    <th width="20%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_jadwal.svg') ?>" width="20" alt=""></a>Jadwal</th>
-                                    <th width="40%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_catatan.svg') ?>" width="20" alt=""></a>Catatan</th>
-                                </tr>
-                            </thead>
-                            <tbody>`;
-              $.each(response, function(index, item) {
-                content += `<tr>
-                                        <td>  ${item.status}  </td>
-                                        <td>  ${item.jadwal}  </td>
-                                        <td>  ${item.catatan}  </td>
-                                    </tr>`;
-              });
-              content += '</tbody></table></div>';
-              $riwayatContent.html(content);
-              $riwayatRow.show();
-            },
-            error: function(xhr, status, error) {
-              console.error('Error fetching riwayat:', error);
-            }
-          });
-        }
+      // Event listener for edit icon click
+      $(document).on('click', '.edit-lead', function() {
+        var $row = $(this).closest('tr');
+        $row.find('td[contenteditable="false"]').prop('contenteditable', true); // Enable inline editing
+        $row.find('.jadwal input').prop('disabled', false);
+        $row.find('.save-lead, .cancel-lead').removeClass('hidden');
+        $row.find('jadwal').removeAttr('disabled');
+        $(this).addClass('hidden'); // Hide the edit icon
       });
 
-      // Create edit modal HTML
-      const editModal = `
-        <div class="modal fade" id="editLeadModal" tabindex="-1" role="dialog" aria-labelledby="editLeadModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editLeadModalLabel">Edit Lead</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editLeadForm">
-                            <input type="hidden" id="editLeadId" name="id">
-                            <div class="form-group">
-                                <label for="editStatus">Status</label>
-                                <input type="text" class="form-control" id="editStatus" name="status" value=""required>
-                            </div>
-                            <div class="form-group">
-                                <label for="editJadwal">Jadwal</label>
-                                <input type="date" class="form-control" id="editJadwal" name="jadwal" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="editCatatan">Catatan</label>
-                                <textarea class="form-control" id="editCatatan" name="catatan" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>`;
+      // Event listener for save button click
+      $(document).on('click', '.save-lead', function() {
+        var $row = $(this).closest('tr');
+        var idLead = $row.data('id');
+        var rowData = {
+          // Get the updated values from the table cells
+          status: $row.find('.status').text(),
+          jadwal: $row.find('.jadwal input').val(),
+          catatan: $row.find('.catatan').text()
+        };
 
-      $('body').append(editModal);
-
-      // Handle edit icon click
-      $(document).on('click', '.edit-lead', function() {
-        var idLead = $(this).data('id');
-        // console.log(idLead);
-
-        // Get lead data and populate the modal
+        // Send AJAX request to update the lead data
         $.ajax({
-          url: '<?= base_url('api/supplier/getPlotTimByIdLead') ?>',
-          type: 'GET',
-          headers: {
-            Authorization: `Basic ${basicAuth}`
-          },
-          data: {
-            id_lead: idLead
-          },
-          success: function(data) {
-            $('#editLeadId').val(data.idLead);
-            $('#editStatus').val(data.status);
-            $('#editJadwal').val(data.jadwal);
-            $('#editCatatan').val(data.catatan);
-            $('#editLeadModal').modal('show');
+          url: `<?= base_url() ?>api/supplier/updateDataLeadCRM/${idLead}`,
+          type: 'POST',
+          dataType: 'json', // Ensure the data is being sent in JSON format
+          contentType: 'application/json', // Ensure the data is being sent in JSON format
+          data: JSON.stringify(rowData), // Stringify the data object
+          success: function(response) {
+            console.log(response);
+            console.log('Lead data updated successfully');
+            $row.find('td[contenteditable="true"]').prop('contenteditable', false); // Disable inline editing
+            $row.find('.save-lead, .cancel-lead').addClass('hidden'); // Hide save and cancel buttons
+            $row.find('.edit-lead').removeClass('hidden'); // Show the edit icon
           },
           error: function(xhr, status, error) {
-            console.error('Error fetching lead data:', error);
+            console.error('Error updating lead data:', error);
           }
         });
       });
+
+      // Event listener for cancel button click
+      $(document).on('click', '.cancel-lead', function() {
+        var $row = $(this).closest('tr');
+        $row.find('td[contenteditable="true"]').prop('contenteditable', false); // Disable inline editing
+        $row.find('.save-lead, .cancel-lead').addClass('hidden'); // Hide save and cancel buttons
+        $row.find('.jadwal input').prop('disabled', true);
+        $row.find('.edit-lead').removeClass('hidden'); // Show the edit icon
+      });
+
       return leads;
     }
-
-
-
-    // Handle form submission
 
   });
 </script>

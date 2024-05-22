@@ -30,6 +30,9 @@
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="<?= base_url("assets/js/admin/datatables.js") ?>"></script>
 <script src="<?= base_url("assets/js/admin/tables.js") ?>"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/editor/1.9.2/js/dataTables.editor.js"></script>
 </body>
 
 </html>

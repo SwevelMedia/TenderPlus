@@ -548,14 +548,9 @@ class ApiSupplier extends RestController
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
     }
-    public function editDataLeadCRM_post($id)
+    public function updateDataLeadCRM_post($id)
     {
-        // $this->load->helper('url');
-        $data = [
-            'jadwal' => $this->post('jadwal'),
-            'catatan' => $this->post('catatan'),
-            'status' => $this->post('status'),
-        ];
+        $data = json_decode($this->input->raw_input_stream, true); // Decode the JSON input
 
         if ($id === null) {
             $this->response([

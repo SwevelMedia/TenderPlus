@@ -264,9 +264,34 @@ class Supplier_api extends CI_Model
     }
     public function updateDataLeadCRM($data, $id)
     {
-        $this->db->update('plot_tim', $data, ['id_lead' => $id]);
-        return $this->db->affected_rows();
+        $valid_fields = ['status', 'jadwal', 'catatan'];
+        $update_data = array();
+
+        foreach ($data as $key => $value) {
+            if (in_array($key, $valid_fields)) {
+                if ($key == 'jadwal') {
+                    // Ensure jadwal is a valid date format (Y-m-d)
+                    $update_data[$key] = date('Y-m-d', strtotime($value));
+                } else {
+                    $update_data[$key] = $value;
+                }
+            }
+        }
+
+        if (empty($update_data)) {
+            return false;
+        }
+
+        $this->db->where('id_lead', $id);
+        $result = $this->db->update('plot_tim', $update_data);
+
+        // Log the SQL query and result
+        log_message('debug', 'Update SQL: ' . $this->db->last_query());
+        log_message('debug', 'Update result: ' . json_encode($result));
+
+        return $result;
     }
+
 
     public function getCRMLeads($id_pengguna)
     {
