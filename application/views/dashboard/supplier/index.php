@@ -302,13 +302,32 @@
         width: 100%;
         /* Mengisi lebar kontainer */
     }
-
+    
     @media (max-width: 576px) {
         .sec-pemenang-terbaru {
             margin-left: auto;
             margin-right: auto;
         }
+        
+    }
+    #nav-pemenang{
+        background-color: #FCD9D9;
+        border-top-right-radius: 20px;
+        border-top-left-radius: 20px;
+    }
+    .nav-item {
+        border-top-right-radius: 20px;
+        border-top-left-radius: 20px;
+    }
+    .custom-nav .nav-link {
+        color: black;
+        background-color: #FCD9D9;
+        border-radius: 20px 20px 0 0; /* Menjaga border radius pada tab */
+    }
 
+    .custom-nav .nav-link.active {
+        background-color: #D21B1B !important; /* Warna background ketika aktif */
+        color: white !important; /* Warna teks ketika aktif */
     }
 </style>
 
@@ -422,7 +441,7 @@
                                 <div h1 class="card-title wow fadeInUp" data-wow-delay="0.5s">
                                     <h3>Tim Marketing</h3>
                                 </div>
-                                <div style="max-height: 300px; overflow-y: auto;">
+                                <div style="height: 310px;max-height: 310px; overflow-y: auto;">
                                     <table class="table custom-table-container">
                                         <tbody id="tim-marketing">
                                             <!-- <tr>
@@ -504,6 +523,11 @@
                             <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:10px">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
                                 <select class="select2-jenis-pengadaan" style="border:none;">
+                                        <!-- <option value="">Semua Pengadaan</option>
+
+                                    <?php foreach ($jenisTender as $jenisTender) : ?>
+                                        <option value="<?= $jenisTender['id_jenis'] ?>"><?php echo $jenisTender['jenis_tender'] ?></option>
+                                    <?php endforeach; ?> -->
                                 </select>
                             </div>
                             <!-- Select Trigger Filter Nilai Penawaran -->
@@ -642,64 +666,37 @@
 <section>
     <div class="pt-3 pb-3 mt-5 bg-white">
         <div id="sec-pemenang-terbaru" style="display: none; margin-left: 6%; margin-right: 6%;">
-            <!-- <div class="text-center mb-3">
-                <h3 class="tender-title text-center wow fadeInUp d-inline-block px-3 pb-2" data-wow-delay="0.5s">Pemenang Tender</h3>
-            </div> -->
-
-            <!-- <div class="row wow fadeInUp justify-content-center px-1 filter" data-wow-delay="0.5s">
-                <input type="text" class="filter-item" id="keyword" placeholder="Nama Tender atau Nama Pemenang" style="padding: 0 14px;width: 30%;border: none;margin-left: 6px;">
-
-                <select class="my-lg-2 my-1 select2-wilayah" id="wilayah" style="width: 25%;"></select>
-
-                <select class="my-lg-2 my-1 select2-jenis-pengadaan" id="jenis-pengadaan" style="width: 25%;"></select>
-
-                <div class="col-lg filter-item mx-1 my-lg-2 my-1" id="dropdownHPS" style="margin: 8px 12px !important;cursor: pointer;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                    <div class="d-flex px-lg-1 px-2">
-                        <a class="col-lg-11 col-md-11 col-11 float-left text-start text-body">Nilai Penawaran</a>
-                        <a class="col-lg-1 col-md-1 col-1 text-end" style="color: #bf0d0b;"><i class="bi bi-caret-down-fill"></i></a>
-                    </div>
-                </div>
-                <ul class="dropdown-menu overflow-auto dropdownHPS" id="myDropdown3" style="max-height: 250px; width: 750px;" aria-labelledby="dropdownHPS">
-                    <div class="row m-0 formset-hps justify-content-center">
-                        <div class="col-12 text-center" style="border-bottom: 1px solid #ddd;">
-                            <div class="form-check p-0">
-                                <input class="form-check-input" style="float: none;" type="checkbox" id="checkallhps" name="checkallhps" checked>
-                                <label class="form-check-label ps-1" for="checkallhps">Semua</label>
-                                <div class="form-text mt-0 mb-2">Centang untuk menampilkan semua nilai penawaran</div>
-                            </div>
-                        </div>
-                        <div class="col-12 text-center">
-                            <p class="my-3">Silakan atur rentang nilai penawaran pada kolom di bawah ini:</p>
-                        </div>
-                        <div class="col-sm-5 pe-sm-0">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Nilai Awal (Rp)</span>
-                                <input class="form-control" type="text" name="nilai_hps_awal" id="nilai_hps_awal" value="0" disabled>
-                            </div>
-                        </div>
-                        <div class="col-sm-1 text-center py-1 px-0 d-none d-sm-block">-</div>
-                        <div class="col-sm-5 ps-sm-0">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Nilai Akhir (Rp)</span>
-                                <input class="form-control" type="text" name="nilai_hps_akhir" id="nilai_hps_akhir" value="0" disabled>
-                                <div class="invalid-feedback">Nilai penawaran akhir harus lebih besar!</div>
-                            </div>
-                        </div>
-                    </div>
-                </ul>
-
-                <div class="dropdown dropdown-profile dropdown-sorting" style="width: 4%;padding-left: 0;padding-right: 7px;">
-                    <a class="nav-link dropdown-toggle link-danger text-center p-2 rounded-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-filter-circle" style="font-size: 27px;"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end my-2 py-2 rounded-3">
-                        <li class="dropdown-item d-flex text-dropdown" data-sort="1">Nilai Penawaran Terendah</li>
-                        <li class="dropdown-item d-flex text-dropdown" data-sort="2">Nilai Penawaran Tertinggi</li>
-                        <li class="dropdown-item d-flex text-dropdown" data-sort="3">Penetapan Pemenang Terdekat</li>
-                        <li class="dropdown-item d-flex text-dropdown" data-sort="4">Penetapan Pemenang Terlama</li>
-                    </ul>
-                </div>
-            </div> -->
+            <div class="row wow fadeInUp justify-content-center px-1" data-wow-delay="0.5s">
+                <div class="row">
+					<div class="col-12">
+						<div class="pemenang-info">
+							<div id="nav-pemenang" class="nav-main mt-3 custom-nav ">
+								<!-- Tab Nav -->
+								<ul class="nav nav-tab justify-content-center" id="myTab" role="tablist">
+									<li class="nav-item col-6 text-center"><a class="nav-link active " data-toggle="tab" href="#m" role="tab">Pemenang Tender</a></li>
+									<li class="nav-item col-6 text-center"><a class="nav-link" data-toggle="tab" href="#w" role="tab">Tender Anggota INKINDO</a></li>
+								</ul>
+								<!--/ End Tab Nav -->
+							</div>
+							<div class="tab-content" id="myTabContent">
+								<!-- Start Single Tab -->
+								<div class="tab-pane fade show active" id="man" role="tabpanel">
+									<div class="tab-single">
+										
+									</div>
+								</div>
+								<!--/ End Single Tab -->
+								<!-- Start Single Tab -->
+								<div class="tab-pane fade" id="women" role="tabpanel">
+									<div class="tab-single">
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
 
             <div class="row wow fadeInUp mx-0 my-2" id="list-pemenang" data-wow-delay="0.5s"></div>
             <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s"></div>
@@ -996,6 +993,59 @@
         $("#ditolak .crmstats-summary-number").text(data['ditolak']);
     }
 
+    //=========== FILTER PEMENANG TENDER ==================
+    $('#keyword').on('keyup', function() {
+        clearTimeout(timer);
+
+        timer = setTimeout(function() {
+            keyword = $('#keyword').val();
+            filterTender();
+            // console.log(keyword);
+        }, 1000);
+    });
+
+    $('.dropdown-sorting .dropdown-item').on('click', function() {
+        let sort = $(this).data('sort');
+
+        // filterTender(sort);
+    });
+
+    $('#checkallhps').on('click', function() {
+        let allhps = this.checked;
+        $('#nilai_hps_awal, #nilai_hps_akhir').prop('disabled', allhps);
+
+        if (allhps) hps_awal = hps_akhir = 0;
+        else {
+            $('#nilai_hps_awal').focus();
+            hps_awal = $('#nilai_hps_awal').val();
+            hps_akhir = $('#nilai_hps_akhir').val();
+        }
+        // console.log(hps_awal,"+",hps_akhir)
+        filterTender();
+    });
+
+    $('#nilai_hps_awal, #nilai_hps_akhir').inputmask('decimal', {
+        'alias': 'numeric',
+        'groupSeparator': '.',
+        'autoGroup': true,
+        'digits': 0,
+        'digitsOptional': false,
+        'allowMinus': false,
+        'placeholder': '0',
+        'rightAlign': false,
+        'autoUnmask': true
+    }).on('keyup', function() {
+        hps_awal = $('#nilai_hps_awal').val();
+        hps_akhir = $('#nilai_hps_akhir').val();
+
+        if (parseInt(hps_akhir) < parseInt(hps_awal)) $('#nilai_hps_akhir').addClass('is-invalid');
+        else {
+            $('#nilai_hps_akhir').removeClass('is-invalid');
+            filterTender();
+            // console.log(hps_awal,"+",hps_akhir)
+        }
+    });
+
 
 </script>
 
@@ -1012,7 +1062,7 @@
     $(document).ready(function() {
         $.ajax({
                 // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
-                url : "<?= base_url() ?>Tender/tumbal",
+                url : "<?= base_url() ?>Tender/gatJumLogPemenangTerbaru/"+id_pengguna,
                 type: "GET",
                 dataType: "JSON",
                 success : function(data){
@@ -1055,6 +1105,7 @@
                             }
                         });
                     } else {
+                        $('#sec-pemenang-terbaru').show();
                         $('#list-pemenang').html(`
                             <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
                                 <div class="col-md-2 p-3 text-center text-md-end">
@@ -1073,111 +1124,12 @@
                         $('#pagination-container').hide();
                     }
                 },error: function (jqXHR, textStatus, errorThrown){
-
+                    $('#sec-pemenang-terbaru').show();
+                    $('#list-pemenang').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
+                    console.error(`Error: ${textStatus}, ${errorThrown}`);
                 }
         
         });
-
-        // $.ajax({
-        //     url: "<?= base_url() ?>api/supplier/jumlah-pemenang",
-        //     type: "GET",
-        //     dataType: "JSON",
-        //     success: function(data) {
-        //         $('#total-today').html(data.total_today);
-        //         $('#total-month').html(data.total_month);
-        //         $('#total-year').html(data.total_year);
-        //         // console.log(data.total_today);
-        //     },
-        //     error: function(jqXHR, textStatus, errorThrown) {}
-        // });
-
-        // $.ajax({
-        //     url: "<?= base_url() ?>api/getPreferensiPengguna/" + id_pengguna,
-        //     type: "GET",
-        //     dataType: "JSON",
-        //     success: function(data) {
-        //         if (data != null) {
-        //             $('#sec-set-preferensi').hide();
-
-        //             setTimeout(function() {
-        //                 let status = $('#status_user').val();
-
-        //                 if (status == '0') {
-        //                     $('#sec-upgrade-paket').show();
-        //                     $('#sec-pemenang-terbaru').hide();
-        //                 } else {
-        //                     $('#sec-upgrade-paket').hide();
-        //                     $('#sec-pemenang-terbaru').show();
-
-        //                     filterTender();
-
-        //                     /*$.ajax({
-        //                         url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
-        //                         type: "GET",
-        //             			dataType: "JSON",
-        //                         success : function(data){
-        //                             jum_pemenang = data.jumlah;
-                                    
-        //                             if (jum_pemenang > 0) {
-        //                                 $('#pagination-container').pagination({
-        //                                     dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna/"+id_pengguna+"/"+jum_pemenang,
-        //                                     locator: '',
-        //                                     totalNumber: jum_pemenang,
-        //                                     pageSize: 10,
-        //                                     autoHidePrevious: true,
-        //                                     autoHideNext: true,
-        //                                     showNavigator: true,
-        //                                     formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
-        //                                     position: 'bottom',
-        //                                     className: 'paginationjs-theme-red paginationjs-big',
-        //                                     ajax: {
-        //                                         beforeSend: function(xhr, settings) {
-        //                                             const url = settings.url
-        //                                             const params = new URLSearchParams(url)
-        //                                             let currentPageNum = params.get('pageNumber')
-        //                                             currentPageNum = parseInt(currentPageNum)
-        //                                             if (currentPageNum >= 2 && id_pengguna == 0) {
-        //                                                 window.location.href = `${base_url}login`
-        //                                                 return false
-        //                                             }
-                        
-        //                                             $('#list-pemenang').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
-        //                                         }
-        //                                     },
-        //                                     callback: function(data, pagination) {
-        //                                         if (data != '') {
-        //                                             let html = template(data);
-        //                                             $('#list-pemenang').html(html);
-        //                                         }
-        //                                     }
-        //                                 });
-        //                             } else {
-        //                                 $('#list-pemenang').html(`
-        //                                     <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
-        //                                         <div class="col-md-2 p-3 text-center text-md-end">
-        //                                             <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
-        //                                         </div>
-        //                                         <div class="col-md-8 p-3 text-center text-md-start">
-        //                                             <h4 class="mb-2">Pemenang tender kosong!</h4>
-        //                                             <p class="m-0">Belum ada pemenang tender sesuai preferensi yang Anda tentukan.<br>Silakan bisa coba atur ulang preferensi Anda menggunakan kata kunci lain untuk mendapatkan hasil lebih baik.</p>
-        //                                         </div>
-        //                                         <div class="col-md-2 p-3 text-center">
-        //                                             <a href="<?= base_url() ?>preferensi" class="btn btn-danger m-1">Pengaturan</a>
-        //                                         </div>
-        //                                     </div>
-        //                                 `);
-                                        
-        //                                 $('#pagination-container').hide();
-        //                             }
-        //                         },
-        //                         error: function (jqXHR, textStatus, errorThrown){}
-        //                     });*/
-        //                 }
-        //             }, 1000);
-        //         } else $('#sec-set-preferensi').show();
-        //     },
-        //     error: function(jqXHR, textStatus, errorThrown) {}
-        // });
     });
 
     function filterTender(sort = '3') {
@@ -1192,20 +1144,25 @@
             'sort': sort
         };
 
+        // console.log("param :",params);
+        // return
+
         $.ajax({
             // url: "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna1",
-            url: "<?= base_url() ?>Tender/tumbal",
+            url: "<?= base_url() ?>Tender/getPemenangFillter/",
             type: "POST",
             dataType: "JSON",
             data: params,
             success: function(data) {
-                jum_pemenang = data.jumlah;
+                jum_filter = data;
+                // console.log(data)
+                // return
 
-                if (jum_pemenang > 0) {
+                if (jum_filter > 0) {
                     $('#pagination-container').pagination({
-                        dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna1",
+                        dataSource: "<?= base_url() ?>Tender/getHasilFilterPemenangTerbaru/"+id_pengguna,
                         locator: '',
-                        totalNumber: jum_pemenang,
+                        totalNumber: jum_filter,
                         pageSize: 10,
                         autoHidePrevious: true,
                         autoHideNext: true,
@@ -1233,6 +1190,8 @@
                             if (data != '') {
                                 let html = template(data);
                                 $('#list-pemenang').html(html);
+
+                                console.log("hasil filter: ",data);
                             }
                         }
                     });
@@ -1297,7 +1256,7 @@
                                 <tr>
                                     <td class="th">Nama Pemenang</td>
                                     <td>:</td>
-                                    <td><div class="badge badge-akhirdaftar">` + data[i].nama_pemenang + `</div></td>
+                                    <td><div class="badge badge-akhirdaftar">` + data[i].nama_perusahaan + `</div></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1314,55 +1273,55 @@
         return pemenang;
     }
 
-    $('.dropdown-sorting .dropdown-item').on('click', function() {
-        let sort = $(this).data('sort');
+    // $('.dropdown-sorting .dropdown-item').on('click', function() {
+    //     let sort = $(this).data('sort');
 
-        filterTender(sort);
-    });
+    //     filterTender(sort);
+    // });
 
-    $('#checkallhps').on('click', function() {
-        let allhps = this.checked;
-        $('#nilai_hps_awal, #nilai_hps_akhir').prop('disabled', allhps);
+    // $('#checkallhps').on('click', function() {
+    //     let allhps = this.checked;
+    //     $('#nilai_hps_awal, #nilai_hps_akhir').prop('disabled', allhps);
 
-        if (allhps) hps_awal = hps_akhir = 0;
-        else {
-            $('#nilai_hps_awal').focus();
-            hps_awal = $('#nilai_hps_awal').val();
-            hps_akhir = $('#nilai_hps_akhir').val();
-        }
+    //     if (allhps) hps_awal = hps_akhir = 0;
+    //     else {
+    //         $('#nilai_hps_awal').focus();
+    //         hps_awal = $('#nilai_hps_awal').val();
+    //         hps_akhir = $('#nilai_hps_akhir').val();
+    //     }
 
-        filterTender();
-    });
+    //     filterTender();
+    // });
 
-    $('#nilai_hps_awal, #nilai_hps_akhir').inputmask('decimal', {
-        'alias': 'numeric',
-        'groupSeparator': '.',
-        'autoGroup': true,
-        'digits': 0,
-        'digitsOptional': false,
-        'allowMinus': false,
-        'placeholder': '0',
-        'rightAlign': false,
-        'autoUnmask': true
-    }).on('keyup', function() {
-        hps_awal = $('#nilai_hps_awal').val();
-        hps_akhir = $('#nilai_hps_akhir').val();
+    // $('#nilai_hps_awal, #nilai_hps_akhir').inputmask('decimal', {
+    //     'alias': 'numeric',
+    //     'groupSeparator': '.',
+    //     'autoGroup': true,
+    //     'digits': 0,
+    //     'digitsOptional': false,
+    //     'allowMinus': false,
+    //     'placeholder': '0',
+    //     'rightAlign': false,
+    //     'autoUnmask': true
+    // }).on('keyup', function() {
+    //     hps_awal = $('#nilai_hps_awal').val();
+    //     hps_akhir = $('#nilai_hps_akhir').val();
 
-        if (parseInt(hps_akhir) < parseInt(hps_awal)) $('#nilai_hps_akhir').addClass('is-invalid');
-        else {
-            $('#nilai_hps_akhir').removeClass('is-invalid');
-            filterTender();
-        }
-    });
+    //     if (parseInt(hps_akhir) < parseInt(hps_awal)) $('#nilai_hps_akhir').addClass('is-invalid');
+    //     else {
+    //         $('#nilai_hps_akhir').removeClass('is-invalid');
+    //         filterTender();
+    //     }
+    // });
 
-    $('#keyword').on('keyup', function() {
-        clearTimeout(timer);
+    // $('#keyword').on('keyup', function() {
+    //     clearTimeout(timer);
 
-        timer = setTimeout(function() {
-            keyword = $('#keyword').val();
-            filterTender();
-        }, 1000);
-    });
+    //     timer = setTimeout(function() {
+    //         keyword = $('#keyword').val();
+    //         filterTender();
+    //     }, 1000);
+    // });
 
     function formatData(data) {
         if (!data.id) return data.text;

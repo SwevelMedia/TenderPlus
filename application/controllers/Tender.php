@@ -1065,6 +1065,35 @@ class Tender extends CI_Controller
         exit;
     }
     
+    public function getPemenangFillter(){
+
+        parse_str(file_get_contents('php://input'), $data);
+        
+        $response = $this->Tender_model->getPemenangFillter($data);
+
+        echo json_encode($response);
+    }
+
+    public function getHasilFilterPemenangTerbaru($id_pengguna){
+
+        parse_str(file_get_contents('php://input'), $data);
+
+        $page_size = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 10; // Default page size 10
+        $page_number = isset($_GET['pageNumber']) ? (int)$_GET['pageNumber'] : 1; // Default page number 1
+        $offset = ($page_number - 1) * $page_size;
+
+        $response = $this->Tender_model->getHasilFilterPemenangTerbaru($id_pengguna,$offset, $page_size,$data);
+        
+        
+        // $response = [
+        //     'page_size'=>$page_size,
+        //     'page_number'=>$page_number,
+        //     'id_pengguna'=>$id_pengguna
+        // ];
+
+        echo json_encode($response);
+    }
+
     public function getKatalogPemenangTerbaruByPengguna1()
     {
         parse_str(file_get_contents('php://input'), $data);
@@ -1079,6 +1108,16 @@ class Tender extends CI_Controller
         exit;
     }
 
+    public function gatJumLogPemenangTerbaru($id_pengguna){
+        // $data = $this->input->post('id_pengguna');
+        $data = $this->Tender_model->getTotalDataLeads($id_pengguna);
+        $response = [
+            'jumlah'=>$data,
+        ];
+        echo json_encode($response);
+
+    }
+
     public function tumbal(){
         // $data = $this->input->post('id_pengguna');
         // $response = $this->Tender_model->getJumKatalogPemenangTerbaruByPengguna($data)->result();
@@ -1090,11 +1129,20 @@ class Tender extends CI_Controller
 
     }
 
+    public function tumbal2(){
+        $response = $this->Tender_model->get_pemenang_terbaru('350',73,10, 0);
+
+        echo json_encode($response);
+    }
+
     public function get_pemenang_terbaru($id_pengguna,$jum_pemenang){
 
-        $page_size = $_GET['pageSize'];
-        $page_number = ($_GET['pageNumber'] - 1) * $page_size;
-        $response = $this->Tender_model->get_pemenang_terbaru($id_pengguna,$jum_pemenang,$page_number, $page_size);
+        // Ambil parameter pagination dari URL
+        $page_size = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 10; // Default page size 10
+        $page_number = isset($_GET['pageNumber']) ? (int)$_GET['pageNumber'] : 1; // Default page number 1
+        $offset = ($page_number - 1) * $page_size;
+
+        $response = $this->Tender_model->get_pemenang_terbaru($id_pengguna,$offset, $page_size);
         // $response = [
         //     'page_size'=>$page_size,
         //     'jum_pemenang'=>$jum_pemenang,
@@ -1181,13 +1229,20 @@ class Tender extends CI_Controller
     public function getListLokasiPekerjaan(){
 	    $response = array(
 	      "total_count" => $this->Tender_model->getJumlahListLokasiPekerjaan($this->input->get("q"), $this->input->get("id_pengguna"), $this->input->get("jenis")),
-	      "results" => $this->Tender_model->getListLokasiPekerjaan(
+	      "results" => $this->Tender_model->getListLokasiPekerjaan2(
 	      					$this->input->get("q"),
 	      					$this->input->get("id_pengguna"),
-	      					$this->input->get("jenis"),
+	      					// $this->input->get("jenis"),
 	      					$this->input->get("page") * $this->input->get("page_limit"),
 	      					$this->input->get("page_limit")
 	      			   )
+	    //   "results" => $this->Tender_model->getListLokasiPekerjaan(
+	    //   					$this->input->get("q"),
+	    //   					$this->input->get("id_pengguna"),
+	    //   					$this->input->get("jenis"),
+	    //   					$this->input->get("page") * $this->input->get("page_limit"),
+	    //   					$this->input->get("page_limit")
+	    //   			   )
 	    );
 
 	    $this->output
