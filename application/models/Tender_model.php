@@ -342,7 +342,7 @@ class Tender_model extends CI_Model
         }
 
         if (!empty($data['jenis_pengadaan'])) {
-            $this->db->where('jenis_tender.jenis_tender', $data['jenis_pengadaan']);
+            $this->db->where('pemenang.jenis_tender', $data['jenis_pengadaan']);
         }
 
         if (!empty($data['nilai_hps_awal'])) {
@@ -353,13 +353,12 @@ class Tender_model extends CI_Model
             $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
         }
 
-        if (!empty($data['prov'])) {
-            $this->db->where('pemenang.prov', $data['prov']);
+       if (!empty($data['lokasi'])) {
+            $this->db->like('pemenang.lokasi_pekerjaan', $data['lokasi']);
         }
 
-        if (!empty($data['kab'])) {
-            $this->db->where('pemenang.kab', $data['kab']);
-        }
+
+
 
         // Sorting criteria
         switch ($data['sort']) {
@@ -406,7 +405,7 @@ class Tender_model extends CI_Model
         }
 
         if (!empty($data['jenis_pengadaan'])) {
-            $this->db->where('jenis_tender.jenis_tender', $data['jenis_pengadaan']);
+            $this->db->where('pemenang.jenis_tender', $data['jenis_pengadaan']);
         }
 
         if (!empty($data['nilai_hps_awal'])) {
@@ -416,13 +415,8 @@ class Tender_model extends CI_Model
         if (!empty($data['nilai_hps_akhir'])) {
             $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
         }
-
-        if (!empty($data['prov'])) {
-            $this->db->where('pemenang.prov', $data['prov']);
-        }
-
-        if (!empty($data['kab'])) {
-            $this->db->where('pemenang.kab', $data['kab']);
+        if (!empty($data['lokasi'])) {
+            $this->db->like('pemenang.lokasi_pekerjaan', $data['lokasi']);
         }
 
         // Sorting criteria
@@ -665,8 +659,27 @@ class Tender_model extends CI_Model
         return $this->db->query($sql);
     }*/
 
-    public function getListLokasiPekerjaan2(){
-
+    public function getListLokasiPekerjaan2($id_pengguna,$lokasi_pekerjaan){
+        $this->db->select('pemenang.lokasi_pekerjaan');
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
+        $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
+        $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+        $this->db->like('pemenang.lokasi_pekerjaan', $lokasi_pekerjaan);
+        
+        $query = $this->db->get();
+        return $query->result();
+    }
+    public function getJumlahListLokasiPekerjaan2($lokasi_pekerjaan,$id_pengguna){
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
+        $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
+        $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+        $this->db->like('pemenang.lokasi_pekerjaan', $lokasi_pekerjaan);
+        
+        return $this->db->count_all_results();
     }
     
     public function getListLokasiPekerjaan($keyword, $id_pengguna, $jenis, $page, $limit){

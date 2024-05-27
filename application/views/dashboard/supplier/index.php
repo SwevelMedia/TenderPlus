@@ -517,17 +517,18 @@
                             </div>
                             <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:10px">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
-                                <select class="select2-wilayah" id="wilayah" style="border:none;">
+                                <!-- <select class="select2-wilayah" id="wilayah" style="border:none;"> -->
+                                <input id="wilayah" type="text" class="form-input-custom" style="border:none;" placeholder="Lokasi Pekerjaan">
+
                                 </select>
                             </div>
                             <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:10px">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
-                                <select class="select2-jenis-pengadaan" style="border:none;">
-                                        <!-- <option value="">Semua Pengadaan</option>
-
-                                    <?php foreach ($jenisTender as $jenisTender) : ?>
-                                        <option value="<?= $jenisTender['id_jenis'] ?>"><?php echo $jenisTender['jenis_tender'] ?></option>
-                                    <?php endforeach; ?> -->
+                                <select class="select2-jenis-pengadaan"  style="border:none;">
+                                <option value="">Semua Pengadaan</option>
+                                <?php foreach ($jenisTender as $jenisTender) : ?>
+                                <option value="<?= $jenisTender['id_jenis'] ?>"><?php echo $jenisTender['jenis_tender'] ?></option>
+                                <?php endforeach; ?>
                                 </select>
                             </div>
                             <!-- Select Trigger Filter Nilai Penawaran -->
@@ -712,6 +713,8 @@
     // Inisialisasi Select2 pada dropdown select
     $(document).ready(function() {
         $('.form-select2').select2();
+        // $('#select-jenis-pengadaan2').select2();
+
         $('#filter-pemenang').hide();
 
         Grafikpemenang(2024);
@@ -1004,6 +1007,16 @@
         }, 1000);
     });
 
+    $('#wilayah').on('keyup', function() {
+        clearTimeout(timer);
+
+        timer = setTimeout(function() {
+            lokasi = $('#wilayah').val();
+            filterTender();
+            // console.log(wilayah);
+        }, 1000);
+    });
+
     $('.dropdown-sorting .dropdown-item').on('click', function() {
         let sort = $(this).data('sort');
 
@@ -1055,11 +1068,13 @@
         jenis_pengadaan = '',
         hps_awal = '',
         hps_akhir = '',
-        prov = '',
-        kab = '',
+        // prov = '',
+        // kab = '',
+        lokasi = '',
         jum_pemenang, timer;
 
     $(document).ready(function() {
+        
         $.ajax({
                 // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
                 url : "<?= base_url() ?>Tender/gatJumLogPemenangTerbaru/"+id_pengguna,
@@ -1139,8 +1154,9 @@
             'jenis_pengadaan': jenis_pengadaan,
             'nilai_hps_awal': hps_awal,
             'nilai_hps_akhir': hps_akhir,
-            'prov': prov,
-            'kab': kab,
+            // 'prov': prov,
+            // 'kab': kab,
+            'lokasi': lokasi,
             'sort': sort
         };
 
@@ -1413,7 +1429,7 @@
             return markup;
         },
         ajax: {
-            url: "<?= base_url('api/getListJenisPengadaan') ?>",
+            url: "<?= base_url('tender/getJenispengadaan') ?>",
             dataType: 'json',
             delay: 250,
             data: function(params) {
@@ -1438,6 +1454,7 @@
         }
     }).on('change', function() {
         jenis_pengadaan = $(this).val();
+        console.log('jenis pengadaan :',jenis_pengadaan)
         filterTender();
     });
 </script>

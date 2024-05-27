@@ -28,12 +28,12 @@ class DashboardUserSupplier extends CI_Controller
 
     public function index()
     {
-        // $jenisTender = $this->Tender_model->getAllJenisTender();
+        $jenisTender = $this->Tender_model->getAllJenisTender();
 
         // echo json_encode($jenisTender);
         $data = [
             'title' => 'Dashboard',
-            // 'jenisTender'=>$jenisTender,
+            'jenisTender'=>$jenisTender,
 
         ];
 

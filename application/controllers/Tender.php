@@ -1078,6 +1078,15 @@ class Tender extends CI_Controller
 
         parse_str(file_get_contents('php://input'), $data);
 
+        // $data = [
+        //     'keyword' => '',
+        //     'jenis_pengadaan' => '',
+        //     'nilai_hps_awal' => '',
+        //     'nilai_hps_akhir' => '',
+        //     'lokasi' => '',
+        //     'sort'=>3
+        // ];
+
         $page_size = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 10; // Default page size 10
         $page_number = isset($_GET['pageNumber']) ? (int)$_GET['pageNumber'] : 1; // Default page number 1
         $offset = ($page_number - 1) * $page_size;
@@ -1134,6 +1143,33 @@ class Tender extends CI_Controller
 
         echo json_encode($response);
     }
+
+    public function getJenispengadaan() {
+        // Ambil data jenis pengadaan dari model
+        $jenisPengadaan = $this->Tender_model->getAllJenisTender();
+
+        // Bentuk ulang data menjadi format yang diharapkan oleh Select2
+        $results = array();
+        foreach ($jenisPengadaan as $jenis) {
+            $results[] = array(
+                "id" => $jenis['id_jenis'], // Sesuaikan dengan kolom id dari database
+                "text" => $jenis['jenis_tender'] // Sesuaikan dengan kolom nama jenis dari database
+            );
+        }
+
+        // Buat respons JSON dengan data yang telah disiapkan
+        $data = array(
+            "results" => $results,
+            "pagination" => array(
+                "more" => true
+            )
+        );
+
+        // Keluarkan respons JSON
+        echo json_encode($data);
+    }
+
+
 
     public function get_pemenang_terbaru($id_pengguna,$jum_pemenang){
 
@@ -1227,15 +1263,9 @@ class Tender extends CI_Controller
     }
     
     public function getListLokasiPekerjaan(){
-	    $response = array(
-	      "total_count" => $this->Tender_model->getJumlahListLokasiPekerjaan($this->input->get("q"), $this->input->get("id_pengguna"), $this->input->get("jenis")),
-	      "results" => $this->Tender_model->getListLokasiPekerjaan2(
-	      					$this->input->get("q"),
-	      					$this->input->get("id_pengguna"),
-	      					// $this->input->get("jenis"),
-	      					$this->input->get("page") * $this->input->get("page_limit"),
-	      					$this->input->get("page_limit")
-	      			   )
+	    // $response = array(
+	    //   "total_count" => $this->Tender_model->getJumlahListLokasiPekerjaan($this->input->get("q"), $this->input->get("id_pengguna"), $this->input->get("jenis")),
+	     
 	    //   "results" => $this->Tender_model->getListLokasiPekerjaan(
 	    //   					$this->input->get("q"),
 	    //   					$this->input->get("id_pengguna"),
@@ -1243,7 +1273,14 @@ class Tender extends CI_Controller
 	    //   					$this->input->get("page") * $this->input->get("page_limit"),
 	    //   					$this->input->get("page_limit")
 	    //   			   )
-	    );
+	    // );
+        $response = array(
+	      "total_count" => $this->Tender_model->getJumlahListLokasiPekerjaan2($this->input->get("q"), $this->input->get("id_pengguna")),
+	      "results" => $this->Tender_model->getListLokasiPekerjaan2(
+                            $this->input->get("id_pengguna"),
+	      					$this->input->get("q"),
+          )
+        );
 
 	    $this->output
 	      	 ->set_status_header(200)

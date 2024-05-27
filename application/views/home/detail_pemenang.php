@@ -99,7 +99,10 @@
 								</div>
 								<div class="col-10 ps-0">
 									<span class="col-rincian fw-semibold d-block">Nama Pemenang</span>
-                                    <span><?= $tender->nama_pemenang ?></span>
+                                    <span>
+										<?= $tender->nama_pemenang ?>
+										<a href="#" class="btn btn-sm ms-2" style="margin-left:9px;background-color: #dc3545; color:white">Lihat Profil</a>
+									</span>
                                     <div>(<?= $tender->npwp ?>)</div>
 								</div>
 							</div>
