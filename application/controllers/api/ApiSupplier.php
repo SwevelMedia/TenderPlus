@@ -471,7 +471,10 @@ class ApiSupplier extends RestController
         $page_size = $_GET['pageSize'];
         $page_number = ($_GET['pageNumber'] - 1) * $page_size;
         $response = $this->Supplier_api->getDataLeadCRM($id_pengguna, $page_size, $page_number)->result();
-
+        // foreach ($response as &$lead) {
+        //     // Assuming 'jadwal' is the key for the date field in your data
+        //     $lead->jadwal = date('Y-m-d H:i:s', strtotime($this->input->post('jadwal')));
+        // }
         $this->output
             ->set_status_header(200)
             ->set_content_type('application/json')

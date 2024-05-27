@@ -302,32 +302,38 @@
         width: 100%;
         /* Mengisi lebar kontainer */
     }
-    
+
     @media (max-width: 576px) {
         .sec-pemenang-terbaru {
             margin-left: auto;
             margin-right: auto;
         }
-        
+
     }
-    #nav-pemenang{
+
+    #nav-pemenang {
         background-color: #FCD9D9;
         border-top-right-radius: 20px;
         border-top-left-radius: 20px;
     }
+
     .nav-item {
         border-top-right-radius: 20px;
         border-top-left-radius: 20px;
     }
+
     .custom-nav .nav-link {
         color: black;
         background-color: #FCD9D9;
-        border-radius: 20px 20px 0 0; /* Menjaga border radius pada tab */
+        border-radius: 20px 20px 0 0;
+        /* Menjaga border radius pada tab */
     }
 
     .custom-nav .nav-link.active {
-        background-color: #D21B1B !important; /* Warna background ketika aktif */
-        color: white !important; /* Warna teks ketika aktif */
+        background-color: #D21B1B !important;
+        /* Warna background ketika aktif */
+        color: white !important;
+        /* Warna teks ketika aktif */
     }
 </style>
 
@@ -485,9 +491,9 @@
                             <span style="border-left: 4px solid purple; font-size:11px; margin-right:4px"></span>
                             <span class="crmstats-summary-number">0</span> Proses Negosiasi
                         </p>
-                        <p id="diterima" class="crmstats-summary" style="margin-left: 10%;">
+                        <p id="disetujui" class="crmstats-summary" style="margin-left: 10%;">
                             <span style="border-left: 4px solid green; font-size:11px; margin-right:4px"></span>
-                            <span class="crmstats-summary-number">0</span> Diterima
+                            <span class="crmstats-summary-number">0</span> Disetujui
                         </p>
                         <p id="ditolak" class="crmstats-summary" style="margin-left: 10%;">
                             <span style="border-left: 4px solid red; font-size:11px; margin-right:4px"></span>
@@ -509,7 +515,7 @@
                     <div class="select-custom container-fluid mt-5">
                         <div class="text-center mb-3">
                             <h3 class="tender-title text-center wow fadeInUp d-inline-block px-3 pb-2" data-wow-delay="0.5s">Pemenang Tender Terbaru</h3>
-                        </div> 
+                        </div>
                         <div class="row" id="filter-pemenang">
                             <div class=" col-sm-2 form-select-custom" style="padding:5px; padding-left:24px; margin-right:10px;">
                                 <input id="keyword" type="text" class="form-input-custom" style="border:none;" placeholder="Cari nama tender atau pemenang">
@@ -523,7 +529,7 @@
                             <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:10px">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
                                 <select class="select2-jenis-pengadaan" style="border:none;">
-                                        <!-- <option value="">Semua Pengadaan</option>
+                                    <!-- <option value="">Semua Pengadaan</option>
 
                                     <?php foreach ($jenisTender as $jenisTender) : ?>
                                         <option value="<?= $jenisTender['id_jenis'] ?>"><?php echo $jenisTender['jenis_tender'] ?></option>
@@ -668,34 +674,34 @@
         <div id="sec-pemenang-terbaru" style="display: none; margin-left: 6%; margin-right: 6%;">
             <div class="row wow fadeInUp justify-content-center px-1" data-wow-delay="0.5s">
                 <div class="row">
-					<div class="col-12">
-						<div class="pemenang-info">
-							<div id="nav-pemenang" class="nav-main mt-3 custom-nav ">
-								<!-- Tab Nav -->
-								<ul class="nav nav-tab justify-content-center" id="myTab" role="tablist">
-									<li class="nav-item col-6 text-center"><a class="nav-link active " data-toggle="tab" href="#m" role="tab">Pemenang Tender</a></li>
-									<li class="nav-item col-6 text-center"><a class="nav-link" data-toggle="tab" href="#w" role="tab">Tender Anggota INKINDO</a></li>
-								</ul>
-								<!--/ End Tab Nav -->
-							</div>
-							<div class="tab-content" id="myTabContent">
-								<!-- Start Single Tab -->
-								<div class="tab-pane fade show active" id="man" role="tabpanel">
-									<div class="tab-single">
-										
-									</div>
-								</div>
-								<!--/ End Single Tab -->
-								<!-- Start Single Tab -->
-								<div class="tab-pane fade" id="women" role="tabpanel">
-									<div class="tab-single">
-										
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+                    <div class="col-12">
+                        <div class="pemenang-info">
+                            <div id="nav-pemenang" class="nav-main mt-3 custom-nav ">
+                                <!-- Tab Nav -->
+                                <ul class="nav nav-tab justify-content-center" id="myTab" role="tablist">
+                                    <li class="nav-item col-6 text-center"><a class="nav-link active " data-toggle="tab" href="#m" role="tab">Pemenang Tender</a></li>
+                                    <li class="nav-item col-6 text-center"><a class="nav-link" data-toggle="tab" href="#w" role="tab">Tender Anggota INKINDO</a></li>
+                                </ul>
+                                <!--/ End Tab Nav -->
+                            </div>
+                            <div class="tab-content" id="myTabContent">
+                                <!-- Start Single Tab -->
+                                <div class="tab-pane fade show active" id="man" role="tabpanel">
+                                    <div class="tab-single">
+
+                                    </div>
+                                </div>
+                                <!--/ End Single Tab -->
+                                <!-- Start Single Tab -->
+                                <div class="tab-pane fade" id="women" role="tabpanel">
+                                    <div class="tab-single">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row wow fadeInUp mx-0 my-2" id="list-pemenang" data-wow-delay="0.5s"></div>
@@ -750,7 +756,7 @@
 
                         var jumlah = total - belum
                         $('.total').html(jumlah);
-                        
+
                         $('#filter-pemenang').show();
                     }
                 })
@@ -854,7 +860,7 @@
             }
         })
 
-    });//akhir ready function
+    }); //akhir ready function
 
 
     // ajax grafik pemenang
@@ -931,22 +937,22 @@
 
     // Donat Chart status Leads
     // Data untuk chart
-    function GrafikDonat(data){
+    function GrafikDonat(data) {
         var data = {
-            labels: ["Tanpa Status", "Sedang dihubungi", "Proses Negosiasi", "Diterima", "Ditolak"],
+            labels: ["Tanpa Status", "Sedang dihubungi", "Proses Negosiasi", "Disetujui", "Ditolak"],
             datasets: [{
-                data:[
+                data: [
                     data['tanpa-status'],
                     data['sedang-dihubungi'],
                     data['proses-negosiasi'],
-                    data['diterima'],
+                    data['disetujui'],
                     data['ditolak']
-                    ],
+                ],
                 backgroundColor: [
                     'orange', // Tanpa Status
                     'lightblue', // Sedang dihubungi
                     'purple', // Proses Negosiasi
-                    'green', // Diterima
+                    'green', // disetujui
                     'red' // Ditolak
                 ]
             }]
@@ -989,7 +995,7 @@
         $("#tanpa-status .crmstats-summary-number").text(data['tanpa-status']);
         $("#sedang-dihubungi .crmstats-summary-number").text(data['sedang-dihubungi']);
         $("#proses-negosiasi .crmstats-summary-number").text(data['proses-negosiasi']);
-        $("#diterima .crmstats-summary-number").text(data['diterima']);
+        $("#disetujui .crmstats-summary-number").text(data['disetujui']);
         $("#ditolak .crmstats-summary-number").text(data['ditolak']);
     }
 
@@ -1045,8 +1051,6 @@
             // console.log(hps_awal,"+",hps_akhir)
         }
     });
-
-
 </script>
 
 
@@ -1061,52 +1065,52 @@
 
     $(document).ready(function() {
         $.ajax({
-                // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
-                url : "<?= base_url() ?>Tender/gatJumLogPemenangTerbaru/"+id_pengguna,
-                type: "GET",
-                dataType: "JSON",
-                success : function(data){
-                    jum_pemenang = data.jumlah;
-                                    
-                    if (jum_pemenang > 0) {
-                        $('#pagination-container').pagination({
-                            // dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna/"+id_pengguna+"/"+jum_pemenang,
-                            dataSource: "<?= base_url() ?>api/get_pemenang_terbaru/"+id_pengguna+"/"+jum_pemenang,
-                            locator: '',
-                            totalNumber: jum_pemenang,
-                            pageSize: 10,
-                            autoHidePrevious: true,
-                            autoHideNext: true,
-                            showNavigator: true,
-                            formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
-                            position: 'bottom',
-                            className: 'paginationjs-theme-red paginationjs-big',
-                            ajax: {
-                                beforeSend: function(xhr, settings) {
-                                    const url = settings.url
-                                    const params = new URLSearchParams(url)
-                                    let currentPageNum = params.get('pageNumber')
-                                    currentPageNum = parseInt(currentPageNum)
-                                    if (currentPageNum >= 2 && id_pengguna == 0) {
-                                        window.location.href = `${base_url}login`
-                                        return false
-                                    }
-                                            
-                                    $('#list-pemenang').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
+            // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
+            url: "<?= base_url() ?>Tender/gatJumLogPemenangTerbaru/" + id_pengguna,
+            type: "GET",
+            dataType: "JSON",
+            success: function(data) {
+                jum_pemenang = data.jumlah;
+
+                if (jum_pemenang > 0) {
+                    $('#pagination-container').pagination({
+                        // dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna/"+id_pengguna+"/"+jum_pemenang,
+                        dataSource: "<?= base_url() ?>api/get_pemenang_terbaru/" + id_pengguna + "/" + jum_pemenang,
+                        locator: '',
+                        totalNumber: jum_pemenang,
+                        pageSize: 10,
+                        autoHidePrevious: true,
+                        autoHideNext: true,
+                        showNavigator: true,
+                        formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
+                        position: 'bottom',
+                        className: 'paginationjs-theme-red paginationjs-big',
+                        ajax: {
+                            beforeSend: function(xhr, settings) {
+                                const url = settings.url
+                                const params = new URLSearchParams(url)
+                                let currentPageNum = params.get('pageNumber')
+                                currentPageNum = parseInt(currentPageNum)
+                                if (currentPageNum >= 2 && id_pengguna == 0) {
+                                    window.location.href = `${base_url}login`
+                                    return false
                                 }
-                            },
-                            callback: function(data, pagination) {
-                                console.log(data.length);
-                                $('#sec-pemenang-terbaru').show();
-                                if (data != '') {
-                                    let html = template(data);
-                                    $('#list-pemenang').html(html);
-                                }
+
+                                $('#list-pemenang').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
                             }
-                        });
-                    } else {
-                        $('#sec-pemenang-terbaru').show();
-                        $('#list-pemenang').html(`
+                        },
+                        callback: function(data, pagination) {
+                            console.log(data.length);
+                            $('#sec-pemenang-terbaru').show();
+                            if (data != '') {
+                                let html = template(data);
+                                $('#list-pemenang').html(html);
+                            }
+                        }
+                    });
+                } else {
+                    $('#sec-pemenang-terbaru').show();
+                    $('#list-pemenang').html(`
                             <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
                                 <div class="col-md-2 p-3 text-center text-md-end">
                                     <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
@@ -1120,15 +1124,16 @@
                                 </div>
                             </div>
                         `);
-                        
-                        $('#pagination-container').hide();
-                    }
-                },error: function (jqXHR, textStatus, errorThrown){
-                    $('#sec-pemenang-terbaru').show();
-                    $('#list-pemenang').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
-                    console.error(`Error: ${textStatus}, ${errorThrown}`);
+
+                    $('#pagination-container').hide();
                 }
-        
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                $('#sec-pemenang-terbaru').show();
+                $('#list-pemenang').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
+                console.error(`Error: ${textStatus}, ${errorThrown}`);
+            }
+
         });
     });
 
@@ -1160,7 +1165,7 @@
 
                 if (jum_filter > 0) {
                     $('#pagination-container').pagination({
-                        dataSource: "<?= base_url() ?>Tender/getHasilFilterPemenangTerbaru/"+id_pengguna,
+                        dataSource: "<?= base_url() ?>Tender/getHasilFilterPemenangTerbaru/" + id_pengguna,
                         locator: '',
                         totalNumber: jum_filter,
                         pageSize: 10,
@@ -1191,7 +1196,7 @@
                                 let html = template(data);
                                 $('#list-pemenang').html(html);
 
-                                console.log("hasil filter: ",data);
+                                console.log("hasil filter: ", data);
                             }
                         }
                     });
