@@ -12,9 +12,9 @@
 
     .thead {
         color: #fff;
-        background-color: #E05151;
+        background-color: #DF3131;
         text-align: center;
-        font-size: 15px;
+        font-size: 18px;
         width: 100px;
     }
 
@@ -79,7 +79,7 @@
     td.custom-padding {
         border: none;
         vertical-align: middle;
-        height: 60px !important;
+        /* height: 60px !important; */
     }
 
     .form-select-custom {
@@ -196,19 +196,23 @@
 
     .nama {
         font-weight: bold;
+        text-align: justify;
     }
 
     .posisi {
         color: #694747;
+        text-align: justify;
     }
 
     .email {
         text-decoration: underline;
         color: #000;
+        text-align: justify;
     }
 
     .nohp {
         text-decoration: underline;
+        text-align: justify;
     }
 
     .btn.btn-danger {
@@ -227,9 +231,11 @@
     .container-lg img {
         margin-bottom: 2px;
     }
+
     .h2 {
         margin-top: 50px;
     }
+
     @media (max-width: 767px) {
         .justify-content-start {
             justify-content: center !important;
@@ -327,7 +333,7 @@
             </h2>
             <div class="d-flex justify-content-start">
                 <div class="link d-flex flex-row align-items-center" style="margin-top:10px">
-                    <span><a class="btn btn-sm border btn-outline btn-simpan" data-toggle="modal" data-target="#inputMarketingModal"><i class="fas me-1"></i>Tambahkan Tim</a></span>
+                    <span><a class="btn btn-sm border btn-outline btn-simpan" data-toggle="modal" data-target="#inputMarketingModal" style="background-color:#DF3131 ;">Tambahkan Tim <i class="fas fa-plus-circle me-1"></i></a></span>
                 </div>
             </div>
         </div>
@@ -338,15 +344,15 @@
         <div class="row">
             <div class="col">
                 <table class="table custom-table-container">
-                    <thead class="thead">
+                    <thead class="thead" style="height: 10px;">
                         <tr>
-                            <th class="custom-padding"></th>
+                            <!-- <th class="custom-padding"></th> -->
                             <th class="custom-padding">No.</th>
-                            <th class="custom-padding">Nama</th>
-                            <th class="custom-padding">Posisi</th>
-                            <th class="custom-padding">Email</th>
-                            <th class="custom-padding">No. HP/WA</th>
-                            <th class="custom-padding">Aksi</th>
+                            <th class="custom-padding text-start" style="width:330px;">Nama</th>
+                            <th class="custom-padding text-start">Posisi</th>
+                            <th class="custom-padding text-start" style="width:250px;">Email</th>
+                            <th class="custom-padding text-start">No. HP/WA</th>
+                            <th class="custom-padding text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="data-marketing">
@@ -419,16 +425,15 @@
                                     <textarea class="form-control" name="alamat" id="inputAlamat" placeholder="Masukkan Alamat" rows="2" required></textarea>
                                 </div>
                                 <div class="d-flex justify-content-start mt-3 gap-2">
-                                <div class="link flex-row align-items-center w-100">
-                                    <span>
-                                        <!-- <input type="submit" class="btn-custom text-white text-center" value="Tambahkan"> -->
-                                        <a id="submit-input" class="btn-custom text-white text-center">
-                                            <i class="fas me-1"></i>Tambahkan
-                                        </a>
-                                    </span>
-                                </div>
+                                    <div class="link flex-row align-items-center w-100">
+                                        <span>
+                                            <!-- <input type="submit" class="btn-custom text-white text-center" value="Tambahkan"> -->
+                                            <a id="submit-input" class="btn-custom text-white text-center" style="background-color: #DF3131;">
+                                                <i class="fas me-1"></i>Tambahkan
+                                            </a>
+                                        </span>
+                                    </div>
                             </form>
-                        </div>
                         </div>
                     </div>
                 </div>
@@ -437,65 +442,194 @@
     </div>
     <!-- end modal input marketing -->
 
+    <!-- modal detail profil marketing -->
+    <div class="col-12 py-5">
+
+        <div class="modal fade" id="detailMarketingModal" tabindex="-1" role="dialog" aria-labelledby="detailMarketingModalLabel" aria-hidden="true" style="margin-top: -30px;">
+
+            <div class="modal-dialog custom-modal" role="document">
+
+                <div class="modal-content">
+
+                    <div class="modal-header border-0">
+
+                        <button type="button" class="btn btn-link" data-dismiss="modal" aria-label="Close" style="position: absolute; top: 10px; right: 10px; background: transparent; border: none;">
+
+                            <img src="<?= base_url("assets/img/button-x-popup.png") ?>" alt="Cancel" style="width: 32px; height: 32px; padding: 0;">
+
+                        </button>
+
+                    </div>
+
+                    <div class="modal-body border-0">
+
+                        <h3 class="modal-title" id="detailMarketingModalLabel">Detail Marketing</h3>
+
+                        <div class="d-flex justify-content-center mt-3 mb-2">
+                            <img src="<?= base_url("assets/img/user-icon-detail.svg") ?>" style="width: 50px; height: 50px;">
+                        </div>
+
+                        <div class="input-popup justify-content-end">
+
+                            <p class="text-center" name="nama_tim" id="nama" style=" margin-bottom:10px; font-style:bold; font-size:20px;"></p>
+                            <!-- <input type="text" class="form-control" name="nama_tim" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-sm" disabled> -->
+
+                            <div class="input-group input-group-sm mb-3">
+
+                                <span class="input-group-text" id="inputPosisi" style=" background-color:#DF3131; color:#FCFCFC;">Posisi</span>
+
+                                <input type="text" class="form-control" name="posisi" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-sm" disabled>
+
+                            </div>
+
+                            <div class="input-group input-group-sm mb-3">
+
+                                <span class="input-group-text" id="inputEmail" style=" background-color:#DF3131; color:#FCFCFC;">Email</span>
+
+                                <input type="text" class="form-control" name="email" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-sm" disabled>
+
+                            </div>
+
+                            <div class="input-group input-group-sm mb-3">
+
+                                <span class="input-group-text" id="inputNoHP" style=" background-color:#DF3131; color:#FCFCFC;">No.Hp/Wa</span>
+
+                                <input type="text" class="form-control" name="no_telp" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-sm" disabled>
+
+                            </div>
+
+                            <div class="input-group input-group-sm mb-3">
+
+                                <span class="input-group-text" id="inputAlamat" style=" background-color:#DF3131; color:#FCFCFC;">Alamat</span>
+
+                                <input type="text" class="form-control" name="alamat" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-sm" disabled>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- end modal detail profil marketing -->
+
     <!-- modal hapus -->
     <div class="col-12 py-5">
+
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" style="margin-top: -30px;">
+
             <div class="modal-dialog custom-modal" role="document">
+
                 <div class="modal-content">
+
                     <div class="modal-header border-0">
+
                         <button type="button" class="btn btn-link" data-dismiss="modal" aria-label="Close" style="position: absolute; top: 10px; right: 10px; background: transparent; border: none;">
+
                             <img src="<?= base_url("assets/img/button-x-popup.png") ?>" alt="Cancel" style="width: 32px; height: 32px; padding: 0;">
+
                         </button>
+
                     </div>
+
                     <div class="modal-body border-0 text-center">
+
                         <h3 class="modal-title" id="deleteModalLabel">Hapus Data</h3>
+
                         <p class="text-center">Yakin ingin menghapus data perusahaan ini ?</p>
+
                         <div class="input-popup align-items-center justify-content-center">
+
                             <img src="<?= base_url("assets/img/learning-instructions.svg") ?>" alt="Gambar">
+
                         </div>
+
                         <div class="d-flex justify-content-start mt-3 gap-2">
+
                             <div></div>
+
                             <div class="link flex-row align-items-center w-100">
+
                                 <span>
-                                    <a id="hapus-modal" class="btn-custom text-white text-center">
+
+                                    <a id="hapus-modal" class="btn-custom text-white text-center" style="background-color: #DF3131;">
+
                                         <i class="fas me-1"></i>Hapus
+
                                     </a>
+
                                 </span>
+
                             </div>
+
                         </div>
+
                         <div class="d-flex justify-content-start mt-3 gap-2">
+
                             <div></div>
+
                             <div class="link flex-row align-items-center w-100">
+
                                 <span>
+
                                     <a class="btn btn-batal btn-sm border btn-outline" data-dismiss="modal">
+
                                         <i class="fas me-1"></i>Batal
+
                                     </a>
+
                                 </span>
+
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
     <!-- end modal hapus -->
 
     <!-- modal edit marketing -->
     <div class="col-12 py-5">
+
         <div class="modal fade" id="editMarketingModal" tabindex="-1" role="dialog" aria-labelledby="editMarketingModalLabel" aria-hidden="true" style="margin-top: -30px;">
+
             <div class="modal-dialog custom-modal" role="document">
+
                 <div class="modal-content">
+
                     <div class="modal-header border-0">
+
                         <button type="button" class="btn btn-link" data-dismiss="modal" aria-label="Close" style="position: absolute; top: 10px; right: 10px; background: transparent; border: none;">
+
                             <img src="<?= base_url("assets/img/button-x-popup.png") ?>" alt="Cancel" style="width: 32px; height: 32px; padding: 0;">
+
                         </button>
+
                     </div>
 
 
+
                     <div class="modal-body border-0">
+
                         <h3 class="modal-title" id="editMarketingModalLabel">Edit Marketing</h3>
+
                         <p class="text-center">Tambahkan untuk memasarkan produkmu</p>
+
                         <div class="input-popup justify-content-end">
+
                             <form id="form-input1" class="row g-2">
                                 <div class="col-12">
                                     <label for="inputNama" class="form-label text-start">Nama</label>
@@ -518,16 +652,15 @@
                                     <textarea class="form-control" name="alamat" id="inputAlamat" placeholder="Masukkan Alamat" rows="2" required></textarea>
                                 </div>
                                 <div class="d-flex justify-content-start mt-3 gap-2">
-                                <div class="link flex-row align-items-center w-100">
-                                    <span>
-                                        <!-- <input type="submit" class="btn-custom text-white text-center" value="Tambahkan"> -->
-                                        <a href="#" id="submit-edit" class="btn-custom text-white text-center">
-                                            <i class="fas me-1"></i>Perbarui
-                                        </a>
-                                    </span>
-                                </div>
+                                    <div class="link flex-row align-items-center w-100">
+                                        <span>
+                                            <!-- <input type="submit" class="btn-custom text-white text-center" value="Tambahkan"> -->
+                                            <a href="#" id="submit-edit" class="btn-custom text-white text-center" style="background-color: #DF3131;">
+                                                <i class="fas me-1"></i>Perbarui
+                                            </a>
+                                        </span>
+                                    </div>
                             </form>
-                        </div>
                         </div>
                     </div>
                 </div>
@@ -565,21 +698,77 @@
                 let i;
                 for (i = 0; i < data.data.length; i++) {
                     html += '<tr>' +
-                        '<th></th>' +
-                        '<td>' + (i + 1) + '</td>' +
+
+                        '<td style="text-align:center;">' + (i + 1) + '</td>' +
                         '<td class="nama">' + data.data[i].nama_tim + '</td>' +
                         '<td class="posisi">' + data.data[i].posisi + '</td>' +
-                        '<td><a class="email" href="mailto:' + data.data[i].email + '">' + data.data[i].email + '</a></td>' +
-                        '<td class="nohp">' + data.data[i].no_telp + '</td>' +
-                        '<td>' +
-                        '<a href="#" class="btn btn-danger btn-edt disabled" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data.data[i].id_tim + '">Edit</a>' +
-                        '<a class="btn btn-outline-danger btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data.data[i].id_tim + '">Hapus</a>'
+                        '<td style="width:20px;"><a class="email" href="mailto:' + data.data[i].email + '">' + data.data[i].email + '</a></td>' +
+                        '<td class="no_telp">' + data.data[i].no_telp + '</td>' +
+                        '<td style="text-align:center">' +
+                        '<a class="btn-det" data-toggle="modal" data-target="#detailMarketingModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-info-circle me-2"></i></a>' +
+                        '<a href="#" class="btn-edt" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-edit me-2"></i></a>' +
+                        '<a class="btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-trash me-2"></i></a>' +
+                        '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-paper-plane"></i></a>'
                     '</td>' +
                     // '<td> <a href="#" class="btn btn-danger">Edit Data</a> <a class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal">Hapus</a><a class="btn btn-outline-danger" data-toggle="modal" data-target="#lengkapiLeadsModal">Lengkapi</a></td>' +
                     '</tr>';
 
                 }
                 $('#data-marketing').html(html);
+
+
+                //Action Menambahkan tim baru
+                $(document).ready(function() {
+
+                    // Handle form submission
+                    $('#submit-input').click(function(event) {
+                        event.preventDefault();
+
+                        // Get the form instance
+                        var formData = {
+                            nama_tim: $('input[name=nama_tim]').val(),
+                            posisi: $('input[name=posisi]').val(),
+                            email: $('input[name=email]').val(),
+                            no_telp: $('input[name=no_telp]').val(),
+                            alamat: $('textarea[name=alamat]').val(),
+                        };
+
+                        // Make an AJAX request
+                        $.ajax({
+                            url: '<?= base_url("api/supplier/create") ?>',
+                            type: 'POST',
+                            data: formData,
+                            beforeSend: addAuthorizationHeader,
+                            success: function(response) {
+                                if (response.status == true) {
+                                    Swal.fire({
+
+                                        icon: "success",
+                                        title: "Data berhasil ditambahkan!",
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    }).then(function() {
+                                        window.location.href = "<?= base_url('suplier/marketing') ?>";
+                                    });
+                                } else {
+                                    Swal.fire({
+
+                                        icon: "eror",
+                                        title: "Data gagal ditambahkan!",
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    })
+
+
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log(xhr.responseText);
+                            }
+                        });
+                    });
+
+                });
 
                 // Delete action
                 $(".btn-del").click(function() {
@@ -595,18 +784,22 @@
                             beforeSend: addAuthorizationHeader,
                             success: function(response) {
                                 if (response.status == true) {
-                                    swal({
-                                        title: "Data berhasil dihapus!",
+                                    Swal.fire({
+
                                         icon: "success",
-                                        button: "Ok",
-                                    }).then(function () {
+                                        title: "Data berhasil dihapus!",
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    }).then(function() {
                                         window.location.href = "<?= base_url('suplier/marketing') ?>";
                                     });
                                 } else {
-                                    swal({
-                                        title: "Data gagal dihapus",
-                                        icon: "error",
-                                        button: "Ok",
+                                    Swal.fire({
+
+                                        icon: "eror",
+                                        title: "Data gagal dihapus!",
+                                        showConfirmButton: false,
+                                        timer: 2000
                                     })
                                 }
                             },
@@ -617,137 +810,175 @@
                     });
                 });
 
+                //Detail Marketing Action
+                $(".btn-det").click(function() {
+                    var id_tim = $(this).data("id");
+
+                    var formData = {
+                        nama_tim: $('input[name=nama_tim]').val(),
+                        posisi: $('input[name=posisi]').val(),
+                        email: $('input[name=email]').val(),
+                        no_telp: $('input[name=no_telp]').val(),
+                        alamat: $('input[name=alamat]').val(),
+                    };
+
+                    // Get data from id
+                    $.ajax({
+                        url: "<?= base_url('api/supplier/getId/') ?>" + id_tim,
+
+                        type: 'GET',
+
+                        dataType: "json",
+
+                        beforeSend: addAuthorizationHeader,
+
+                        success: function(data) {
+
+                            // $('input[name=nama_tim]').val(data.data.nama_tim);
+                            $('#nama').text(data.data.nama_tim);
+
+                            $('input[name=posisi]').val(data.data.posisi);
+
+                            $('input[name=email]').val(data.data.email);
+
+                            $('input[name=no_telp]').val(data.data.no_telp);
+
+                            $('input[name=alamat]').val(data.data.alamat);
+
+                        },
+
+                        error: function(xhr, status, error) {
+
+                            console.log(xhr.responseText);
+                        }
+                    });
+                });
+
+
+
+                //Edit Action
                 $(".btn-edt").click(function() {
                     var id_tim = $(this).data("id");
 
                     // $('#submit-input').click(function(event) {
                     //     event.preventDefault();
 
-                        // Get the form instance
-                        var formData = {
-                            nama_tim: $('input[name=nama_tim]').val(),
-                            posisi: $('input[name=posisi]').val(),
-                            email: $('input[name=email]').val(),
-                            no_telp: $('input[name=no_telp]').val(),
-                            alamat: $('textarea[name=alamat]').val(),
-                        };
+                    // Get the form instance
+                    var formData = {
+                        nama_tim: $('input[name=nama_tim]').val(),
+                        posisi: $('input[name=posisi]').val(),
+                        email: $('input[name=email]').val(),
+                        no_telp: $('input[name=no_telp]').val(),
+                        alamat: $('textarea[name=alamat]').val(),
+                    };
 
-                        // Get data from id
-                        $.ajax({
-                            url: "<?= base_url('api/supplier/getId/') ?>" + id_tim,
-                            type: 'GET',
-                            dataType: "json",
-                            success: function(data) {
-                                $('input[name=nama_tim]').val(data.data.nama_tim);
-                                $('input[name=posisi]').val(data.data.posisi);
-                                $('input[name=email]').val(data.data.email);
-                                $('input[name=no_telp]').val(data.data.no_telp);
-                                $('textarea[name=alamat]').val(data.data.alamat);
-                            },
-                            error: function(xhr, status, error) {
-                                console.log(xhr.responseText);
-                            }
-                        });
+                    // Get data from id
+                    $.ajax({
+                        url: "<?= base_url('api/supplier/getId/') ?>" + id_tim,
 
-                        // Make an AJAX request
-                        // $.ajax({
-                        //     url: '<?= base_url("api/supplier/update/") ?>' + id_tim,
-                        //     type: 'POST',
-                        //     data: formData,
-                        //     success: function(response) {
-                        //         if (response.status == true) {
-                        //             alert('Data berhasil diubah');
-                        //             window.location.href = "<?= base_url('suplier/marketing') ?>";
-                        //         } else {
-                        //             alert('Data gagal diubah');
-                        //         }
-                        //     },
-                        //     error: function(xhr, status, error) {
-                        //         console.log(xhr.responseText);
-                        //     }
-                        // });
-                    
+                        type: 'GET',
+
+                        dataType: "json",
+
+                        beforeSend: addAuthorizationHeader,
+
+                        success: function(data) {
+
+                            $('input[name=nama_tim]').val(data.data.nama_tim);
+
+                            $('input[name=posisi]').val(data.data.posisi);
+
+                            $('input[name=email]').val(data.data.email);
+
+                            $('input[name=no_telp]').val(data.data.no_telp);
+
+                            $('textarea[name=alamat]').val(data.data.alamat);
+
+                        },
+
+                        error: function(xhr, status, error) {
+
+                            console.log(xhr.responseText);
+                        }
                     });
+                });
 
-                    $(".btn-edt").click(function() {
+
+
+                $('#submit-edit').click(function(event) {
+
                     var id_tim = $(this).data("id");
+                    event.preventDefault();
 
-                        $('#submit-edit').click(function(event) {
-                            event.preventDefault();
+                    // Get the form instance
+                    var formData = {
+                        nama_tim: $('input[name=nama_tim]').val(),
+                        posisi: $('input[name=posisi]').val(),
+                        email: $('input[name=email]').val(),
+                        no_telp: $('input[name=no_telp]').val(),
+                        alamat: $('textarea[name=alamat]').val(),
+                    };
 
-                        // Get the form instance
-                        var formData = {
-                            nama_tim: $('input[name=nama_tim]').val(),
-                            posisi: $('input[name=posisi]').val(),
-                            email: $('input[name=email]').val(),
-                            no_telp: $('input[name=no_telp]').val(),
-                            alamat: $('textarea[name=alamat]').val(),
-                        };
+                    // Make an AJAX request
+                    $.ajax({
 
-                        // Make an AJAX request
-                        $.ajax({
-                            url: '<?= base_url("api/supplier/update/") ?>' + id_tim,
-                            type: 'POST',
-                            data: formData,
-                            success: function(response) {
-                                if (response.status == true) {
-                                    alert('Data berhasil diubah');
+                        url: '<?= base_url("api/supplier/update/") ?>' + id_tim,
+
+                        type: 'POST',
+
+                        data: formData,
+
+                        beforeSend: addAuthorizationHeader,
+
+                        success: function(response) {
+
+                            console.log(response)
+
+                            return
+
+                            if (response.status == true) {
+
+                                Swal.fire({
+
+                                    icon: "success",
+
+                                    title: "Data berhasil diubah!",
+
+                                    showConfirmButton: false,
+
+                                    timer: 2000
+
+                                }).then(function() {
+
                                     window.location.href = "<?= base_url('suplier/marketing') ?>";
-                                } else {
-                                    alert('Data gagal diubah');
-                                }
-                            },
-                            error: function(xhr, status, error) {
-                                console.log(xhr.responseText);
+
+                                });
+
+                            } else {
+
+                                Swal.fire({
+
+                                    icon: "eror",
+
+                                    title: "Data gagal diubah!",
+
+                                    showConfirmButton: false,
+
+                                    timer: 2000
+
+                                })
                             }
-                        });
+                        },
+
+                        error: function(xhr, status, error) {
+
+                            console.log(xhr.responseText);
+
+                        }
                     });
-                }); 
+                });
+
             }
         })
     });
-    $(document).ready(function() {
-        // Handle form submission
-        $('#submit-input').click(function(event) {
-            event.preventDefault();
-
-            // Get the form instance
-            var formData = {
-                nama_tim: $('input[name=nama_tim]').val(),
-                posisi: $('input[name=posisi]').val(),
-                email: $('input[name=email]').val(),
-                no_telp: $('input[name=no_telp]').val(),
-                alamat: $('textarea[name=alamat]').val(),
-            };
-
-            // Make an AJAX request
-            $.ajax({
-                url: '<?= base_url("api/supplier/create") ?>',
-                type: 'POST',
-                data: formData,
-                beforeSend: addAuthorizationHeader,
-                success: function(response) {
-                    if (response.status == true) {
-                        swal({
-                            title: "Data berhasil ditambahkan!",
-                            icon: "success",
-                            button: "Ok",
-                        }).then(function () {
-                            window.location.href = "<?= base_url('suplier/marketing') ?>";
-                        });
-                    } else {
-                        swal({
-                            title: "Data gagal ditambahkan!",
-                            icon: "error",
-                            button: "Ok",
-                        })
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr.responseText);
-                }
-            });
-        });
-    });
 </script>
-
