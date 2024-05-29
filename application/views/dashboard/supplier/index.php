@@ -1130,6 +1130,14 @@
 
                                 $('#list-pemenang').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
                             }
+                        },
+                        callback: function(data, pagination) {
+                                console.log(data.length);
+                                $('#sec-pemenang-terbaru').show();
+                                if (data != '') {
+                                    let html = template(data);
+                                    $('#list-pemenang').html(html);
+                                }
                         }
                     });
                         showhide();
