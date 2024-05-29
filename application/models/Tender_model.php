@@ -174,14 +174,34 @@ class Tender_model extends CI_Model
     }*/
     
     // Get total data leads
+    // public function getTotalDataLeads($id_pengguna)
+    // {
+    //     $this->db->select('COUNT(*) as total');
+    //     $this->db->from('data_leads');
+    //     $this->db->where('id_pengguna', $id_pengguna);
+    //     $query = $this->db->get();
+    //     return $query->row()->total;
+    // }
+
     public function getTotalDataLeads($id_pengguna)
     {
         $this->db->select('COUNT(*) as total');
         $this->db->from('data_leads');
         $this->db->where('id_pengguna', $id_pengguna);
+        $this->db->where_not_in('npwp', 'SELECT npwp FROM anggota_asosiasi', false);
         $query = $this->db->get();
         return $query->row()->total;
     }
+
+    public function getTotalDataLeadsInkindo($id_pengguna){
+        $this->db->select('COUNT(*) as total');
+        $this->db->from('data_leads');
+        $this->db->where('id_pengguna', $id_pengguna);
+        $this->db->where_in('npwp', 'SELECT npwp FROM anggota_asosiasi', false);
+        $query = $this->db->get();
+        return $query->row()->total;
+    }
+
 	
 	public function getJumlahTenderTerbaru($id_pengguna)
 	{
@@ -312,26 +332,133 @@ class Tender_model extends CI_Model
         return $this->db->query($sql);
     }
 
-    public function get_pemenang_terbaru($id_pengguna, $offset, $limit){
+    public function get_pemenang_terbaru($id_pengguna, $offset, $limit) {
         // Buat kueri dengan pagination
-        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender,lpse.nama_lpse,jenis_tender.jenis_tender,pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang');
+        $this->db->select('
+            data_leads.nama_perusahaan, 
+            pemenang.kode_tender, 
+            lpse.nama_lpse, 
+            jenis_tender.jenis_tender, 
+            pemenang.nama_tender, 
+            pemenang.lokasi_pekerjaan, 
+            pemenang.harga_penawaran, 
+            pemenang.tgl_pemenang, 
+            COALESCE(DATEDIFF(CURRENT_DATE,tgl_pemenang),0) AS update_hari
+        ');
         $this->db->from('data_leads');
         $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
         $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
         $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
+        // Left join dengan anggota_asosiasi untuk menemukan anggota non-INKINDO
+        $this->db->join('anggota_asosiasi', 'anggota_asosiasi.npwp = pemenang.npwp', 'left');
+        // Menggunakan WHERE setelah semua JOIN dilakukan
         $this->db->where('data_leads.id_pengguna', $id_pengguna);
+        $this->db->where('anggota_asosiasi.npwp IS NULL'); // Menampilkan hanya yang bukan anggota INKINDO
+        $this->db->order_by('pemenang.tgl_pemenang', 'DESC');
         $this->db->limit($limit, $offset);
 
         $query = $this->db->get();
         return $query->result_array();
     }
 
-    public function getHasilFilterPemenangTerbaru($id_pengguna,$offset, $limit,$data){
-        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender, lpse.nama_lpse, jenis_tender.jenis_tender, pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang');
+
+    public function get_pemenang_terbaru_inkindo($id_pengguna, $offset, $limit) {
+        // Buat kueri dengan pagination
+        $this->db->select('
+            data_leads.nama_perusahaan, 
+            pemenang.kode_tender, 
+            lpse.nama_lpse, 
+            jenis_tender.jenis_tender, 
+            pemenang.nama_tender, 
+            pemenang.lokasi_pekerjaan, 
+            pemenang.harga_penawaran, 
+            pemenang.tgl_pemenang, 
+            anggota_asosiasi.npwp AS npwp_asosiasi,
+            COALESCE(DATEDIFF(CURRENT_DATE,tgl_pemenang),0) AS update_hari
+        ');
         $this->db->from('data_leads');
         $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
         $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
         $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
+        $this->db->join('anggota_asosiasi', 'anggota_asosiasi.npwp = pemenang.npwp');
+        // Menggunakan WHERE setelah semua JOIN dilakukan
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+        $this->db->order_by('pemenang.tgl_pemenang', 'DESC');
+        $this->db->limit($limit, $offset);
+
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function getHasilFilterPemenangTerbaru($id_pengguna, $offset, $limit, $data) {
+        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender, lpse.nama_lpse, jenis_tender.jenis_tender, pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang,COALESCE(DATEDIFF(CURRENT_DATE,tgl_pemenang),0) AS update_hari');
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
+        $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
+        $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
+        
+        // Specify the table for npwp in the main query
+        $this->db->where_not_in('pemenang.npwp', '(SELECT npwp FROM anggota_asosiasi)', false);
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+
+        // Adding additional criteria based on available filters
+        if (!empty($data['keyword'])) {
+            $this->db->group_start(); // Open bracket for grouping OR conditions
+            $this->db->like('pemenang.nama_tender', $data['keyword']);
+            $this->db->group_end(); // Close bracket
+        }
+
+        if (!empty($data['jenis_pengadaan'])) {
+            $this->db->where('pemenang.jenis_tender', $data['jenis_pengadaan']);
+        }
+
+        if (!empty($data['nilai_hps_awal'])) {
+            $this->db->where('pemenang.harga_penawaran >=', $data['nilai_hps_awal']);
+        }
+
+        if (!empty($data['nilai_hps_akhir'])) {
+            $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
+        }
+
+        if (!empty($data['lokasi'])) {
+            $this->db->like('pemenang.lokasi_pekerjaan', $data['lokasi']);
+        }
+
+        // Sorting criteria
+        switch ($data['sort']) {
+            case '1':
+                $this->db->order_by('pemenang.harga_penawaran', 'ASC');
+                break;
+            case '2':
+                $this->db->order_by('pemenang.harga_penawaran', 'DESC');
+                break;
+            case '3':
+                $this->db->order_by('update_hari', 'ASC');
+                break;
+            case '4':
+                $this->db->order_by('update_hari', 'DESC');
+                break;
+            default:
+                // Default sorting logic if any
+                break;
+        }
+
+        // Apply limit and offset for pagination
+        $this->db->limit($limit, $offset);
+
+        // Execute the query and get the result
+        $query = $this->db->get();
+        return $query->result(); // Return the result as an array of objects
+    }
+
+    
+    public function getHasilFilterPemenangTerbaruInkindo($id_pengguna,$offset, $limit,$data){
+        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender, lpse.nama_lpse, jenis_tender.jenis_tender, pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang,anggota_asosiasi.npwp AS npwp_inkindo,COALESCE(DATEDIFF(CURRENT_DATE,tgl_pemenang),0) AS update_hari');
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
+        $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
+        $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
+        $this->db->join('anggota_asosiasi', 'anggota_asosiasi.npwp = pemenang.npwp',);
         $this->db->where('data_leads.id_pengguna', $id_pengguna);
 
         // Adding additional criteria based on available filters
@@ -395,7 +522,9 @@ class Tender_model extends CI_Model
         $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
         $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
         $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
+        $this->db->join('anggota_asosiasi', 'anggota_asosiasi.npwp = pemenang.npwp', 'left');
         $this->db->where('data_leads.id_pengguna', $data['id_pengguna']);
+        $this->db->where('anggota_asosiasi.npwp IS NULL'); // Filter anggota non-INKINDO
 
         // Adding additional criteria based on available filters
         if (!empty($data['keyword'])) {
@@ -415,6 +544,7 @@ class Tender_model extends CI_Model
         if (!empty($data['nilai_hps_akhir'])) {
             $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
         }
+
         if (!empty($data['lokasi'])) {
             $this->db->like('pemenang.lokasi_pekerjaan', $data['lokasi']);
         }
@@ -442,8 +572,66 @@ class Tender_model extends CI_Model
         $query = $this->db->get();
         $result = $query->row();
         return $result->total;
-
     }
+
+    public function getPemenangFillterInkindo($data){
+        // Construct the SQL query
+        $this->db->select('COUNT(*) as total');
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
+        $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
+        $this->db->join('jenis_tender', 'pemenang.jenis_tender = jenis_tender.id_jenis');
+        $this->db->join('anggota_asosiasi', 'anggota_asosiasi.npwp = pemenang.npwp');
+        $this->db->where('data_leads.id_pengguna', $data['id_pengguna']);
+
+        // Adding additional criteria based on available filters
+        if (!empty($data['keyword'])) {
+            $this->db->group_start(); // Open bracket for grouping OR conditions
+            $this->db->like('pemenang.nama_tender', $data['keyword']);
+            $this->db->group_end(); // Close bracket
+        }
+
+        if (!empty($data['jenis_pengadaan'])) {
+            $this->db->where('pemenang.jenis_tender', $data['jenis_pengadaan']);
+        }
+
+        if (!empty($data['nilai_hps_awal'])) {
+            $this->db->where('pemenang.harga_penawaran >=', $data['nilai_hps_awal']);
+        }
+
+        if (!empty($data['nilai_hps_akhir'])) {
+            $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
+        }
+
+        if (!empty($data['lokasi'])) {
+            $this->db->like('pemenang.lokasi_pekerjaan', $data['lokasi']);
+        }
+
+        // Sorting criteria
+        switch ($data['sort']) {
+            case '1':
+                $this->db->order_by('pemenang.harga_penawaran', 'ASC');
+                break;
+            case '2':
+                $this->db->order_by('pemenang.harga_penawaran', 'DESC');
+                break;
+            case '3':
+                $this->db->order_by('pemenang.tgl_pemenang', 'ASC');
+                break;
+            case '4':
+                $this->db->order_by('pemenang.tgl_pemenang', 'DESC');
+                break;
+            default:
+                // Default sorting logic if any
+                break;
+        }
+
+        // Execute the query and get the result
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result->total;
+    }
+
     
     public function getKatalogPemenangTerbaruByPengguna1($data)
     {

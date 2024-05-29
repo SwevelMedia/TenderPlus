@@ -24,7 +24,8 @@
     .badge-akhirdaftar {
         background: #fff8ea;
         color: #ee9d0a;
-        border-radius: 0 7px 7px 0;
+        /* border-radius: 0 7px 7px 0; */
+        border-radius: 7px 0 7px 0;
         border: 1px solid #d18c0b;
         padding: 5px 8px 6px 5px;
         font-weight: 500;
@@ -674,33 +675,21 @@
 							<div id="nav-pemenang" class="nav-main mt-3 custom-nav ">
 								<!-- Tab Nav -->
 								<ul class="nav nav-tab justify-content-center" id="myTab" role="tablist">
-									<li class="nav-item col-6 text-center"><a class="nav-link active " data-toggle="tab" href="#m" role="tab">Pemenang Tender</a></li>
-									<li class="nav-item col-6 text-center"><a class="nav-link" data-toggle="tab" href="#w" role="tab">Tender Anggota INKINDO</a></li>
+									<li class="nav-item col-6 text-center"><a class="nav-link active " data-toggle="tab" href="#list-pemenang" id="pemenangTenderLink" role="tab">Pemenang Tender</a></li>
+									<li class="nav-item col-6 text-center"><a class="nav-link" data-toggle="tab" href="#tenderInkindoLink" id="tenderInkindoLink" role="tab">Tender Anggota INKINDO</a></li>
 								</ul>
 								<!--/ End Tab Nav -->
 							</div>
-							<div class="tab-content" id="myTabContent">
-								<!-- Start Single Tab -->
-								<div class="tab-pane fade show active" id="man" role="tabpanel">
-									<div class="tab-single">
-										
-									</div>
-								</div>
-								<!--/ End Single Tab -->
-								<!-- Start Single Tab -->
-								<div class="tab-pane fade" id="women" role="tabpanel">
-									<div class="tab-single">
-										
-									</div>
-								</div>
-							</div>
+
 						</div>
 					</div>
 				</div>
             </div>
 
             <div class="row wow fadeInUp mx-0 my-2" id="list-pemenang" data-wow-delay="0.5s"></div>
+            <div class="row wow fadeInUp mx-0 my-2" id="list-inkindo" data-wow-delay="0.5s"></div>
             <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s"></div>
+            <div class="wow fadeInUp" id="pagination-container-inkindo" data-wow-delay="0.5s"></div>
         </div>
     </div>
 </section>
@@ -712,9 +701,16 @@
 <script>
     // Inisialisasi Select2 pada dropdown select
     $(document).ready(function() {
+    
+        showhide()
+
+        $('#pagination-container-inkindo').hide();
+        
+        // Secara default, sembunyikan elemen dengan ID 'list-inkindo' saat halaman pertama dimuat
+        $('#list-inkindo').hide();
+
         $('.form-select2').select2();
         // $('#select-jenis-pengadaan2').select2();
-
         $('#filter-pemenang').hide();
 
         Grafikpemenang(2024);
@@ -724,7 +720,7 @@
         var basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
 
         function addAuthorizationHeader(xhr) {
-            xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
+                xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
         }
         $.ajax({
             url: "<?= base_url('api/supplier/getCount') ?>",
@@ -739,126 +735,142 @@
                 // $('.belum-lengkap').html(data.data.belum_lengkap);
                 var belum = data.data.jumlah
                 $.ajax({
-                    url: "<?= base_url('api/supplier/getTotal') ?>",
-                    type: "GET",
-                    dataType: "JSON",
-                    data: {
-                        id_pengguna: id_pengguna
-                    },
-                    beforeSend: addAuthorizationHeader,
-                    success: function(data) {
-                        // $('.total-leads').html(data.total_leads);
-                        $('.total-leads').html(data.data);
-                        var total = data.data
+                        url: "<?= base_url('api/supplier/getTotal') ?>",
+                        type: "GET",
+                        dataType: "JSON",
+                        data: {
+                            id_pengguna: id_pengguna
+                        },
+                        beforeSend: addAuthorizationHeader,
+                        success: function(data) {
+                            // $('.total-leads').html(data.total_leads);
+                            $('.total-leads').html(data.data);
+                            var total = data.data
 
-                        var jumlah = total - belum
-                        $('.total').html(jumlah);
-                        
-                        $('#filter-pemenang').show();
-                    }
-                })
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus, errorThrown);
+                            var jumlah = total - belum
+                            $('.total').html(jumlah);
+                            
+                            $('#filter-pemenang').show();
+                        }
+                    })
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
 
-            }
-        })
-
-        // GET DATA LEADS BELUM DI PLOTING
-        $.ajax({
-            url: "<?= base_url('DashboardUserSupplier/getLeadsBelumPloting') ?>",
-            type: "GET",
-            dataType: "JSON",
-            data: {
-                id_pengguna: id_pengguna
-            },
-            success: function(data) {
-                // console.log('belum di ploting : '+ data);
-                $('#leads_belum_ploting').html(data);
-
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus, errorThrown);
-            }
-        })
-
-        // get Recent DATA Leads
-        $.ajax({
-            url: "<?= base_url('DashboardUserSupplier/getRecentLeads') ?>",
-            type: "GET",
-            dataType: "JSON",
-            data: {
-                id_pengguna: id_pengguna
-            },
-            success: function(data) {
-                // console.log('belum di ploting : '+ data);
-                $('#leads_terbaru').html(data);
-
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus, errorThrown);
-            }
-        })
-
-        // get data untuk tabel tim marketing
-        $.ajax({
-            url: "<?= base_url('DashboardUserSupplier/getTabelTimMarketing') ?>",
-            type: "GET",
-            dataType: "JSON",
-            data: {
-                id_pengguna: id_pengguna
-            },
-            success: function(data) {
-                // console.log(JSON.stringify(data, null, 2));
-
-                // Fungsi untuk mengubah huruf pertama setiap kata menjadi huruf besar
-                function capitalizeFirstLetter(string) {
-                    return string.replace(/\b\w/g, function(l) {
-                        return l.toUpperCase()
-                    });
                 }
+            })
 
-                let rows = '';
-                data.forEach(function(item) {
-                    let namaTim = capitalizeFirstLetter(item.nama_tim);
-                    let alamat = capitalizeFirstLetter(item.alamat);
+            // GET DATA LEADS BELUM DI PLOTING
+            $.ajax({
+                url: "<?= base_url('DashboardUserSupplier/getLeadsBelumPloting') ?>",
+                type: "GET",
+                dataType: "JSON",
+                data: {
+                    id_pengguna: id_pengguna
+                },
+                success: function(data) {
+                    // console.log('belum di ploting : '+ data);
+                    $('#leads_belum_ploting').html(data);
 
-                    rows += `
-                        <tr>
-                            <td><strong>${namaTim}</strong><br>${alamat}</td>
-                            <td><span class="circle">${item.jumlah_perusahaan}</span></td>
-                        </tr>
-                    `;
-                });
-                $('#tim-marketing').html(rows);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            })
 
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus, errorThrown);
-            }
-        })
+            // get Recent DATA Leads
+            $.ajax({
+                url: "<?= base_url('DashboardUserSupplier/getRecentLeads') ?>",
+                type: "GET",
+                dataType: "JSON",
+                data: {
+                    id_pengguna: id_pengguna
+                },
+                success: function(data) {
+                    // console.log('belum di ploting : '+ data);
+                    $('#leads_terbaru').html(data);
 
-        // ajax  mengambil data untuk membuat grafik donat
-        $.ajax({
-            url: "<?= base_url('DashboardUserSupplier/getDonatChart') ?>",
-            type: "GET",
-            dataType: "JSON",
-            data: {
-                id_pengguna: id_pengguna
-            },
-            success: function(data) {
-                // console.log(data)
-                // panggil fungsi menamilkan grafik donan + keterangannya
-                GrafikDonat(data)
-                updateKeterangan(data)
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus, errorThrown);
-            }
-        })
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            })
+
+            // get data untuk tabel tim marketing
+            $.ajax({
+                url: "<?= base_url('DashboardUserSupplier/getTabelTimMarketing') ?>",
+                type: "GET",
+                dataType: "JSON",
+                data: {
+                    id_pengguna: id_pengguna
+                },
+                success: function(data) {
+                    // console.log(JSON.stringify(data, null, 2));
+
+                    // Fungsi untuk mengubah huruf pertama setiap kata menjadi huruf besar
+                    function capitalizeFirstLetter(string) {
+                        return string.replace(/\b\w/g, function(l) {
+                            return l.toUpperCase()
+                        });
+                    }
+
+                    let rows = '';
+                    data.forEach(function(item) {
+                        let namaTim = capitalizeFirstLetter(item.nama_tim);
+                        let alamat = capitalizeFirstLetter(item.alamat);
+
+                        rows += `
+                            <tr>
+                                <td><strong>${namaTim}</strong><br>${alamat}</td>
+                                <td><span class="circle">${item.jumlah_perusahaan}</span></td>
+                            </tr>
+                        `;
+                    });
+                    $('#tim-marketing').html(rows);
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            })
+
+            // ajax  mengambil data untuk membuat grafik donat
+            $.ajax({
+                url: "<?= base_url('DashboardUserSupplier/getDonatChart') ?>",
+                type: "GET",
+                dataType: "JSON",
+                data: {
+                    id_pengguna: id_pengguna
+                },
+                success: function(data) {
+                    // console.log(data)
+                    // panggil fungsi menamilkan grafik donan + keterangannya
+                    GrafikDonat(data)
+                    updateKeterangan(data)
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            })
 
     });//akhir ready function
 
+    function showhide(){
+        // Handler untuk saat link "Pemenang Tender" diklik
+        $('#pemenangTenderLink').click(function() {
+            // Sembunyikan elemen yang berkaitan dengan "Tender Anggota INKINDO"
+            $('#list-inkindo').hide();
+            $('#list-pemenang').show();
+        });
+
+        // Handler untuk saat link "Tender Anggota INKINDO" diklik
+        $('#tenderInkindoLink').click(function() {
+            // Sembunyikan elemen yang berkaitan dengan "Pemenang Tender"
+            $('#list-pemenang').hide();
+            $('#list-inkindo').show();
+        });
+    }
+    
 
     // ajax grafik pemenang
     function Grafikpemenang(selectedYear = $("#tahunSelect").val()) {
@@ -1003,6 +1015,7 @@
         timer = setTimeout(function() {
             keyword = $('#keyword').val();
             filterTender();
+            filterTenderInkindo();
             // console.log(keyword);
         }, 1000);
     });
@@ -1013,6 +1026,7 @@
         timer = setTimeout(function() {
             lokasi = $('#wilayah').val();
             filterTender();
+            filterTenderInkindo();
             // console.log(wilayah);
         }, 1000);
     });
@@ -1035,6 +1049,8 @@
         }
         // console.log(hps_awal,"+",hps_akhir)
         filterTender();
+        filterTenderInkindo();
+
     });
 
     $('#nilai_hps_awal, #nilai_hps_akhir').inputmask('decimal', {
@@ -1055,6 +1071,7 @@
         else {
             $('#nilai_hps_akhir').removeClass('is-invalid');
             filterTender();
+            filterTenderInkindo();
             // console.log(hps_awal,"+",hps_akhir)
         }
     });
@@ -1074,7 +1091,7 @@
         jum_pemenang, timer;
 
     $(document).ready(function() {
-        
+        // Ajax pemenang biasa
         $.ajax({
                 // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
                 url : "<?= base_url() ?>Tender/gatJumLogPemenangTerbaru/"+id_pengguna,
@@ -1119,6 +1136,7 @@
                                 }
                             }
                         });
+                        showhide();
                     } else {
                         $('#sec-pemenang-terbaru').show();
                         $('#list-pemenang').html(`
@@ -1137,17 +1155,108 @@
                         `);
                         
                         $('#pagination-container').hide();
+                        showhideerror()
                     }
                 },error: function (jqXHR, textStatus, errorThrown){
                     $('#sec-pemenang-terbaru').show();
                     $('#list-pemenang').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
                     console.error(`Error: ${textStatus}, ${errorThrown}`);
+                    showhideerror()
+                }
+        
+        });
+        // Ajax pemenang Inkindo
+        $.ajax({
+                // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
+                url : "<?= base_url() ?>Tender/gatJumLogPemenangTerbaruInkindo/"+id_pengguna,
+                type: "GET",
+                dataType: "JSON",
+                success : function(data){
+                    jum_pemenang = data.jumlah;
+                                    
+                    if (jum_pemenang > 0) {
+                        $('#pagination-container-inkindo').pagination({
+                            // dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna/"+id_pengguna+"/"+jum_pemenang,
+                            dataSource: "<?= base_url() ?>tender/get_pemenang_terbaru_inkindo/"+id_pengguna+"/"+jum_pemenang,
+                            locator: '',
+                            totalNumber: jum_pemenang,
+                            pageSize: 10,
+                            autoHidePrevious: true,
+                            autoHideNext: true,
+                            showNavigator: true,
+                            formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
+                            position: 'bottom',
+                            className: 'paginationjs-theme-red paginationjs-big',
+                            ajax: {
+                                beforeSend: function(xhr, settings) {
+                                    const url = settings.url
+                                    const params = new URLSearchParams(url)
+                                    let currentPageNum = params.get('pageNumber')
+                                    currentPageNum = parseInt(currentPageNum)
+                                    if (currentPageNum >= 2 && id_pengguna == 0) {
+                                        window.location.href = `${base_url}login`
+                                        return false
+                                    }
+                                            
+                                    $('#list-inkindo').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
+                                }
+                            },
+                            callback: function(data, pagination) {
+                                console.log(data.length);
+                                $('#sec-pemenang-terbaru').show();
+                                if (data != '') {
+                                    let html = templateInkindo(data);
+                                    $('#list-inkindo').html(html);
+                                }
+                            }
+                        });
+                        showhide();
+                    } else {
+                        $('#list-inkindo').show();
+                        $('#list-inkindo').html(`
+                            <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
+                                <div class="col-md-2 p-3 text-center text-md-end">
+                                    <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
+                                </div>
+                                <div class="col-md-8 p-3 text-center text-md-start">
+                                    <h4 class="mb-2">Pemenang tender kosong!</h4>
+                                    <p class="m-0">Belum ada pemenang tender sesuai preferensi yang Anda tentukan.<br>Silakan bisa coba atur ulang preferensi Anda menggunakan kata kunci lain untuk mendapatkan hasil lebih baik.</p>
+                                </div>
+                                <div class="col-md-2 p-3 text-center">
+                                    <a href="<?= base_url() ?>preferensi" class="btn btn-danger m-1">Pengaturan</a>
+                                </div>
+                            </div>
+                        `);
+                        
+                        $('#pagination-container-inkindo').hide();
+                        showhideerror2()
+                    }
+                },error: function (jqXHR, textStatus, errorThrown){
+                    $('#sec-pemenang-terbaru').show();
+                    $('#list-inkindo').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
+                    console.error(`Error: ${textStatus}, ${errorThrown}`);
+                    showhideerror2()
                 }
         
         });
     });
 
-    function filterTender(sort = '3') {
+    // [عىؤ]
+    // Function to handle the filter click event
+    function handleFilterClick(event) {
+        const sortValue = event.target.getAttribute('data-sort');
+        filterTender(sortValue); // Call your filter function with the selected sort value
+        // If you need to call the filterTenderInkindo function instead, uncomment the line below
+        filterTenderInkindo(sortValue);
+    }
+
+    // Attach event listeners to dropdown items
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', handleFilterClick);
+    });
+
+    // Filtr tender pemenang biasa
+    function filterTender(sort = 3) {
         let params = {
             'id_pengguna': id_pengguna,
             'keyword': keyword,
@@ -1171,6 +1280,8 @@
             data: params,
             success: function(data) {
                 jum_filter = data;
+                console.log('jumlah data filter',data)
+
                 // console.log(data)
                 // return
 
@@ -1208,9 +1319,12 @@
                                 $('#list-pemenang').html(html);
 
                                 console.log("hasil filter: ",data);
+                                
                             }
                         }
                     });
+                    showhide();
+
                 } else {
                     $('#list-pemenang').html(`
                         <div class="row align-items-center rounded-3 bg-white shadow my-3" style="width: 98.2%;margin-inline: 12px;">
@@ -1225,6 +1339,95 @@
                     `);
 
                     $('#pagination-container').hide();
+                    showhideerror();
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {}
+        });
+    }
+
+    // Functin filter tender inkindo
+    function filterTenderInkindo(sort = 3) {
+        let params = {
+            'id_pengguna': id_pengguna,
+            'keyword': keyword,
+            'jenis_pengadaan': jenis_pengadaan,
+            'nilai_hps_awal': hps_awal,
+            'nilai_hps_akhir': hps_akhir,
+            // 'prov': prov,
+            // 'kab': kab,
+            'lokasi': lokasi,
+            'sort': sort
+        };
+
+        // console.log("param :",params);
+        // return
+
+        $.ajax({
+            // url: "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna1",
+            url: "<?= base_url() ?>Tender/getPemenangFillterInkindo/",
+            type: "POST",
+            dataType: "JSON",
+            data: params,
+            success: function(data) {
+                jum_filter = data;
+                console.log('jumlah data inkindo filter',data)
+                // return
+
+                if (jum_filter > 0) {
+                    $('#pagination-container-inkindo').pagination({
+                        dataSource: "<?= base_url() ?>Tender/getHasilFilterPemenangTerbaruInkindo/"+id_pengguna,
+                        locator: '',
+                        totalNumber: jum_filter,
+                        pageSize: 10,
+                        autoHidePrevious: true,
+                        autoHideNext: true,
+                        showNavigator: true,
+                        formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
+                        position: 'bottom',
+                        className: 'paginationjs-theme-red paginationjs-big',
+                        ajax: {
+                            type: 'POST',
+                            data: params,
+                            beforeSend: function(xhr, settings) {
+                                const url = settings.url
+                                const params = new URLSearchParams(url)
+                                let currentPageNum = params.get('pageNumber')
+                                currentPageNum = parseInt(currentPageNum)
+                                if (currentPageNum >= 2 && id_pengguna == 0) {
+                                    window.location.href = `${base_url}login`
+                                    return false
+                                }
+
+                                $('#list-inkindo').html('<div class="d-flex justify-content-center my-4"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
+                            }
+                        },
+                        callback: function(data, pagination) {
+                            if (data != '') {
+                                let html = templateInkindo(data);
+                                $('#list-inkindo').html(html);
+
+                                console.log("hasil filter inkindo: ",data);
+                                
+                            }
+                        }
+                    });
+                    showhide();
+                } else {
+                    $('#list-inkindo').html(`
+                        <div class="row align-items-center rounded-3 bg-white shadow my-3" style="width: 98.2%;margin-inline: 12px;">
+                            <div class="col-md-2 p-3 text-center">
+                                <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
+                            </div>
+                            <div class="col-md-10 p-3 text-center text-md-start">
+                                <h4 class="mb-2">Pemenang tender kosong!</h4>
+                                <p class="m-0">Tidak ada pemenang tender anggota INKINDO yang sesuai kata kunci yang Anda tentukan.<br>Silakan bisa coba atur ulang kata kunci pencarian Anda untuk mendapatkan informasi pemenang tender sesuai yang diharapkan!</p>
+                            </div>
+                        </div>
+                    `);
+
+                    $('#pagination-container-inkindo').hide();
+                    showhideerror2();
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {}
@@ -1235,9 +1438,23 @@
         var pemenang = '';
         for (var i = 0; i <= data.length - 1; i++) {
             let update_hari = data[i].update_hari;
-            if (update_hari == 0) update_hari = 'Hari ini';
-            else if (update_hari == 1) update_hari = 'Kemarin';
-            else update_hari = update_hari + ' hari yang lalu';
+            let updateText;
+
+            if (update_hari == 0) {
+                updateText = 'Hari ini';
+            } else if (update_hari == 1) {
+                updateText = 'Kemarin';
+            } else if (update_hari <= 30) {
+                updateText = update_hari + ' hari yang lalu';
+            } else if (update_hari <= 365) {
+                // Menghitung jumlah bulan yang lalu
+                const months = Math.floor(update_hari / 30);
+                updateText = months + ' bulan yang lalu';
+            } else {
+                // Menghitung jumlah tahun yang lalu
+                const years = Math.floor(update_hari / 365);
+                updateText = years + ' tahun yang lalu';
+            }
 
             pemenang +=
                 `<div class="paket col-md-6 px-1 py-0">
@@ -1250,7 +1467,7 @@
                                 <div class="profiles">
                                     <div class="ms-2">
                                         <a class="p-0" href="` + data[i].url + `"><h6>` + data[i].nama_lpse + `</h6></a>
-                                        <span><i class="fas fa-calendar-alt me-1"></i>` + update_hari + `</span>
+                                        <span><i class="fas fa-calendar-alt me-1"></i>` + updateText + `</span>
                                     </div>
                                 </div>
                             </div>
@@ -1280,6 +1497,78 @@
                             <div></div>
                             <div class="link d-flex flex-row align-items-center">
                                 <span><a class="btn btn-sm border btn-outline" href="${base_url}detail-pemenang/${data[i].kode_tender}" target="_blank"><i class="fas fa-info-circle me-1"></i>Detail Pemenang</a></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        return pemenang;
+    }
+
+    function templateInkindo(data) {
+        var pemenang = '';
+        for (var i = 0; i <= data.length - 1; i++) {
+            let update_hari = data[i].update_hari;
+            let updateText;
+
+            if (update_hari == 0) {
+                updateText = 'Hari ini';
+            } else if (update_hari == 1) {
+                updateText = 'Kemarin';
+            } else if (update_hari <= 30) {
+                updateText = update_hari + ' hari yang lalu';
+            } else if (update_hari <= 365) {
+                // Menghitung jumlah bulan yang lalu
+                const months = Math.floor(update_hari / 30);
+                updateText = months + ' bulan yang lalu';
+            } else {
+                // Menghitung jumlah tahun yang lalu
+                const years = Math.floor(update_hari / 365);
+                updateText = years + ' tahun yang lalu';
+            }
+
+            pemenang +=
+                `<div class="paket col-md-6 px-1 py-0">
+                    <div class="p-card bg-white p-3 p-lg-4 rounded-4 border hover-scale">
+                        <div class="d-flex align-items-center border-bottom pb-3">
+                            <div class="d-flex flex-row align-items-center">
+                                <img class="rounded-circle me-1" src="<?= base_url("assets/img/img-profile-default.png") ?>" width="45">
+                            </div>
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="profiles">
+                                    <div class="ms-2">
+                                        <a class="p-0" href="` + data[i].url + `"><h6>` + data[i].nama_lpse + `</h6></a>
+                                        <span><i class="fas fa-calendar-alt me-1"></i>` + updateText + `</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="p-0 nama-paket" href="#"><h5 title="` + data[i].nama_tender + `">` + data[i].nama_tender + `</h5></a>
+                        <span class="badge badge-danger mb-3">` + data[i].jenis_tender + `</span>
+                        <table class="rincian-paket" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td class="th">Kode Tender</td>
+                                    <td>:</td>
+                                    <td><strong>` + data[i].kode_tender + `</strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="th">Nilai Penawaran</td>
+                                    <td>:</td>
+                                    <td><div class="label label-success mb-0">` + formatRupiah(data[i].harga_penawaran, 'Rp') + `</div></td>
+                                </tr>
+                                <tr>
+                                    <td class="th">Nama Pemenang</td>
+                                    <td>:</td>
+                                    <td><div class="badge badge-akhirdaftar">` + data[i].nama_perusahaan + `</div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="d-flex justify-content-between mt-3">
+                            <div></div>
+                            <div class="link d-flex flex-row align-items-center">
+                                <span><a class="btn btn-sm border btn-outline" href="${base_url}detail-pemenang-inkindo/${data[i].kode_tender}" target="_blank"><i class="fas fa-info-circle me-1"></i>Detail Pemenang</a></span>
                             </div>
                         </div>
                     </div>
@@ -1391,20 +1680,20 @@
             cache: true
         },
         templateResult: formatData
-    }).on('change', function() {
-        let wilayah = $(this).val();
+        }).on('change', function() {
+            let wilayah = $(this).val();
 
-        if (wilayah != null) {
-            if (wilayah.includes('00')) {
-                prov = wilayah;
-                kab = '';
-            } else {
-                kab = wilayah;
-                prov = '';
-            }
-        } else kab = prov = '';
+            if (wilayah != null) {
+                if (wilayah.includes('00')) {
+                    prov = wilayah;
+                    kab = '';
+                } else {
+                    kab = wilayah;
+                    prov = '';
+                }
+            } else kab = prov = '';
 
-        filterTender();
+            filterTender();
     });
 
     $('.select2-jenis-pengadaan').select2({
@@ -1452,9 +1741,52 @@
             },
             cache: true
         }
-    }).on('change', function() {
-        jenis_pengadaan = $(this).val();
-        console.log('jenis pengadaan :',jenis_pengadaan)
-        filterTender();
+        }).on('change', function() {
+            jenis_pengadaan = $(this).val();
+            console.log('jenis pengadaan :',jenis_pengadaan)
+            filterTender();
+            filterTenderInkindo();
+
     });
+
+
+    function showhideerror(){
+        // Handler untuk saat link "Pemenang Tender" diklik
+        $('#pemenangTenderLink').click(function() {
+            // Sembunyikan elemen yang berkaitan dengan "Tender Anggota INKINDO"
+            $('#list-inkindo').hide();
+            $('#list-pemenang').show();
+            // $('#pagination-container-inkindo').hide();
+            $('#pagination-container').hide();
+        });
+    }
+
+    function showhideerror2(){
+        // Handler untuk saat link "Tender Anggota INKINDO" diklik
+        $('#tenderInkindoLink').click(function() {
+            // Sembunyikan elemen yang berkaitan dengan "Pemenang Tender"
+            $('#list-inkindo').show();
+            $('#list-pemenang').hide();
+            $('#pagination-container-inkindo').hide();
+        });
+    }
+    function showhide(){
+        // Handler untuk saat link "Pemenang Tender" diklik
+        $('#pemenangTenderLink').click(function() {
+            // Sembunyikan elemen yang berkaitan dengan "Tender Anggota INKINDO"
+            $('#list-inkindo').hide();
+            $('#list-pemenang').show();
+            $('#pagination-container-inkindo').hide();
+            $('#pagination-container').show();
+        });
+
+        // Handler untuk saat link "Tender Anggota INKINDO" diklik
+        $('#tenderInkindoLink').click(function() {
+            // Sembunyikan elemen yang berkaitan dengan "Pemenang Tender"
+            $('#list-pemenang').hide();
+            $('#list-inkindo').show();
+            $('#pagination-container-inkindo').show();
+            $('#pagination-container').hide();
+        });
+    }
 </script>

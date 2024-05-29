@@ -67,6 +67,7 @@ $route['hubungi_kami'] = 'home/hubungi_kami';
 $route['tentang_kami'] = 'home/tentang_kami';
 $route['detail-tender/(:num)'] = 'home/detail_tender/$1';
 $route['detail-pemenang/(:num)'] = 'home/detail_pemenang/$1';
+$route['detail-pemenang-inkindo/(:num)'] = 'home/detail_pemenang_inkindo/$1';
 $route['pricing_plan'] = 'home/pricing_plan';
 $route['pembayaran'] = 'home/pembayaran';
 $route['getFitur/(:any)'] = 'home/getFitur/$1';

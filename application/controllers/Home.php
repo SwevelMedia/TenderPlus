@@ -190,6 +190,18 @@ class Home extends CI_Controller
         
         $this->load->view('templates/layout', $data);
     }
+    public function detail_pemenang_inkindo($id)
+    {
+        $tender = $this->Tender_model->getWinnerById($id)->row();
+        
+        $data = [
+            'title' => 'Detail Pemenang Tender',
+            'halaman' => 'home/detail_pemenang_inkindo',
+            'tender' => $tender
+        ];
+        
+        $this->load->view('templates/layout', $data);
+    }
 
     /*
     public function dashboard_user()

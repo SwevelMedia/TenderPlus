@@ -1073,6 +1073,15 @@ class Tender extends CI_Controller
 
         echo json_encode($response);
     }
+    
+    public function getPemenangFillterInkindo(){
+
+        parse_str(file_get_contents('php://input'), $data);
+        
+        $response = $this->Tender_model->getPemenangFillterInkindo($data);
+
+        echo json_encode($response);
+    }
 
     public function getHasilFilterPemenangTerbaru($id_pengguna){
 
@@ -1103,6 +1112,28 @@ class Tender extends CI_Controller
         echo json_encode($response);
     }
 
+    public function getHasilFilterPemenangTerbaruInkindo($id_pengguna){
+
+        parse_str(file_get_contents('php://input'), $data);
+
+        // $data = [
+        //     'keyword' => '',
+        //     'jenis_pengadaan' => '',
+        //     'nilai_hps_awal' => '',
+        //     'nilai_hps_akhir' => '',
+        //     'lokasi' => '',
+        //     'sort'=>3
+        // ];
+
+        $page_size = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 10; // Default page size 10
+        $page_number = isset($_GET['pageNumber']) ? (int)$_GET['pageNumber'] : 1; // Default page number 1
+        $offset = ($page_number - 1) * $page_size;
+
+        $response = $this->Tender_model->getHasilFilterPemenangTerbaruInkindo($id_pengguna,$offset, $page_size,$data);
+
+        echo json_encode($response);
+    }
+
     public function getKatalogPemenangTerbaruByPengguna1()
     {
         parse_str(file_get_contents('php://input'), $data);
@@ -1120,6 +1151,15 @@ class Tender extends CI_Controller
     public function gatJumLogPemenangTerbaru($id_pengguna){
         // $data = $this->input->post('id_pengguna');
         $data = $this->Tender_model->getTotalDataLeads($id_pengguna);
+        $response = [
+            'jumlah'=>$data,
+        ];
+        echo json_encode($response);
+
+    }
+    public function gatJumLogPemenangTerbaruInkindo($id_pengguna){
+        // $data = $this->input->post('id_pengguna');
+        $data = $this->Tender_model->getTotalDataLeadsInkindo($id_pengguna);
         $response = [
             'jumlah'=>$data,
         ];
@@ -1185,6 +1225,23 @@ class Tender extends CI_Controller
         //     'page_number'=>$page_number,
         //     'id_pengguna'=>$id_pengguna
         // ];
+
+        $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response, JSON_PRETTY_PRINT))
+            ->_display();
+
+        exit;
+    }
+    public function get_pemenang_terbaru_inkindo($id_pengguna,$jum_pemenang){
+
+        // Ambil parameter pagination dari URL
+        $page_size = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 10; // Default page size 10
+        $page_number = isset($_GET['pageNumber']) ? (int)$_GET['pageNumber'] : 1; // Default page number 1
+        $offset = ($page_number - 1) * $page_size;
+
+        $response = $this->Tender_model->get_pemenang_terbaru_inkindo($id_pengguna,$offset, $page_size);
 
         $this->output
             ->set_status_header(200)

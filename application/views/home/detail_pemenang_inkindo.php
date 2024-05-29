@@ -94,18 +94,21 @@
 						</div>
 						<div class="col-md-6">
 							<div class="row m-0 py-3 border-bottom">
-								<div class="col-2 text-center">
-									<img src="<?= base_url('assets/img/icon-audience.png') ?>" width="30" alt="icon-audience.png">
-								</div>
-								<div class="col-10 ps-0">
-									<span class="col-rincian fw-semibold d-block">Nama Pemenang</span>
-                                    <span>
-										<?= $tender->nama_pemenang ?>
-										<!-- <a href="#" class="btn btn-sm ms-2" style="margin-left:9px;background-color: #dc3545; color:white">Lihat Profil</a> -->
-									</span>
-                                    <div>(<?= $tender->npwp ?>)</div>
-								</div>
-							</div>
+    <div class="col-2 text-center">
+        <img src="<?= base_url('assets/img/icon-audience.png') ?>" width="30" alt="icon-audience.png">
+    </div>
+    <div class="col-10 ps-0">
+        <div class="d-flex align-items-center">
+            <span class="col-rincian fw-semibold">Nama Pemenang</span>
+            <a href="#" class="btn btn-sm ms-4" style="background-color: #dc3545; color: white; font-size: 12px; padding: 2px 4px;">Lihat Profil</a>
+        </div>
+        <div>
+            <span><?= $tender->nama_pemenang ?></span>
+            <div>(<?= $tender->npwp ?>)</div>
+        </div>
+    </div>
+</div>
+
 							<div class="row m-0 py-3 border-bottom">
 								<div class="col-2 text-center">
 									<img src="<?= base_url('assets/img/marker-red.png') ?>" width="30" alt="marker-red.png">
