@@ -531,20 +531,11 @@
                             </div>
                             <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:10px">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
-<<<<<<< HEAD
                                 <select class="select2-jenis-pengadaan"  style="border:none;">
                                 <option value="">Semua Pengadaan</option>
                                 <?php foreach ($jenisTender as $jenisTender) : ?>
                                 <option value="<?= $jenisTender['id_jenis'] ?>"><?php echo $jenisTender['jenis_tender'] ?></option>
                                 <?php endforeach; ?>
-=======
-                                <select class="select2-jenis-pengadaan" style="border:none;">
-                                    <!-- <option value="">Semua Pengadaan</option>
-
-                                    <?php foreach ($jenisTender as $jenisTender) : ?>
-                                        <option value="<?= $jenisTender['id_jenis'] ?>"><?php echo $jenisTender['jenis_tender'] ?></option>
-                                    <?php endforeach; ?> -->
->>>>>>> d5c42bef59182a5ec71771782556cf6e3eef8890
                                 </select>
                             </div>
                             <!-- Select Trigger Filter Nilai Penawaran -->
@@ -685,7 +676,6 @@
         <div id="sec-pemenang-terbaru" style="display: none; margin-left: 6%; margin-right: 6%;">
             <div class="row wow fadeInUp justify-content-center px-1" data-wow-delay="0.5s">
                 <div class="row">
-<<<<<<< HEAD
 					<div class="col-12">
 						<div class="pemenang-info">
 							<div id="nav-pemenang" class="nav-main mt-3 custom-nav ">
@@ -700,36 +690,6 @@
 						</div>
 					</div>
 				</div>
-=======
-                    <div class="col-12">
-                        <div class="pemenang-info">
-                            <div id="nav-pemenang" class="nav-main mt-3 custom-nav ">
-                                <!-- Tab Nav -->
-                                <ul class="nav nav-tab justify-content-center" id="myTab" role="tablist">
-                                    <li class="nav-item col-6 text-center"><a class="nav-link active " data-toggle="tab" href="#m" role="tab">Pemenang Tender</a></li>
-                                    <li class="nav-item col-6 text-center"><a class="nav-link" data-toggle="tab" href="#w" role="tab">Tender Anggota INKINDO</a></li>
-                                </ul>
-                                <!--/ End Tab Nav -->
-                            </div>
-                            <div class="tab-content" id="myTabContent">
-                                <!-- Start Single Tab -->
-                                <div class="tab-pane fade show active" id="man" role="tabpanel">
-                                    <div class="tab-single">
-
-                                    </div>
-                                </div>
-                                <!--/ End Single Tab -->
-                                <!-- Start Single Tab -->
-                                <div class="tab-pane fade" id="women" role="tabpanel">
-                                    <div class="tab-single">
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
->>>>>>> d5c42bef59182a5ec71771782556cf6e3eef8890
             </div>
 
             <div class="row wow fadeInUp mx-0 my-2" id="list-pemenang" data-wow-delay="0.5s"></div>
@@ -793,7 +753,6 @@
                             $('.total-leads').html(data.data);
                             var total = data.data
 
-<<<<<<< HEAD
                             var jumlah = total - belum
                             $('.total').html(jumlah);
                             
@@ -803,17 +762,6 @@
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus, errorThrown);
-=======
-                        var jumlah = total - belum
-                        $('.total').html(jumlah);
-
-                        $('#filter-pemenang').show();
-                    }
-                })
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus, errorThrown);
->>>>>>> d5c42bef59182a5ec71771782556cf6e3eef8890
 
                 }
             })
@@ -1182,27 +1130,12 @@
 
                                 $('#list-pemenang').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
                             }
-<<<<<<< HEAD
-                        });
+                        }
+                    });
                         showhide();
                     } else {
                         $('#sec-pemenang-terbaru').show();
                         $('#list-pemenang').html(`
-=======
-                        },
-                        callback: function(data, pagination) {
-                            console.log(data.length);
-                            $('#sec-pemenang-terbaru').show();
-                            if (data != '') {
-                                let html = template(data);
-                                $('#list-pemenang').html(html);
-                            }
-                        }
-                    });
-                } else {
-                    $('#sec-pemenang-terbaru').show();
-                    $('#list-pemenang').html(`
->>>>>>> d5c42bef59182a5ec71771782556cf6e3eef8890
                             <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
                                 <div class="col-md-2 p-3 text-center text-md-end">
                                     <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
@@ -1216,7 +1149,6 @@
                                 </div>
                             </div>
                         `);
-<<<<<<< HEAD
                         
                         $('#pagination-container').hide();
                         showhideerror()
@@ -1300,22 +1232,13 @@
                     $('#list-inkindo').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
                     console.error(`Error: ${textStatus}, ${errorThrown}`);
                     showhideerror2()
-=======
-
-                    $('#pagination-container').hide();
->>>>>>> d5c42bef59182a5ec71771782556cf6e3eef8890
                 }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                $('#sec-pemenang-terbaru').show();
-                $('#list-pemenang').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
-                console.error(`Error: ${textStatus}, ${errorThrown}`);
-            }
+            });
+            
 
-        });
+        
     });
 
-    // [عىؤ]
     // Function to handle the filter click event
     function handleFilterClick(event) {
         const sortValue = event.target.getAttribute('data-sort');
@@ -1392,12 +1315,8 @@
                                 let html = template(data);
                                 $('#list-pemenang').html(html);
 
-<<<<<<< HEAD
                                 console.log("hasil filter: ",data);
                                 
-=======
-                                console.log("hasil filter: ", data);
->>>>>>> d5c42bef59182a5ec71771782556cf6e3eef8890
                             }
                         }
                     });

@@ -33,7 +33,7 @@ class DashboardUserSupplier extends CI_Controller
         // echo json_encode($jenisTender);
         $data = [
             'title' => 'Dashboard',
-            'jenisTender'=>$jenisTender,
+            // 'jenisTender'=>$jenisTender,
 
         ];
 
