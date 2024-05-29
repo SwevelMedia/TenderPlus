@@ -653,6 +653,12 @@
     display: inline-block;
     margin-right: 10px;
   }
+
+  .datepicker,
+  .time-input {
+    border: none !important;
+    background: transparent;
+  }
 </style>
 
 <section class="bg-white pt-5 mt-5">
@@ -766,6 +772,7 @@
               </tr>
             </thead>
             <tbody id="data-leads">
+              <tr class="riwayat" data-id="` + value.id + `" style="display:none;">
             </tbody>
           </table>
         </div>
@@ -855,9 +862,9 @@
             headers: {
               Authorization: `Basic ${basicAuth}`
             },
-            beforeSend: function() {
-              $('#data-leads').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan tender terbaru...</span></div>');
-            }
+            // beforeSend: function() {
+            //   $('#data-leads').html('<div class="justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan tender terbaru...</span></div>');
+            // }
           },
           callback: function(data, pagination) {
             console.log("Pagination callback triggered");
@@ -930,9 +937,54 @@
                       <a class="cancel-lead hidden" ><img src="<?= base_url('assets/img/icon_cancel_table.svg') ?>" style="width: 20px"></a>
                     </div>
                     </td>
+                </tr>
+                <tr class="riwayat" data-id="` + value.id + `" style="display:none;">
+                    <td colspan="7" class="riwayat-content"></td>
                 </tr>`;
       });
       console.log("Table leads set");
+      $(document).on('click', '.riwayat', function() {
+        var idLead = $(this).data('id');
+        var $riwayatRow = $('tr.riwayat[data-id="' + idLead + '"]');
+        var $riwayatContent = $riwayatRow.find('.riwayat-content');
+
+        if ($riwayatRow.is(':visible')) {
+          $riwayatRow.hide();
+        } else {
+          $.ajax({
+            url: '<?= base_url('api/supplier/getLeadRiwayat') ?>', // Ganti dengan URL endpoint Anda
+            type: 'GET',
+            data: {
+              id_lead: idLead
+            },
+            success: function(response) {
+              let content = `<div class="row table justify-content-center">
+                        <table class="table custom-table-container col-8 align-items-center">
+                            <thead class="thead text-left">
+                                <tr>
+                                    <th width="20%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_filter_table.svg') ?>" width="20" alt=""></a>Status</th>
+                                    <th width="20%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_jadwal.svg') ?>" width="20" alt=""></a>Jadwal</th>
+                                    <th width="40%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets/img/icon_catatan.svg') ?>" width="20" alt=""></a>Catatan</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+              $.each(response, function(index, item) {
+                content += `<tr>
+                                        <td>  ${item.status}  </td>
+                                        <td>  ${item.jadwal}  </td>
+                                        <td>  ${item.catatan}  </td>
+                                    </tr>`;
+              });
+              content += '</tbody></table></div>';
+              $riwayatContent.html(content);
+              $riwayatRow.show();
+            },
+            error: function(xhr, status, error) {
+              console.error('Error fetching riwayat:', error);
+            }
+          });
+        }
+      });
       return leads;
     }
 
@@ -1139,5 +1191,6 @@
 
     // Initial binding of table events
     bindTableEvents();
+
   });
 </script>
