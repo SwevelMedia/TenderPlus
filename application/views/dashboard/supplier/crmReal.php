@@ -2,6 +2,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
 
 
 <style>
@@ -359,6 +363,18 @@
     /* Remove the outline */
     /* Add any other custom styles */
   }
+
+  .grafikCRMContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .chart2 {
+    width: 100%;
+    /* Mengisi lebar kontainer */
+  }
 </style>
 
 <style>
@@ -615,12 +631,76 @@
   .hidden {
     display: none;
   }
+
+  .statusCRM {
+    /* background-color:#212529; */
+    background-color: #FFEEE6;
+    border-radius: 10px;
+  }
+
+  .grafikCRMContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .dot {
+    height: 10px;
+    width: 10px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+  }
 </style>
 
 <section class="bg-white pt-5 mt-5">
   <div class="container-lg d-flex justify-content-left align-items-left wow fadeInUp" data-wow-delay="0.1s">
     <h4 class="mb-0 wow fadeInUp">Hi <span class="fw-semibold nama-pengguna" style="color: #df3131;"></span>!<p class="pt-2">Siap Menawarkan Produkmu Hari Ini ?</p>
     </h4>
+  </div>
+</section>
+<section>
+  <div class="container wow fadeInUp animation statusCRM">
+    <div class="row justify-content-center mt-2 mx-1 px-1">
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div class="grafikCRMContainer">
+          <div class="chart2" style="margin:0; padding:0">
+            <canvas id="grafikCRM" width="250" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+      <!-- Keterangan -->
+      <div class="col-3 pt-4">
+        <h4 class="text-center">Status</h4>
+        <div class="keterangan" style="margin-top:10px; padding:0">
+          <p id="tanpa-status" class="crmstats-summary vertical-align-center" style="margin-left: 10%;">
+            <span class="dot" style="background-color: orange; font-size:11px;"></span>Tanpa Status
+            <span class="crmstats-summary-number float-right">0</span>
+
+          </p>
+          <p id="sedang-dihubungi" class="crmstats-summary vertical-align-center" style="margin-left: 10%;">
+            <span class="dot" style="background-color: lightblue; font-size:11px;"></span>Sedang Dihubungi
+            <span class="crmstats-summary-number float-right">0</span>
+          </p>
+          <p id="proses-negosiasi" class="crmstats-summary" style="margin-left: 10%;">
+            <span class="dot" style="background-color: purple; font-size:11px;"></span>Proses Negosiasi
+            <span class="crmstats-summary-number float-right">0</span>
+          </p>
+          <p id="disetujui" class="crmstats-summary" style="margin-left: 10%;">
+            <span class="dot" style="background-color: green; font-size:11px;"></span>Disetujui
+            <span class="crmstats-summary-number float-right">0</span>
+          </p>
+          <p id="ditolak" class="crmstats-summary" style="margin-left: 10%;">
+            <span class="dot" style="background-color: red; font-size:11px;"></span>Ditolak
+            <span class="crmstats-summary-number float-right">0</span>
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 <section class="bg-white">
@@ -697,6 +777,7 @@
 </section>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="<?= base_url() ?>assets/js/home/pagination.min.js" type="text/javascript"></script>
+
 <script>
   $(document).ready(function() {
     let id_pengguna = Cookies.get('id_pengguna');
@@ -774,24 +855,17 @@
             headers: {
               Authorization: `Basic ${basicAuth}`
             },
-            function(xhr, settings) {
-              const url = settings.url;
-              const params = new URLSearchParams(url);
-              let currentPageNum = params.get('pageNumber');
-              currentPageNum = parseInt(currentPageNum);
-              if (currentPageNum >= 2 && id_pengguna == null) {
-                window.location.href = `${base_url}login`;
-                return false;
-              }
-
+            beforeSend: function() {
               $('#data-leads').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan tender terbaru...</span></div>');
             }
           },
           callback: function(data, pagination) {
+            console.log("Pagination callback triggered");
             if (data != '') {
               currentPage = pagination.pageNumber;
               let html = setTableLeads(data);
               $('#data-leads').html(html);
+              bindTableEvents(); // Rebind events after rendering table
             }
           }
         });
@@ -803,90 +877,267 @@
 
     function formatDate(date) {
       if (!date) return '';
+      const options = {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      };
       const d = new Date(date);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+      return d.toLocaleDateString('id-ID', options);
     }
 
+    function formatTime(date) {
+      if (!date) return '';
+      const d = new Date(date);
+      return d.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
 
     function setTableLeads(data) {
       var leads = "";
       $.each(data, function(index, value) {
         var rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+        var formattedDate = formatDate(value.jadwal);
+        var time = value.jadwal ? formatTime(value.jadwal) : '';
+
         leads +=
           `<tr data-id="` + value.id + `">
-          <td style="text-align:center">` + rowNumber + `</td>
-          <td class="perusahaan" >` + (value.nama_perusahaan || '') + `</td>
-          <td class="no_telp" >${value.no_telp || ''}</td>
-          <td class="status" contenteditable="false">${value.status}</td>
-          <td class="jadwal " contenteditable="false">
-                <input type="date" value="${formatDate(value.jadwal)}" disabled />
-            </td>
-          <td class="catatan" contenteditable="false">${value.catatan}</td>
-          <td class="text-center">
-              <a class="edit-lead" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
-              <a class="save-lead hidden" ><img src="<?= base_url('assets/img/icon_check_table.svg') ?>" style="width: 20px"></a>
-              <a class="cancel-lead hidden" ><img src="<?= base_url('assets/img/icon_cancel_table.svg') ?>" style="width: 20px"></a>
-          </td>
-      </tr>`;
+                    <td style="text-align:center">` + rowNumber + `</td>
+                    <td class="perusahaan" >` + (value.nama_perusahaan || '') + `</td>
+                    <td class="no_telp" >${value.no_telp || ''}</td>
+                    <td class="status" contenteditable="false">
+                    <select class="status-select" disabled>
+                      <option value="sedang-dihubungi" ${value.status === 'sedang-dihubungi' ? 'selected' : ''}>Sedang Dihubungi</option>
+                      <option value="proses-negosiasi" ${value.status === 'proses-negosiasi' ? 'selected' : ''}>Proses Negosiasi</option>
+                      <option value="ditunda" ${value.status === 'ditunda' ? 'selected' : ''}>Ditunda</option>
+                      <option value="disetujui" ${value.status === 'disetujui' ? 'selected' : ''}>Disetujui</option>
+                      <option value="dibatalkan" ${value.status === 'dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
+                    </select>
+                    </td>
+                    <td class="jadwal" contenteditable="false">
+                      <input type="text" class="datepicker" value="${formattedDate}" disabled />
+                      <input type="text" class="time-input" value="${time}" disabled />
+                    </td>
+                    <td class="catatan" contenteditable="false">${value.catatan}</td>
+                    <td class="text-center">
+                    <div>
+                      <a class="edit-lead" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
+                      <a class="tambah" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
+                      <a class="riwayat" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px" ></a>
+                      <a class="save-lead hidden" ><img src="<?= base_url('assets/img/icon_check_table.svg') ?>" style="width: 20px"></a>
+                      <a class="cancel-lead hidden" ><img src="<?= base_url('assets/img/icon_cancel_table.svg') ?>" style="width: 20px"></a>
+                    </div>
+                    </td>
+                </tr>`;
       });
+      console.log("Table leads set");
+      return leads;
+    }
 
-      $("#data-leads").html(leads);
+    function bindTableEvents() {
+      console.log("Binding table events");
+      // Unbind any existing event handlers to prevent duplicate bindings
+      $(document).off('click', '.edit-lead');
+      $(document).off('click', '.save-lead');
+      $(document).off('click', '.cancel-lead');
 
-      // Event listener for edit icon click
+      // Bind new event handlers
       $(document).on('click', '.edit-lead', function() {
+        console.log("Edit lead clicked");
         var $row = $(this).closest('tr');
-        $row.find('td[contenteditable="false"]').prop('contenteditable', true); // Enable inline editing
-        $row.find('.jadwal input').prop('disabled', false);
+        $row.find('td[contenteditable="false"]').prop('contenteditable', true);
+        $row.find('.jadwal input.datepicker').prop('disabled', false).datepicker({
+          dateFormat: "dd MM yy",
+          uiLibrary: 'bootstrap-datepicker',
+          onSelect: function() {
+            $(this).data('datepicker-selected', true);
+          }
+        });
+        $row.find('.jadwal input.time-input').prop('disabled', false);
+        $row.find('.tambah').addClass('hidden');
+        $row.find('.riwayat').addClass('hidden');
+        $row.find('.edit-lead').addClass('hidden');
         $row.find('.save-lead, .cancel-lead').removeClass('hidden');
-        $row.find('jadwal').removeAttr('disabled');
-        $(this).addClass('hidden'); // Hide the edit icon
+        $row.find('.status-select').prop('disabled', false);
       });
 
-      // Event listener for save button click
       $(document).on('click', '.save-lead', function() {
+        console.log("Save lead clicked");
         var $row = $(this).closest('tr');
         var idLead = $row.data('id');
-        var rowData = {
-          // Get the updated values from the table cells
-          status: $row.find('.status').text(),
-          jadwal: $row.find('.jadwal input').val(),
-          catatan: $row.find('.catatan').text()
-        };
+        var perusahaan = $row.find('.perusahaan').text();
+        var no_telp = $row.find('.no_telp').text();
+        var status = $row.find('.status-select').val();
+        var date = $row.find('.jadwal input.datepicker').val();
+        var time = $row.find('.jadwal input.time-input').val();
+        var catatan = $row.find('.catatan').text();
 
-        // Send AJAX request to update the lead data
+        // Combine date and time for display purposes
+        var jadwal = date + ' ' + time + ' WIB';
+
         $.ajax({
           url: `<?= base_url() ?>api/supplier/updateDataLeadCRM/${idLead}`,
-          type: 'POST',
-          dataType: 'json', // Ensure the data is being sent in JSON format
-          contentType: 'application/json', // Ensure the data is being sent in JSON format
-          data: JSON.stringify(rowData), // Stringify the data object
+          type: "POST",
+          headers: {
+            Authorization: `Basic ${basicAuth}`
+          },
+          data: JSON.stringify({
+            id: idLead,
+            nama_perusahaan: perusahaan,
+            no_telp: no_telp,
+            status: status,
+            jadwal: date, // Only send date part to the server
+            catatan: catatan
+          }),
+          contentType: "application/json",
           success: function(response) {
-            console.log(response);
-            console.log('Lead data updated successfully');
-            $row.find('td[contenteditable="true"]').prop('contenteditable', false); // Disable inline editing
-            $row.find('.save-lead, .cancel-lead').addClass('hidden'); // Hide save and cancel buttons
-            $row.find('.edit-lead').removeClass('hidden'); // Show the edit icon
+            console.log("Save success: ", response);
+            $row.find('.tambah').removeClass('hidden');
+            $row.find('.riwayat').removeClass('hidden');
+            $row.find('.edit-lead').removeClass('hidden');
+            $row.find('.save-lead, .cancel-lead').addClass('hidden');
+            $row.find('td[contenteditable="true"]').prop('contenteditable', false);
+            $row.find('.status-select').prop('disabled', true);
+            $row.find('.jadwal input.datepicker').prop('disabled', true).datepicker("destroy"); // Destroy datepicker after save
+            $row.find('.jadwal input.time-input').prop('disabled', true);
           },
           error: function(xhr, status, error) {
-            console.error('Error updating lead data:', error);
+            console.error("Save error: ", error);
           }
         });
       });
 
-      // Event listener for cancel button click
       $(document).on('click', '.cancel-lead', function() {
+        console.log("Cancel lead clicked");
         var $row = $(this).closest('tr');
-        $row.find('td[contenteditable="true"]').prop('contenteditable', false); // Disable inline editing
-        $row.find('.save-lead, .cancel-lead').addClass('hidden'); // Hide save and cancel buttons
-        $row.find('.jadwal input').prop('disabled', true);
-        $row.find('.edit-lead').removeClass('hidden'); // Show the edit icon
+        $row.find('td[contenteditable="true"]').prop('contenteditable', false);
+        $row.find('.tambah').removeClass('hidden');
+        $row.find('.riwayat').removeClass('hidden');
+        $row.find('.edit-lead').removeClass('hidden');
+        $row.find('.save-lead, .cancel-lead').addClass('hidden');
+        $row.find('.status-select').prop('disabled', true);
+        $row.find('.jadwal input.datepicker').prop('disabled', true).datepicker("destroy"); // Destroy datepicker on cancel
+        $row.find('.jadwal input.time-input').prop('disabled', true);
       });
-
-      return leads;
     }
 
+    $.ajax({
+      url: "<?= base_url('DashboardUserSupplier/getDonatChart') ?>",
+      type: "GET",
+      dataType: "JSON",
+      data: {
+        id_pengguna: id_pengguna
+      },
+      success: function(data) {
+        GrafikDonat(data);
+        updateKeterangan(data);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus, errorThrown);
+      }
+    });
+
+    function Grafikpemenang(selectedYear = $("#tahunSelect").val()) {
+      let id_pengguna = Cookies.get('id_pengguna');
+
+      $.ajax({
+        url: "<?= base_url() ?>DashboardUserSupplier/getDataGrafikPemenang",
+        type: "GET",
+        dataType: "JSON",
+        data: {
+          tahun: selectedYear,
+          id_pengguna: id_pengguna,
+        },
+        success: function(data) {
+          updateRiwayatPemenangChart(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error("Grafikpemenang error: ", textStatus, errorThrown);
+        }
+      });
+    }
+
+    function GrafikDonat(data) {
+      var total = data['tanpa-status'] + data['sedang-dihubungi'] + data['proses-negosiasi'] + data['disetujui'] + data['ditolak'];
+      var chartData = {
+        datasets: [{
+          data: [
+            data['tanpa-status'],
+            data['sedang-dihubungi'],
+            data['proses-negosiasi'],
+            data['disetujui'],
+            data['ditolak']
+          ],
+          backgroundColor: [
+            'orange', // Tanpa Status
+            'lightblue', // Sedang dihubungi
+            'purple', // Proses Negosiasi
+            'green', // Diterima
+            'red' // Ditolak
+          ]
+        }]
+      };
+
+      // Pengaturan chart
+      var options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutoutPercentage: 70,
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            fontColor: 'black',
+            fontSize: 14
+          }
+        },
+        title: {
+          display: false
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true
+        },
+        plugins: {
+          datalabels: {
+            display: true,
+            align: 'center',
+            anchor: 'center',
+            formatter: (value, ctx) => {
+              let percentage = (value / total * 100).toFixed(2) + "%";
+              return percentage;
+            },
+            color: 'white',
+            font: {
+              weight: 'bold',
+              size: 16
+            }
+          }
+        }
+      };
+
+      // Mendapatkan elemen canvas
+      var ctx = document.getElementById("grafikCRM").getContext("2d");
+
+      // Membuat doughnut chart
+      var myDoughnutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: chartData,
+        options: options
+      });
+    }
+
+    function updateKeterangan(data) {
+      $("#tanpa-status .crmstats-summary-number").text(data['tanpa-status']);
+      $("#sedang-dihubungi .crmstats-summary-number").text(data['sedang-dihubungi']);
+      $("#proses-negosiasi .crmstats-summary-number").text(data['proses-negosiasi']);
+      $("#disetujui .crmstats-summary-number").text(data['disetujui']);
+      $("#ditolak .crmstats-summary-number").text(data['ditolak']);
+    }
+
+    // Initial binding of table events
+    bindTableEvents();
   });
 </script>

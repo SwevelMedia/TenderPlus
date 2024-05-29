@@ -1003,8 +1003,9 @@ class DashboardUserSupplier extends CI_Controller
         echo json_encode($data);
     }
 
-    public function getDonatChart(){
-         $id_pengguna = $this->input->get('id_pengguna');
+    public function getDonatChart()
+    {
+        $id_pengguna = $this->input->get('id_pengguna');
         // $id_pengguna = 350;
         $data = $this->Supplier_api->getDonatChart($id_pengguna);
 
@@ -1012,7 +1013,7 @@ class DashboardUserSupplier extends CI_Controller
         $result = [
             'sedang-dihubungi' => 0,
             'proses-negosiasi' => 0,
-            'diterima' => 0,
+            'disetujui' => 0,
             'ditolak' => 0,
             'tanpa-status' => 0
         ];
@@ -1021,14 +1022,14 @@ class DashboardUserSupplier extends CI_Controller
             // Jika data tidak kosong, hitung jumlah item berdasarkan status
             foreach ($data as $item) {
                 switch ($item['status']) {
-                    case 'sedang dihubungi':
+                    case 'sedang-dihubungi':
                         $result['sedang-dihubungi']++;
                         break;
-                    case 'proses negosiasi':
+                    case 'proses-negosiasi':
                         $result['proses-negosiasi']++;
                         break;
-                    case 'diterima':
-                        $result['diterima']++;
+                    case 'disetujui':
+                        $result['disetujui']++;
                         break;
                     case 'ditolak':
                         $result['ditolak']++;
