@@ -2,9 +2,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
-<link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+<script src="<?= base_url() ?>assets/js/gijgo.min.js"></script>
+<link href="<?= base_url() ?>assets/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 
 
 
@@ -657,7 +656,12 @@
   .datepicker,
   .time-input {
     border: none !important;
-    background: transparent;
+    background-color: white;
+  }
+
+  .gj-textbox-md,
+  .gj-datepicker-md {
+    font-size: 13px !important;
   }
 </style>
 
@@ -772,7 +776,7 @@
               </tr>
             </thead>
             <tbody id="data-leads">
-              <tr class="riwayat" data-id="` + value.id + `" style="display:none;">
+
             </tbody>
           </table>
         </div>
@@ -793,6 +797,9 @@
     let total_leads;
     const basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
 
+    function addAuthorizationHeader(xhr) {
+      xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
+    }
     // Get total leads
     $.ajax({
       url: "<?= base_url('api/supplier/getCount') ?>",
@@ -862,9 +869,18 @@
             headers: {
               Authorization: `Basic ${basicAuth}`
             },
-            // beforeSend: function() {
-            //   $('#data-leads').html('<div class="justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan tender terbaru...</span></div>');
-            // }
+            beforeSend: function(xhr, settings) {
+              const url = settings.url
+              const params = new URLSearchParams(url)
+              let currentPageNum = params.get('pageNumber')
+              currentPageNum = parseInt(currentPageNum)
+              if (currentPageNum >= 2 && id_pengguna == null) {
+                window.location.href = `${base_url}login`
+                return false
+              }
+
+              $('#data-leads').html('<tr> <td colspan="7"><div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Update Data Terbaru...</span></div></td> </tr>');
+            }
           },
           callback: function(data, pagination) {
             console.log("Pagination callback triggered");
@@ -925,7 +941,7 @@
                     </td>
                     <td class="jadwal" contenteditable="false">
                       <input type="text" class="datepicker" value="${formattedDate}" disabled />
-                      <input type="text" class="time-input" value="${time}" disabled />
+                      <input type="text" class="time-input" value="${time} WIB" disabled />
                     </td>
                     <td class="catatan" contenteditable="false">${value.catatan}</td>
                     <td class="text-center">
@@ -933,8 +949,8 @@
                       <a class="edit-lead" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
                       <a class="tambah" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
                       <a class="riwayat" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px" ></a>
-                      <a class="save-lead hidden" ><img src="<?= base_url('assets/img/icon_check_table.svg') ?>" style="width: 20px"></a>
-                      <a class="cancel-lead hidden" ><img src="<?= base_url('assets/img/icon_cancel_table.svg') ?>" style="width: 20px"></a>
+                      <a class="save-lead float-left hidden" ><img src="<?= base_url('assets/img/ceklis.svg') ?>" style="width: 25px"></a>
+                      <a class="cancel-lead float-right hidden" ><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
                     </div>
                     </td>
                 </tr>
@@ -1007,7 +1023,7 @@
             $(this).data('datepicker-selected', true);
           }
         });
-        $row.find('.jadwal input.time-input').prop('disabled', false);
+        $row.find('.jadwal input.time-input').addClass('hidden');
         $row.find('.tambah').addClass('hidden');
         $row.find('.riwayat').addClass('hidden');
         $row.find('.edit-lead').addClass('hidden');
@@ -1054,6 +1070,7 @@
             $row.find('.status-select').prop('disabled', true);
             $row.find('.jadwal input.datepicker').prop('disabled', true).datepicker("destroy"); // Destroy datepicker after save
             $row.find('.jadwal input.time-input').prop('disabled', true);
+            $('#pagination-container').pagination('refresh');
           },
           error: function(xhr, status, error) {
             console.error("Save error: ", error);
@@ -1072,6 +1089,7 @@
         $row.find('.status-select').prop('disabled', true);
         $row.find('.jadwal input.datepicker').prop('disabled', true).datepicker("destroy"); // Destroy datepicker on cancel
         $row.find('.jadwal input.time-input').prop('disabled', true);
+        $('#pagination-container').pagination('refresh');
       });
     }
 
