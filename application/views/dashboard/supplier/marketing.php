@@ -387,7 +387,7 @@
     </div>
     <!-- end tabel marketing -->
 
-    <!-- modal input marketing -->
+    <!-- Modal Input Marketing -->
     <div class="col-12 py-5">
         <div class="modal fade" id="inputMarketingModal" tabindex="-1" role="dialog" aria-labelledby="inputMarketingModalLabel" aria-hidden="true" style="margin-top: -30px;">
             <div class="modal-dialog custom-modal" role="document">
@@ -397,8 +397,6 @@
                             <img src="<?= base_url("assets/img/button-x-popup.png") ?>" alt="Cancel" style="width: 32px; height: 32px; padding: 0;">
                         </button>
                     </div>
-
-
                     <div class="modal-body border-0">
                         <h3 class="modal-title" id="inputMarketingModalLabel">Input Marketing</h3>
                         <p class="text-center">Tambahkan untuk memasarkan produkmu</p>
@@ -427,7 +425,6 @@
                                 <div class="d-flex justify-content-start mt-3 gap-2">
                                     <div class="link flex-row align-items-center w-100">
                                         <span>
-                                            <!-- <input type="submit" class="btn-custom text-white text-center" value="Tambahkan"> -->
                                             <a id="submit-input" class="btn-custom text-white text-center" style="background-color: #DF3131;">
                                                 <i class="fas me-1"></i>Tambahkan
                                             </a>
@@ -440,7 +437,8 @@
             </div>
         </div>
     </div>
-    <!-- end modal input marketing -->
+    <!-- End Modal Input Marketing -->
+
 
     <!-- modal detail profil marketing -->
     <div class="col-12 py-5">
@@ -626,30 +624,30 @@
 
                         <h3 class="modal-title" id="editMarketingModalLabel">Edit Marketing</h3>
 
-                        <p class="text-center">Tambahkan untuk memasarkan produkmu</p>
+                        <p class="text-center">Atur data anggota marketingmu !</p>
 
                         <div class="input-popup justify-content-end">
 
                             <form id="form-input1" class="row g-2">
                                 <div class="col-12">
                                     <label for="inputNama" class="form-label text-start">Nama</label>
-                                    <input type="text" name="nama_tim" class="form-control" id="inputNama" placeholder="Masukkan Nama" required>
+                                    <input type="text" name="nama_tim" class="form-control" id="editNama" placeholder="Masukkan Nama" required>
                                 </div>
                                 <div class="col-12">
                                     <label for="inputPosisi" class="form-label text-start">Posisi</label>
-                                    <input type="text" name="posisi" class="form-control" id="inputPosisi" placeholder="Masukkan Posisi" required>
+                                    <input type="text" name="posisi" class="form-control" id="editPosisi" placeholder="Masukkan Posisi" required>
                                 </div>
                                 <div class="col-12">
                                     <label for="inputEmail" class="form-label text-start">Email</label>
-                                    <input type="text" name="email" class="form-control" id="inputEmail" placeholder="Masukkan Email" required>
+                                    <input type="text" name="email" class="form-control" id="editEmail" placeholder="Masukkan Email" required>
                                 </div>
                                 <div class="col-12">
                                     <label for="inputNoHP" class="form-label text-start">No. HP/WA</label>
-                                    <input type="text" name="no_telp" class="form-control" id="inputNoHP" placeholder="Masukkan No. HP/WA" required>
+                                    <input type="text" name="no_telp" class="form-control" id="editNoHP" placeholder="Masukkan No. HP/WA" required>
                                 </div>
                                 <div class="col-12">
                                     <label for="inputAlamat" class="form-label text-start">Alamat</label>
-                                    <textarea class="form-control" name="alamat" id="inputAlamat" placeholder="Masukkan Alamat" rows="2" required></textarea>
+                                    <textarea class="form-control" name="alamat" id="editAlamat" placeholder="Masukkan Alamat" rows="2" required></textarea>
                                 </div>
                                 <div class="d-flex justify-content-start mt-3 gap-2">
                                     <div class="link flex-row align-items-center w-100">
@@ -677,6 +675,368 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script>
+    var id_pengguna = <?= $_COOKIE['id_pengguna'] ?>;
+    var basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
+
+    function addAuthorizationHeader(xhr) {
+        xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
+    }
+
+    $(document).ready(function() {
+        // Clear form fields when the modal is closed
+        $('#detailMarketingModal').on('hidden.bs.modal', function () {
+            $('#nama').text('');
+            $('input[name=posisi]').val('');
+            $('input[name=email]').val('');
+            $('input[name=no_telp]').val('');
+            $('input[name=alamat]').val('');
+        });
+        $('#editMarketingModal').on('hidden.bs.modal', function () {
+            $('#nama').text('');
+            $('input[name=posisi]').val('');
+            $('input[name=email]').val('');
+            $('input[name=no_telp]').val('');
+            $('input[name=alamat]').val('');
+        });
+
+        tampilData();
+    });
+
+    function closeModal(){
+         // Menutup modal dengan mengklik tombol dengan atribut data-dismiss="modal"
+        $('[data-dismiss="modal"]').click();
+    }
+
+    // Handle form submission
+    $('#submit-input').click(function(event) {
+        event.preventDefault();
+
+        // Get the form data
+        var formData = {
+            nama_tim: $('#inputNama').val(),
+            posisi: $('#inputPosisi').val(),
+            email: $('#inputEmail').val(),
+            no_telp: $('#inputNoHP').val(),
+            alamat: $('#inputAlamat').val(),
+        };
+
+        // Make an AJAX request
+        $.ajax({
+            url: '<?= base_url("api/supplier/create") ?>',
+            type: 'POST',
+            data: formData,
+            beforeSend: addAuthorizationHeader,
+            success: function(response) {
+                if (response.status == true) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Data berhasil ditambahkan!",
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(function() {
+                        // Hide the modal
+                        closeModal();
+                        // Clear the form fields
+                        $('#form-input')[0].reset();
+
+                        // Call your function to refresh data display
+                        tampilData();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Data gagal ditambahkan!",
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    // Clear the form fields when the modal is closed
+    $('#inputMarketingModal').on('hidden.bs.modal', function () {
+        $('#form-input')[0].reset();
+    });
+
+    function tampilData(){
+        $.ajax({
+            url: "<?= base_url('api/supplier/get') ?>",
+            type: "GET",
+            dataType: "json",
+            data: {
+                id_pengguna: id_pengguna
+            },
+            beforeSend: addAuthorizationHeader,
+            success: function(data) {
+                let html = '';
+                for (let i = 0; i < data.data.length; i++) {
+                    html += '<tr>' +
+                        '<td style="text-align:center;">' + (i + 1) + '</td>' +
+                        '<td class="nama">' + data.data[i].nama_tim + '</td>' +
+                        '<td class="posisi">' + data.data[i].posisi + '</td>' +
+                        '<td style="width:20px;"><a class="email" href="mailto:' + data.data[i].email + '">' + data.data[i].email + '</a></td>' +
+                        '<td class="no_telp">' + data.data[i].no_telp + '</td>' +
+                        '<td style="text-align:center">' +
+                        '<a class="btn-det" data-toggle="modal" data-target="#detailMarketingModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-info-circle me-2"></i></a>' +
+                        '<a href="#" class="btn-edt" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-edit me-2"></i></a>' +
+                        '<a class="btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-trash me-2"></i></a>' +
+                        '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-paper-plane"></i></a>' +
+                        '</td>' +
+                        '</tr>';
+                }
+                $('#data-marketing').html(html);
+
+                // Attach delete event listener after the table is populated
+                attachDeleteEvent();
+                detail();
+                edit();
+                // aksi_edit();
+            }
+        });
+    }
+
+    function attachDeleteEvent() {
+        $(".btn-del").click(function() {
+            var id_tim = $(this).data("id");
+            console.log('id tim yg di hapus:',id_tim)
+
+
+            $('#hapus-modal').off('click').on('click', function(event) {
+                event.preventDefault();
+                // Make an AJAX request
+                $.ajax({
+                    url: "<?= base_url('api/supplier/delete/') ?>" + id_tim,
+                    type: 'DELETE',
+                    beforeSend: addAuthorizationHeader,
+                    success: function(response) {
+                        if (response.status == true) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Data berhasil dihapus!",
+                                showConfirmButton: false,
+                                timer: 2000
+                            }).then(function() {
+                                $('#deleteModal').modal('hide');
+                                tampilData(); // Refresh data
+                                closeModal();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Data gagal dihapus!",
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr.responseText);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Terjadi kesalahan!",
+                            text: "Silakan coba lagi.",
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            });
+        });
+    }
+
+    function detail(){
+        //Detail Marketing Action
+        $(".btn-det").click(function() {
+            var id_tim = $(this).data("id");
+
+            var formData = {
+                nama_tim: $('input[name=nama_tim]').val(),
+                posisi: $('input[name=posisi]').val(),
+                email: $('input[name=email]').val(),
+                no_telp: $('input[name=no_telp]').val(),
+                alamat: $('input[name=alamat]').val(),
+            };
+
+            // Get data from id
+            $.ajax({
+                url: "<?= base_url('api/supplier/getId/') ?>" + id_tim,
+
+                type: 'GET',
+
+                dataType: "json",
+
+                beforeSend: addAuthorizationHeader,
+
+                success: function(data) {
+
+                    // $('input[name=nama_tim]').val(data.data.nama_tim);
+                    $('#nama').text(data.data.nama_tim);
+
+                    $('input[name=posisi]').val(data.data.posisi);
+
+                    $('input[name=email]').val(data.data.email);
+
+                    $('input[name=no_telp]').val(data.data.no_telp);
+
+                    $('input[name=alamat]').val(data.data.alamat);
+
+                },
+
+                error: function(xhr, status, error) {
+
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+    }
+
+
+    function edit(){
+        //Edit Action
+        $(".btn-edt").click(function() {
+            var id_tim = $(this).data("id");
+    
+            // $('#submit-input').click(function(event) {
+            //     event.preventDefault();
+    
+            // Get the form instance
+            var formData = {
+                nama_tim: $('input[name=nama_tim]').val(),
+                posisi: $('input[name=posisi]').val(),
+                email: $('input[name=email]').val(),
+                no_telp: $('input[name=no_telp]').val(),
+                alamat: $('textarea[name=alamat]').val(),
+            };
+    
+            // Get data from id
+            $.ajax({
+                url: "<?= base_url('api/supplier/getId/') ?>" + id_tim,
+    
+                type: 'GET',
+    
+                dataType: "json",
+    
+                beforeSend: addAuthorizationHeader,
+    
+                success: function(data) {
+                    console.log(data);
+    
+                    $('input[name=nama_tim]').val(data.data.nama_tim);
+    
+                    $('input[name=posisi]').val(data.data.posisi);
+    
+                    $('input[name=email]').val(data.data.email);
+    
+                    $('input[name=no_telp]').val(data.data.no_telp);
+    
+                    $('textarea[name=alamat]').val(data.data.alamat);
+    
+                    aksi_edit(id_tim)
+                },
+    
+                error: function(xhr, status, error) {
+    
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+    }
+    
+    function aksi_edit(id_tim) {
+        $('#submit-edit').click(function(event) {
+    
+            // var id_tim = $(this).data("id");
+            event.preventDefault();
+    
+            // Get the form instance
+            var formData = {
+                nama_tim: $('#editNama').val(),
+                posisi: $('#editPosisi').val(),
+                email: $('#editEmail').val(),
+                no_telp: $('#editNoHP').val(),
+                alamat: $('#editAlamat').val(),
+            };
+
+            console.log('fotmat data edit:',formData)
+            console.log('id tim yg di edit:',id_tim)
+    
+        // // Make an AJAX request
+        $.ajax({
+    
+            url: '<?= base_url("api/supplier/update/") ?>' + id_tim,
+    
+            type: 'POST',
+    
+            data: formData,
+    
+            beforeSend: addAuthorizationHeader,
+    
+                success: function(response) {
+    
+                    console.log(response)
+    
+                        if (response.status == true) {
+    
+                            Swal.fire({
+    
+                                icon: "success",
+    
+                                title: "Data berhasil diubah!",
+    
+                                showConfirmButton: false,
+    
+                                timer: 2000
+    
+                            }).then(function() {
+    
+                                // window.location.href = "<?= base_url('suplier/marketing') ?>";
+                                tampilData();
+                                closeModal();
+    
+                            });
+    
+                        } else {
+    
+                            Swal.fire({
+    
+                                icon: "eror",
+    
+                                title: "Data gagal diubah!",
+    
+                                showConfirmButton: false,
+    
+                                timer: 2000
+    
+                            })
+                        }
+                },
+    
+                error: function(xhr, status, error) {
+    
+                  console.log(xhr.responseText);
+    
+                }
+        });
+        
+        });
+    }
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+<!-- <script>
     var id_pengguna = <?= $_COOKIE['id_pengguna'] ?>;
     var basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
 
@@ -981,4 +1341,4 @@
             }
         })
     });
-</script>
+</script> -->
