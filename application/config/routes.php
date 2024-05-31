@@ -409,6 +409,13 @@ $route['api/marketing/get/(:num)'] = 'api/ApiMarketing/show/$1';
 
 //restAPI route for Suplier 
 $route['api/supplier/get'] = 'api/ApiSupplier';
+
+// MSIB 6
+$route['api/supplier/getTotalTimMarketingById'] = 'api/ApiSupplier/getTotalTimMarketingById';
+$route['api/supplier/getTimMarketingByIdSup'] = 'api/ApiSupplier/getTimMarketingByIdSup';
+// END MSIB 6
+
+
 $route['api/supplier/create'] = 'api/ApiSupplier/create';
 $route['api/supplier/delete/(:num)'] = 'api/ApiSupplier/deleteTim/$1';
 $route['api/supplier/update/(:num)'] = 'api/ApiSupplier/editTimMarketing/$1';

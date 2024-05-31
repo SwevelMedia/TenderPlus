@@ -30,6 +30,28 @@ class Supplier_api extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+    public function getTimMarketingPagination($id_supplier, $page_number, $page_size)
+    {
+        $this->db->select('*');
+        $this->db->from('tim_marketing');
+        $this->db->where('id_supplier', $id_supplier);
+        
+        // Hitung offset berdasarkan nomor halaman dan ukuran halaman
+        $offset = ($page_number - 1) * $page_size;
+        
+        // Batasi jumlah baris yang diambil berdasarkan ukuran halaman dan offset
+        $this->db->limit($page_size, $offset);
+        
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    
+    public function getTotalTimMarketingById($id_supplier)
+    {
+        $this->db->from('tim_marketing');
+        $this->db->where('id_supplier', $id_supplier);
+        return $this->db->count_all_results();
+    }
 
     public function getTimMarketingById($id)
     {

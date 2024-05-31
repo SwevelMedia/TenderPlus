@@ -572,4 +572,29 @@ class ApiSupplier extends RestController
             ], RestController::HTTP_BAD_REQUEST);
         }
     }
+
+    public function getTotalTimMarketingById_get(){
+        $id_supplier = $this->input->get('id_pengguna');
+        $data = $this->Supplier_api->getTotalTimMarketingById($id_supplier);
+
+        echo json_encode($data);
+    }
+
+    public function getTimMarketingByIdSup_get()
+    {
+        $id_pengguna = $this->input->get('id_pengguna');
+        $total_tim = $this->input->get('total_tim');
+        $page_size = $_GET['pageSize'];
+        $page_number = ($_GET['pageNumber']);
+        $data = $this->Supplier_api->getTimMarketingPagination($id_pengguna, $page_number, $page_size);
+
+        echo json_encode($data);
+        // $this->output
+        //     ->set_status_header(200)
+        //     ->set_content_type('application/json')
+        //     ->set_output(json_encode($data, JSON_PRETTY_PRINT))
+        //     ->_display();
+
+        // exit;
+    }
 }

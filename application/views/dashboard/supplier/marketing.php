@@ -381,15 +381,17 @@
                             </td>
                         </tr> -->
                     </tbody>
-                </table>
+                </table>    
             </div>
+            <!-- Pagination controls -->
+            <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s" style="margin-bottom: 10%;"></div>
         </div>
     </div>
     <!-- end tabel marketing -->
 
     <!-- Modal Input Marketing -->
-    <div class="col-12 py-5">
-        <div class="modal fade" id="inputMarketingModal" tabindex="-1" role="dialog" aria-labelledby="inputMarketingModalLabel" aria-hidden="true" style="margin-top: -30px;">
+    <div class="modal fade" id="inputMarketingModal" tabindex="-1" role="dialog" aria-labelledby="inputMarketingModalLabel" aria-hidden="true" style="margin-top: -30px;">
+        <div class="col-12 py-5">
             <div class="modal-dialog custom-modal" role="document">
                 <div class="modal-content">
                     <div class="modal-header border-0">
@@ -674,6 +676,10 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
+<script src="<?= base_url() ?>assets/js/home/pagination.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js" integrity="sha512-efAcjYoYT0sXxQRtxGY37CKYmqsFVOIwMApaEbrxJr4RwqVVGw8o+Lfh/+59TU07+suZn1BWq4fDl5fdgyCNkw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</script>
+
 <script>
     var id_pengguna = <?= $_COOKIE['id_pengguna'] ?>;
     var basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
@@ -699,9 +705,79 @@
             $('input[name=alamat]').val('');
         });
 
-        tampilData();
+        load();
     });
 
+    function load(){
+        $.ajax({
+            url: "<?= base_url('api/supplier/getTotalTimMarketingById') ?>",
+            type: "GET",
+            dataType: "JSON",
+            headers: {
+                Authorization: `Basic ${basicAuth}`
+            },
+            data: {
+                id_pengguna: id_pengguna
+            },
+                success: function(data) {
+                    console.log('total tim:',data);
+                    total_tim = data;
+                        if (total_tim > 0) {
+                            $('#pagination-container').pagination({
+                                dataSource: "<?= base_url() ?>api/supplier/getTimMarketingByIdSup",
+                                locator: '',
+                                totalNumber: total_tim,
+                                pageSize: 10,
+                                autoHidePrevious: true,
+                                autoHideNext: true,
+                                showNavigator: true,
+                                formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> tim marketing',
+                                position: 'bottom',
+                                className: 'paginationjs-theme-red paginationjs-big',
+                                ajax: {
+                                    type: "GET",
+                                    data: {
+                                        id_pengguna: id_pengguna,
+                                        total_tim:total_tim
+                                    },
+                                    headers: {
+                                        Authorization: `Basic ${basicAuth}`
+                                    },
+
+                                    beforeSend: function(xhr, settings) {
+                                        const url = settings.url
+                                        const params = new URLSearchParams(url)
+                                        let currentPageNum = params.get('pageNumber')
+                                        currentPageNum = parseInt(currentPageNum)
+                                        if (currentPageNum >= 2 && id_pengguna == 0) {
+                                            window.location.href = `${base_url}login`
+                                            return false
+                                        }
+                                        $('#data-marketing').html(`<tr id="loading-row"><td colspan="6" class="text-center"><div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan tim marketing ...</span></div></td></tr>`);
+                                    },
+                                },
+                                callback: function(data, pagination) {
+                                    console.log("Pagination callback triggered");
+                                    if (data != '') {
+                                    currentPage = pagination.pageNumber;
+                                    let html = tampilData(data);
+                                    } 
+                                }
+
+                            })
+                            
+                            
+                        } else{
+                            alert('gagal memuat');
+
+                        }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+        });
+    } 
+    
     function closeModal(){
          // Menutup modal dengan mengklik tombol dengan atribut data-dismiss="modal"
         $('[data-dismiss="modal"]').click();
@@ -740,7 +816,7 @@
                         $('#form-input')[0].reset();
 
                         // Call your function to refresh data display
-                        tampilData();
+                        load();
                     });
                 } else {
                     Swal.fire({
@@ -762,42 +838,68 @@
         $('#form-input')[0].reset();
     });
 
-    function tampilData(){
-        $.ajax({
-            url: "<?= base_url('api/supplier/get') ?>",
-            type: "GET",
-            dataType: "json",
-            data: {
-                id_pengguna: id_pengguna
-            },
-            beforeSend: addAuthorizationHeader,
-            success: function(data) {
-                let html = '';
-                for (let i = 0; i < data.data.length; i++) {
-                    html += '<tr>' +
-                        '<td style="text-align:center;">' + (i + 1) + '</td>' +
-                        '<td class="nama">' + data.data[i].nama_tim + '</td>' +
-                        '<td class="posisi">' + data.data[i].posisi + '</td>' +
-                        '<td style="width:20px;"><a class="email" href="mailto:' + data.data[i].email + '">' + data.data[i].email + '</a></td>' +
-                        '<td class="no_telp">' + data.data[i].no_telp + '</td>' +
-                        '<td style="text-align:center">' +
-                        '<a class="btn-det" data-toggle="modal" data-target="#detailMarketingModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-info-circle me-2"></i></a>' +
-                        '<a href="#" class="btn-edt" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-edit me-2"></i></a>' +
-                        '<a class="btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-trash me-2"></i></a>' +
-                        '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-paper-plane"></i></a>' +
-                        '</td>' +
-                        '</tr>';
-                }
-                $('#data-marketing').html(html);
-
-                // Attach delete event listener after the table is populated
-                attachDeleteEvent();
-                detail();
-                edit();
-                // aksi_edit();
-            }
-        });
+    function tampilData(data){
+        let html = '';
+        for (let i = 0; i < data.length; i++) {
+            html += '<tr>' +
+                '<td style="text-align:center;">' + (i + 1) + '</td>' +
+                '<td class="nama">' + data[i].nama_tim + '</td>' +
+                '<td class="posisi">' + data[i].posisi + '</td>' +
+                '<td style="width:20px;"><a class="email" href="mailto:' + data[i].email + '">' + data[i].email + '</a></td>' +
+                '<td class="no_telp">' + data[i].no_telp + '</td>' +
+                '<td style="text-align:center">' +
+                '<a class="btn-det" data-toggle="modal" data-target="#detailMarketingModal" data-id="' + data[i].id_tim + '"><i class="fas fa-info-circle me-2"></i></a>' +
+                '<a href="#" class="btn-edt" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data[i].id_tim + '"><i class="fas fa-edit me-2"></i></a>' +
+                '<a class="btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data[i].id_tim + '"><i class="fas fa-trash me-2"></i></a>' +
+                '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data[i].id_tim + '"><i class="fas fa-paper-plane"></i></a>' +
+                '</td>' +
+                '</tr>';
+        }
+        $('#data-marketing').html(html);
+        attachDeleteEvent();
+        attachDeleteEvent();
+        detail();
+        edit();
+        // aksi_edit();
     }
+
+
+    // function tampilData(){
+    //     $.ajax({
+    //         url: "<?= base_url('api/supplier/get') ?>",
+    //         type: "GET",
+    //         dataType: "json",
+    //         data: {
+    //             id_pengguna: id_pengguna
+    //         },
+    //         beforeSend: addAuthorizationHeader,
+    //         success: function(data) {
+    //             let html = '';
+    //             for (let i = 0; i < data.data.length; i++) {
+    //                 html += '<tr>' +
+    //                     '<td style="text-align:center;">' + (i + 1) + '</td>' +
+    //                     '<td class="nama">' + data.data[i].nama_tim + '</td>' +
+    //                     '<td class="posisi">' + data.data[i].posisi + '</td>' +
+    //                     '<td style="width:20px;"><a class="email" href="mailto:' + data.data[i].email + '">' + data.data[i].email + '</a></td>' +
+    //                     '<td class="no_telp">' + data.data[i].no_telp + '</td>' +
+    //                     '<td style="text-align:center">' +
+    //                     '<a class="btn-det" data-toggle="modal" data-target="#detailMarketingModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-info-circle me-2"></i></a>' +
+    //                     '<a href="#" class="btn-edt" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-edit me-2"></i></a>' +
+    //                     '<a class="btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-trash me-2"></i></a>' +
+    //                     '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data.data[i].id_tim + '"><i class="fas fa-paper-plane"></i></a>' +
+    //                     '</td>' +
+    //                     '</tr>';
+    //             }
+    //             $('#data-marketing').html(html);
+
+    //             // Attach delete event listener after the table is populated
+    //             attachDeleteEvent();
+    //             detail();
+    //             edit();
+    //             // aksi_edit();
+    //         }
+    //     });
+    // }
 
     function attachDeleteEvent() {
         $(".btn-del").click(function() {
@@ -821,7 +923,7 @@
                                 timer: 2000
                             }).then(function() {
                                 $('#deleteModal').modal('hide');
-                                tampilData(); // Refresh data
+                                load(); // Refresh data
                                 closeModal();
                             });
                         } else {
@@ -993,7 +1095,7 @@
                             }).then(function() {
     
                                 // window.location.href = "<?= base_url('suplier/marketing') ?>";
-                                tampilData();
+                                load();
                                 closeModal();
     
                             });
@@ -1026,11 +1128,6 @@
 
 
 </script>
-
-
-
-
-
 
 
 
