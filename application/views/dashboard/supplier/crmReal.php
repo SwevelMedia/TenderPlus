@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="<?= base_url() ?>assets/js/gijgo.min.js"></script>
+<script src="<?= base_url() ?>assets/js/gijgo.min.js" type="text/javascript"></script>
 <link href="<?= base_url() ?>assets/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 
 
@@ -657,11 +657,40 @@
   .time-input {
     border: none !important;
     background-color: white;
+    font-size: 13px;
   }
 
   .gj-textbox-md,
   .gj-datepicker-md {
     font-size: 13px !important;
+  }
+
+  .custom-container {
+    height: 100%;
+    margin-right: 10px;
+    border-left: 4px solid #F17D3A;
+    ;
+  }
+
+  .btn {
+    font-size: 13px !important;
+  }
+
+  .btn-arrow,
+  .btn-arrow:disabled {
+    border: 0px !important;
+    /* for Firefox */
+    -moz-appearance: none;
+    /* for Safari, Chrome, Opera */
+    -webkit-appearance: none;
+  }
+
+  .btn:focus {
+    box-shadow: none !important;
+  }
+
+  p {
+    margin-bottom: 5px !important;
   }
 </style>
 
@@ -676,7 +705,7 @@
     <div class="row justify-content-center mt-2 mx-1 px-1">
     </div>
     <div class="row">
-      <div class="col-4">
+      <div class="col-3">
         <div class="grafikCRMContainer">
           <div class="chart2" style="margin:0; padding:0">
             <canvas id="grafikCRM" width="250" height="220"></canvas>
@@ -710,79 +739,90 @@
           </p>
         </div>
       </div>
+      <div class="col-3 my-auto">
+        <div>
+          <div class="custom-container fw-semibold mb-5">
+            <div class="container" style="color: #6A6A6A;">
+              <h6>Kontak Belum Dilengkapi</h6>
+            </div>
+            <div class="container">
+              <h2 class="belum-lengkap">0</h2>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="custom-container fw-semibold">
+            <div class="container" style="color: #6A6A6A;">
+              <h6>
+                Total Leads Anda
+              </h6>
+            </div>
+            <div class="container">
+              <h2 class=" total-leads">
+                0
+              </h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 text-center d-flex justify-content-center align-items-center">
+        <img src="<?= base_url('assets/img/icon-crm.svg') ?>" class="my-auto d-block" alt="CRM">
+      </div>
     </div>
   </div>
 </section>
 <section class="bg-white">
   <div class="container" data-aos="fade_up">
-    <div class="col-12" style="margin:0">
-      <div class="row">
-        <!-- <div class="col-lg-4">
-          <div class="d-flex gap-2 justify-content-between border rounded-pill py-1 px-4">
-            <img src="<?= base_url('assets\img\icon_filter_status.svg') ?>" width="20" alt="" class="">
-            <strong class="my-auto">Status:</strong>
-            <select name="" id="" class="form-select focus-ring p-0 bg-white">
-              <option value="">All</option>
-              <option value=" sedang_dihubungi">Sedang Dihubungi</option>
-              <option value="proses_negosiasi">Proses Negosiasi</option>
-              <option value="ditunda">Ditunda</option>
-              <option value="disetujui">Disetujui</option>
-              <option value="dibatalkan">Dibatalkan</option>
-            </select>
-          </div>
-        </div> -->
-        <div class="col-3 form-select-custom-status d-flex">
-          <img src="<?= base_url('assets\img\icon_filter_status.svg') ?>" width="20" alt="">
-          <h6 style="margin-right: 10px;color: var(--primary-red-500, #D21B1B);margin-bottom: 0px;align-self: center;padding-left: 5px;text-align: center;font-weight: bold;">Status :</h6>
-          <select id="select-status" class="" style="border:none;outline:none;background:transparent;color: var(--primary-red-500, #D21B1B);">
-            <option class="select-status-option" value="" selected>All</option>
-            <option class="select-status-option" value="sedang_dihubungi">Sedang Dihubungi</option>
-            <option class="select-status-option" value="proses_negosiasi">Proses Negosiasi</option>
-            <option class="select-status-option" value="ditunda">Ditunda</option>
-            <option class="select-status-option" value="disetujui">Disetujui</option>
-            <option class="select-status-option" value="dibatalkan">Dibatalkan</option>
-          </select>
-        </div>
-
-        <div class="col-4 form-select-custom d-flex ms-2" style="padding:5px 5px 5px 0px; margin-right:20px">
-          <input id="input-cari-tender" type="text" class="form-input-custom" style="border:none;" placeholder="Cari nama perusahaan">
-          <img class=" float-right" src="<?= base_url('assets\img\icon_search.svg') ?>" width="20" alt="" style="padding-right:5px">
-        </div>
+    <!-- <div class="col-12" style="margin:0"> -->
+    <div class="row my-3">
+      <div class="col-5 form-select-custom d-flex" style="padding:5px 5px 5px 0px; margin-right:10px">
+        <img class="ms-3" src="<?= base_url('assets\img\icon_search.svg') ?>" width="20" alt="" style="padding-right:5px">
+        <input id="input-cari-tender" type="text" class="form-input-custom" style="border:none;" placeholder="Cari nama perusahaan">
       </div>
-
-
+      <div class="col-3 form-select-custom-status d-flex ms-2">
+        <img src="<?= base_url('assets\img\icon_filter_status.svg') ?>" width="20" alt="">
+        <h6 style="margin-right: 10px;color: var(--primary-red-500, #D21B1B);margin-bottom: 0px;align-self: center;padding-left: 5px;text-align: center;font-weight: bold;">Status :</h6>
+        <select id="select-status" class="" style="border:none;outline:none;background:transparent;color: var(--primary-red-500, #D21B1B);">
+          <option class="select-status-option" value="" selected>All</option>
+          <option class="select-status-option" value="sedang-dihubungi">Sedang Dihubungi</option>
+          <option class="select-status-option" value="proses-negosiasi">Proses Negosiasi</option>
+          <option class="select-status-option" value="ditunda">Ditunda</option>
+          <option class="select-status-option" value="disetujui">Disetujui</option>
+          <option class="select-status-option" value="dibatalkan">Dibatalkan</option>
+        </select>
+      </div>
     </div>
 
-    <!-- </div> -->
 
     <!-- </div> -->
+
   </div>
 
   <div class="container wow fadeInUp" style="margin-top:10px">
 
+    <!-- <div class="row"> -->
+    <!-- <div class=""> -->
     <div class="row">
-      <div class="col">
-        <div class="row table-responsive my-4">
-          <table class="table custom-table-container">
-            <thead class="thead">
-              <tr>
-                <th class="custom-padding" style="width: 5%">No.</th>
-                <th class="custom-padding" style="width: 22%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets\img\icon_perusahaan.svg') ?>" width="20" alt="" style=""></a>Nama Perusahaan</th>
-                <th class="custom-padding" style="width:13%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets\img\icon_kontak.svg') ?>" width="20" alt="" style=""></a>Kontak </th>
-                <th class="custom-padding" style="width:14%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets\img\icon_filter_table.svg') ?>" width="20" alt="" style=""></a>Status</th>
-                <th class="custom-padding" style="width:12%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets\img\icon_jadwal.svg') ?>" width="20" alt="" style=""></a>Jadwal</th>
-                <th class="custom-padding" style="width:25%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets\img\icon_catatan.svg') ?>" width="20" alt="" style=""></a>Catatan</th>
-                <th class="custom-padding text-center" style="width:9%">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="data-leads">
+      <table class="table custom-table-container">
+        <thead class="thead">
+          <tr>
+            <th class="custom-padding" style="width: 5%">No.</th>
+            <th class="custom-padding" style="width: 22%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets\img\icon_perusahaan.svg') ?>" width="20" alt="" style=""></a>Nama Perusahaan</th>
+            <th class="custom-padding" style="width:13%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets\img\icon_kontak.svg') ?>" width="20" alt="" style=""></a>Kontak </th>
+            <th class="custom-padding" style="width:14%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets\img\icon_filter_table.svg') ?>" width="20" alt="" style=""></a>Status</th>
+            <th class="custom-padding" style="width:12%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets\img\icon_jadwal.svg') ?>" width="20" alt="" style=""></a>Jadwal</th>
+            <th class="custom-padding" style="width:25%"><a style="padding-right:5px"><img class="custom-img-table" src="<?= base_url('assets\img\icon_catatan.svg') ?>" width="20" alt="" style=""></a>Catatan</th>
+            <th class="custom-padding text-center" style="width:9%">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="data-leads">
 
-            </tbody>
-          </table>
-        </div>
-      </div>
+        </tbody>
+      </table>
     </div>
-    <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s"></div>
+    <!-- </div> -->
+    <!-- </div> -->
+    <div class="wow fadeInUp my-4" id="pagination-container" data-wow-delay="0.5s"></div>
   </div>
 
 </section>
@@ -796,6 +836,7 @@
     let itemsPerPage = 10;
     let total_leads;
     const basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
+    var filterElement = document.getElementById("input-cari-tender");
 
     function addAuthorizationHeader(xhr) {
       xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
@@ -926,12 +967,12 @@
         var time = value.jadwal ? formatTime(value.jadwal) : '';
 
         leads +=
-          `<tr data-id="` + value.id + `">
+          `<tr data-id="` + value.id + ` " class="data-lead-table" data-searchable="true">
                     <td style="text-align:center">` + rowNumber + `</td>
                     <td class="perusahaan" >` + (value.nama_perusahaan || '') + `</td>
                     <td class="no_telp" >${value.no_telp || ''}</td>
                     <td class="status" contenteditable="false">
-                    <select class="status-select" disabled>
+                    <select class="status-select btn rounded-pill btn-arrow"  disabled>
                       <option value="sedang-dihubungi" ${value.status === 'sedang-dihubungi' ? 'selected' : ''}>Sedang Dihubungi</option>
                       <option value="proses-negosiasi" ${value.status === 'proses-negosiasi' ? 'selected' : ''}>Proses Negosiasi</option>
                       <option value="ditunda" ${value.status === 'ditunda' ? 'selected' : ''}>Ditunda</option>
@@ -954,9 +995,10 @@
                     </div>
                     </td>
                 </tr>
-                <tr class="riwayat" data-id="` + value.id + `" style="display:none;">
+                <tr class="riwayat" data-id="` + value.id + `" style="display:none;" data-searchable="false">
                     <td colspan="7" class="riwayat-content"></td>
                 </tr>`;
+        $(leads).data('.jadwal', value.jadwal);
       });
       console.log("Table leads set");
       $(document).on('click', '.riwayat', function() {
@@ -970,6 +1012,9 @@
           $.ajax({
             url: '<?= base_url('api/supplier/getLeadRiwayat') ?>', // Ganti dengan URL endpoint Anda
             type: 'GET',
+            headers: {
+              Authorization: `Basic ${basicAuth}`
+            },
             data: {
               id_lead: idLead
             },
@@ -1017,8 +1062,8 @@
         var $row = $(this).closest('tr');
         $row.find('td[contenteditable="false"]').prop('contenteditable', true);
         $row.find('.jadwal input.datepicker').prop('disabled', false).datepicker({
-          dateFormat: "dd MM yy",
-          uiLibrary: 'bootstrap-datepicker',
+          format: 'dd mmmm yyyy',
+          uiLibrary: 'bootstrap',
           onSelect: function() {
             $(this).data('datepicker-selected', true);
           }
@@ -1056,7 +1101,7 @@
             nama_perusahaan: perusahaan,
             no_telp: no_telp,
             status: status,
-            jadwal: date, // Only send date part to the server
+            jadwal: jadwal, // Only send date part to the server
             catatan: catatan
           }),
           contentType: "application/json",
@@ -1071,6 +1116,7 @@
             $row.find('.jadwal input.datepicker').prop('disabled', true).datepicker("destroy"); // Destroy datepicker after save
             $row.find('.jadwal input.time-input').prop('disabled', true);
             $('#pagination-container').pagination('refresh');
+            $row.find('.jadwal input.time-input').val(time + ' WIB');
           },
           error: function(xhr, status, error) {
             console.error("Save error: ", error);
@@ -1209,6 +1255,68 @@
 
     // Initial binding of table events
     bindTableEvents();
+    // Add an event listener to the input field for searching
+    $('#input-cari-tender').on('input', function() {
+      var searchText = $(this).val().toLowerCase(); // Convert the search text to lowercase for case-insensitive search
 
+      // Loop through each row of the table
+      $('.data-lead-table').each(function() {
+        // Check if the row should be searchable
+        var isSearchable = $(this).data('searchable');
+
+        if (isSearchable) {
+          // Get the company name from the current row
+          var companyName = $(this).find('.perusahaan').text().toLowerCase();
+
+          // Check if the company name contains the search text
+          if (companyName.includes(searchText)) {
+            // If the company name matches the search text, show the row
+            $(this).show();
+          } else {
+            // If the company name does not match the search text, hide the row
+            $(this).hide();
+          }
+        }
+      });
+    });
+    $('#select-status').on('change', function() {
+      var selectedStatus = $(this).val();
+
+      // Loop through each row of the table
+      $('.data-lead-table').each(function() {
+        var status = $(this).find('.status-select').val(); // Assuming the status is stored in a dropdown with the class 'status-select'
+
+        // Check if the selected status matches the row's status or if "All" is selected
+        if (selectedStatus === status || selectedStatus === "") {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+
+    // filterElement.addEventListener("input", function(event) {
+    //   // Fungsi ini akan dipanggil setiap kali ada perubahan pada input
+    //   var filterValue = event.target.value;
+    //   filterLeads(id_pengguna, filterValue);
+    //   console.log("Input yang diketik: " + filterValue);
+    // });
+
+    // function filterLeads(id_pengguna, key) {
+    //   $.ajax({
+    //     url: "<?php echo site_url('api/supplier/lead/filter'); ?>",
+    //     type: "GET",
+    //     data: {
+    //       id_pengguna: id_pengguna,
+    //       key: key
+    //     },
+    //     dataType: "json",
+    //     beforeSend: addAuthorizationHeader,
+    //     success: function(data) {
+    //       console.log(data, 'data');
+    //       setTableLeads(data)
+    //     }
+    //   });
+    // }
   });
 </script>
