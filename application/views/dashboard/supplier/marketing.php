@@ -384,14 +384,14 @@
                 </table>    
             </div>
             <!-- Pagination controls -->
-            <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s" style="margin-bottom: 10%;"></div>
+            <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s"></div>
         </div>
     </div>
     <!-- end tabel marketing -->
 
     <!-- Modal Input Marketing -->
-    <div class="modal fade" id="inputMarketingModal" tabindex="-1" role="dialog" aria-labelledby="inputMarketingModalLabel" aria-hidden="true" style="margin-top: -30px;">
-        <div class="col-12 py-5">
+    <div class="col-12 py-5">
+        <div class="modal fade" id="inputMarketingModal" tabindex="-1" role="dialog" aria-labelledby="inputMarketingModalLabel" aria-hidden="true" style="margin-top: -30px;">
             <div class="modal-dialog custom-modal" role="document">
                 <div class="modal-content">
                     <div class="modal-header border-0">
