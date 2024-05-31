@@ -1159,14 +1159,15 @@
                         `);
                         
                         $('#pagination-container').hide();
+                        $('#tenderInkindoLink').click();
                         showhideerror()
                     }
-                },error: function (jqXHR, textStatus, errorThrown){
+            },error: function (jqXHR, textStatus, errorThrown){
                     $('#sec-pemenang-terbaru').show();
                     $('#list-pemenang').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
                     console.error(`Error: ${textStatus}, ${errorThrown}`);
                     showhideerror()
-                }
+            }
         
         });
         // Ajax pemenang Inkindo
