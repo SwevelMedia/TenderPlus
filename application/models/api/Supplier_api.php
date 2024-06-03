@@ -35,17 +35,17 @@ class Supplier_api extends CI_Model
         $this->db->select('*');
         $this->db->from('tim_marketing');
         $this->db->where('id_supplier', $id_supplier);
-        
+
         // Hitung offset berdasarkan nomor halaman dan ukuran halaman
         $offset = ($page_number - 1) * $page_size;
-        
+
         // Batasi jumlah baris yang diambil berdasarkan ukuran halaman dan offset
         $this->db->limit($page_size, $offset);
-        
+
         $query = $this->db->get();
         return $query->result_array();
     }
-    
+
     public function getTotalTimMarketingById($id_supplier)
     {
         $this->db->from('tim_marketing');
@@ -260,16 +260,12 @@ class Supplier_api extends CI_Model
         data_leads.id_lead AS id,
         id_pengguna,
         nama_perusahaan,
-        data_leads.npwp,
         profil,
-        pemenang.*,
         kontak_lead.*,
         COUNT(kontak_lead.id_kontak) AS jumlah_kontak,
         plot_tim.*
         FROM
             data_leads
-        LEFT JOIN
-            pemenang ON data_leads.id_pemenang = pemenang.id_pemenang
         LEFT JOIN
             kontak_lead ON data_leads.id_lead = kontak_lead.id_lead
 		LEFT JOIN
@@ -281,7 +277,6 @@ class Supplier_api extends CI_Model
         ORDER BY
             id DESC
         LIMIT {$page_number},{$page_size}";
-
         return $this->db->query($sql);
     }
     public function updateDataLeadCRM($data, $id)

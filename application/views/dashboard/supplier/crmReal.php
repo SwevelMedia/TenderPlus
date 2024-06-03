@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="<?= base_url() ?>assets/js/gijgo.min.js" type="text/javascript"></script>
-<link href="<?= base_url() ?>assets/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+<link href="<?= base_url() ?>assets/css/gijgo.css" rel="stylesheet" type="text/css">
 
 
 
@@ -837,6 +837,7 @@
     let total_leads;
     const basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
     var filterElement = document.getElementById("input-cari-tender");
+    refreshDashboard();
 
     function addAuthorizationHeader(xhr) {
       xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
@@ -892,7 +893,7 @@
         total_leads = data.data;
 
         $('#pagination-container').pagination({
-          dataSource: "<?= base_url() ?>api/supplier/getDataLeadCRM",
+          dataSource: `<?= base_url() ?>api/supplier/getDataLeadCRM/`,
           locator: '',
           totalNumber: total_leads,
           pageSize: 10,
@@ -982,7 +983,7 @@
                     </td>
                     <td class="jadwal" contenteditable="false">
                       <input type="text" class="datepicker" value="${formattedDate}" disabled />
-                      <input type="text" class="time-input" value="${time} WIB" disabled />
+                      <input type="text" class="time-input" value="${time}" disabled />
                     </td>
                     <td class="catatan" contenteditable="false">${value.catatan}</td>
                     <td class="text-center">
@@ -1063,7 +1064,7 @@
         $row.find('td[contenteditable="false"]').prop('contenteditable', true);
         $row.find('.jadwal input.datepicker').prop('disabled', false).datepicker({
           format: 'dd mmmm yyyy',
-          uiLibrary: 'bootstrap',
+          // uiLibrary: 'bootstrap3',
           onSelect: function() {
             $(this).data('datepicker-selected', true);
           }
@@ -1116,6 +1117,7 @@
             $row.find('.jadwal input.datepicker').prop('disabled', true).datepicker("destroy"); // Destroy datepicker after save
             $row.find('.jadwal input.time-input').prop('disabled', true);
             $('#pagination-container').pagination('refresh');
+            refreshDashboard();
             $row.find('.jadwal input.time-input').val(time + ' WIB');
           },
           error: function(xhr, status, error) {
@@ -1139,45 +1141,27 @@
       });
     }
 
-    $.ajax({
-      url: "<?= base_url('DashboardUserSupplier/getDonatChart') ?>",
-      type: "GET",
-      dataType: "JSON",
-      data: {
-        id_pengguna: id_pengguna
-      },
-      success: function(data) {
-        GrafikDonat(data);
-        updateKeterangan(data);
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        console.log(textStatus, errorThrown);
-      }
-    });
-
-    function Grafikpemenang(selectedYear = $("#tahunSelect").val()) {
-      let id_pengguna = Cookies.get('id_pengguna');
-
+    function refreshDashboard() {
       $.ajax({
-        url: "<?= base_url() ?>DashboardUserSupplier/getDataGrafikPemenang",
+        url: "<?= base_url('DashboardUserSupplier/getDonatChart') ?>",
         type: "GET",
         dataType: "JSON",
         data: {
-          tahun: selectedYear,
-          id_pengguna: id_pengguna,
+          id_pengguna: id_pengguna
         },
         success: function(data) {
-          updateRiwayatPemenangChart(data);
+          GrafikDonat(data);
+          updateKeterangan(data);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-          console.error("Grafikpemenang error: ", textStatus, errorThrown);
+          console.log(textStatus, errorThrown);
         }
       });
     }
 
     function GrafikDonat(data) {
-      var total = data['tanpa-status'] + data['sedang-dihubungi'] + data['proses-negosiasi'] + data['disetujui'] + data['ditolak'];
-      var chartData = {
+      const total = data['tanpa-status'] + data['sedang-dihubungi'] + data['proses-negosiasi'] + data['disetujui'] + data['ditolak'];
+      const chartData = {
         datasets: [{
           data: [
             data['tanpa-status'],
@@ -1196,8 +1180,7 @@
         }]
       };
 
-      // Pengaturan chart
-      var options = {
+      const options = {
         responsive: true,
         maintainAspectRatio: false,
         cutoutPercentage: 70,
@@ -1208,9 +1191,6 @@
             fontColor: 'black',
             fontSize: 14
           }
-        },
-        title: {
-          display: false
         },
         animation: {
           animateScale: true,
@@ -1234,11 +1214,13 @@
         }
       };
 
-      // Mendapatkan elemen canvas
-      var ctx = document.getElementById("grafikCRM").getContext("2d");
+      const ctx = document.getElementById("grafikCRM").getContext("2d");
 
-      // Membuat doughnut chart
-      var myDoughnutChart = new Chart(ctx, {
+      if (window.myDoughnutChart) {
+        window.myDoughnutChart.destroy();
+      }
+
+      window.myDoughnutChart = new Chart(ctx, {
         type: 'doughnut',
         data: chartData,
         options: options
@@ -1246,11 +1228,13 @@
     }
 
     function updateKeterangan(data) {
-      $("#tanpa-status .crmstats-summary-number").text(data['tanpa-status']);
-      $("#sedang-dihubungi .crmstats-summary-number").text(data['sedang-dihubungi']);
-      $("#proses-negosiasi .crmstats-summary-number").text(data['proses-negosiasi']);
-      $("#disetujui .crmstats-summary-number").text(data['disetujui']);
-      $("#ditolak .crmstats-summary-number").text(data['ditolak']);
+      $('#tanpa-status .crmstats-summary-number').text(data['tanpa-status']);
+      $('#sedang-dihubungi .crmstats-summary-number').text(data['sedang-dihubungi']);
+      $('#proses-negosiasi .crmstats-summary-number').text(data['proses-negosiasi']);
+      $('#disetujui .crmstats-summary-number').text(data['disetujui']);
+      $('#ditolak .crmstats-summary-number').text(data['ditolak']);
+      $('.belum-lengkap').text(data['belum-lengkap']);
+      $('.total-leads').text(data['total-leads']);
     }
 
     // Initial binding of table events

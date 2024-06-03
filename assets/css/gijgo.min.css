@@ -1830,11 +1830,11 @@ ul.gj-list-md li.disabled > [data-role="wrapper"] > [data-role="expander"] {
 	border-radius: 50%;
 }
 .gj-picker-md table tr td.today div {
-	color: #1976d2;
+	color: #d21b1b;
 }
 .gj-picker-md table tr td.selected.gj-cursor-pointer div {
 	color: #fff;
-	background: #1976d2;
+	background: #d21b1b;
 	border-radius: 50%;
 }
 .gj-picker-md table tr td.calendar-week div {
@@ -1913,7 +1913,7 @@ ul.gj-list-md li.disabled > [data-role="wrapper"] > [data-role="expander"] {
 }
 .gj-picker-bootstrap table tr td.selected.gj-cursor-pointer div {
 	color: #fff;
-	background-color: #204d74;
+	background-color: #d21b1b;
 	border-color: #122b40;
 	border-radius: 4px;
 }
