@@ -1102,7 +1102,7 @@
             nama_perusahaan: perusahaan,
             no_telp: no_telp,
             status: status,
-            jadwal: jadwal, // Only send date part to the server
+            jadwal: date, // Only send date part to the server
             catatan: catatan
           }),
           contentType: "application/json",
