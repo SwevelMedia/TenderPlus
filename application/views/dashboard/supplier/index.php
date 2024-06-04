@@ -191,8 +191,8 @@
     }
 
     .card-title p {
-        color: #B89494;
-        font-size: 0.75rem;
+        color: #333333;
+        font-size: 0.89rem;
         font-weight: bold;
         padding: 6% 0% 6% 3%;
     }
@@ -336,6 +336,26 @@
         color: white !important;
         /* Warna teks ketika aktif */
     }
+
+    .crmstats-summary {
+        position: relative;
+    }
+
+    .badge-right {
+        position: absolute;
+        top: 50%;
+        right: 0px;
+        /* Adjust this value to fine-tune the position */
+        transform: translateY(-40%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        color: black;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+    }
 </style>
 
 <section class="mt-7 bg-white">
@@ -416,7 +436,7 @@
                                     <!-- Select dropdown for year -->
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
                                         <!-- Heading for Riwayat Peserta Menang -->
-                                        <h3 style="font-size: 18px; text-align: left ;margin-top: 10px;">Riwayat Peserta Menang</h3>
+                                        <h3 style="font-size: 18px; text-align: left ;margin-top: 10px; font-weight: bold;">Riwayat Peserta Menang</h3>
 
                                         <!-- Select dropdown for year -->
                                         <select id="tahunSelect" onchange="Grafikpemenang()" class="form-select2" style="margin-top: 10px; margin-right: 15px;">
@@ -446,7 +466,8 @@
                         <div class="shadow rounded-3 bg-white ">
                             <div class="card-body ">
                                 <div h1 class="card-title wow fadeInUp" data-wow-delay="0.5s">
-                                    <h3>Tim Marketing</h3>
+                                    <h3 style="font-size: 18px; font-weight: bold;">Tim Marketing</h3>
+
                                 </div>
                                 <div style="height: 310px;max-height: 310px; overflow-y: auto;">
                                     <table class="table custom-table-container">
@@ -468,7 +489,7 @@
             <!-- Grafik Status CRM -->
             <div class="col-md-3 wow fadeInUp animation statusCRM">
                 <div class="row justify-content-center mt-2 mx-1 px-1">
-                    <h3>Status CRM</h3>
+                    <h3 style="font-size: 18px; font-weight: bold;">Status CRM</h3>
                 </div>
                 <div class="col">
                     <div class="grafikCRMContainer">
@@ -481,24 +502,24 @@
                 <div class="col">
                     <div class="keterangan" style="margin-top:10px; padding:0">
                         <p id="tanpa-status" class="crmstats-summary" style="margin-left: 10%;">
-                            <span style="border-left: 4px solid orange; font-size:11px; margin-right:4px"></span>
-                            <span class="crmstats-summary-number">0</span> Tanpa Status
+                            <span style="border-left: 4px solid orange; font-size:11px; margin-right:4px"> </span>
+                            Belum Dihubungi <span class="crmstats-summary-number badge-right">0</span>
                         </p>
                         <p id="sedang-dihubungi" class="crmstats-summary" style="margin-left: 10%;">
                             <span style="border-left: 4px solid lightblue; font-size:11px; margin-right:4px"></span>
-                            <span class="crmstats-summary-number">0</span> Sedang Dihubungi
+                            Sedang Dihubungi <span class="crmstats-summary-number badge-right">0</span>
                         </p>
                         <p id="proses-negosiasi" class="crmstats-summary" style="margin-left: 10%;">
                             <span style="border-left: 4px solid purple; font-size:11px; margin-right:4px"></span>
-                            <span class="crmstats-summary-number">0</span> Proses Negosiasi
+                            Negosiasi <span class="crmstats-summary-number badge-right">0</span>
                         </p>
                         <p id="disetujui" class="crmstats-summary" style="margin-left: 10%;">
                             <span style="border-left: 4px solid green; font-size:11px; margin-right:4px"></span>
-                            <span class="crmstats-summary-number">0</span> Disetujui
+                            Disetujui <span class="crmstats-summary-number badge-right">0</span>
                         </p>
                         <p id="ditolak" class="crmstats-summary" style="margin-left: 10%;">
                             <span style="border-left: 4px solid red; font-size:11px; margin-right:4px"></span>
-                            <span class="crmstats-summary-number">0</span> Ditolak
+                            Disetujui <span class="crmstats-summary-number badge-right">0</span>
                         </p>
                     </div>
                 </div>
@@ -531,11 +552,11 @@
                             </div>
                             <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:10px">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
-                                <select class="select2-jenis-pengadaan"  style="border:none;">
-                                <option value="">Semua Pengadaan</option>
-                                <?php foreach ($jenisTender as $jenisTender) : ?>
-                                <option value="<?= $jenisTender['id_jenis'] ?>"><?php echo $jenisTender['jenis_tender'] ?></option>
-                                <?php endforeach; ?>
+                                <select class="select2-jenis-pengadaan" style="border:none;">
+                                    <option value="">Semua Pengadaan</option>
+                                    <?php foreach ($jenisTender as $jenisTender) : ?>
+                                        <option value="<?= $jenisTender['id_jenis'] ?>"><?php echo $jenisTender['jenis_tender'] ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <!-- Select Trigger Filter Nilai Penawaran -->
@@ -581,7 +602,7 @@
                                 <ul class="dropdown-menu dropdown-menu-end my-2 py-2 rounded-3">
                                     <li class="dropdown-item d-flex text-dropdown" data-sort="1">Nilai Penawaran Terendah</li>
                                     <li class="dropdown-item d-flex text-dropdown" data-sort="2">Nilai Penawaran Tertinggi</li>
-                                    <li class="dropdown-item d-flex text-dropdown" data-sort="3">Penetapan Pemenang Terdekat</li>
+                                    <li class="dropdown-item d-flex text-dropdown" data-sort="3">Penetapan Pemenang Terbaru</li>
                                     <li class="dropdown-item d-flex text-dropdown" data-sort="4">Penetapan Pemenang Terlama</li>
                                 </ul>
                             </div>
@@ -676,20 +697,20 @@
         <div id="sec-pemenang-terbaru" style="display: none; margin-left: 6%; margin-right: 6%;">
             <div class="row wow fadeInUp justify-content-center px-1" data-wow-delay="0.5s">
                 <div class="row">
-					<div class="col-12">
-						<div class="pemenang-info">
-							<div id="nav-pemenang" class="nav-main mt-3 custom-nav ">
-								<!-- Tab Nav -->
-								<ul class="nav nav-tab justify-content-center" id="myTab" role="tablist">
-									<li class="nav-item col-6 text-center"><a class="nav-link active " data-toggle="tab" href="#list-pemenang" id="pemenangTenderLink" role="tab">Pemenang Tender</a></li>
-									<li class="nav-item col-6 text-center"><a class="nav-link" data-toggle="tab" href="#tenderInkindoLink" id="tenderInkindoLink" role="tab">Tender Anggota INKINDO</a></li>
-								</ul>
-								<!--/ End Tab Nav -->
-							</div>
+                    <div class="col-12">
+                        <div class="pemenang-info">
+                            <div id="nav-pemenang" class="nav-main mt-3 custom-nav ">
+                                <!-- Tab Nav -->
+                                <ul class="nav nav-tab justify-content-center" id="myTab" role="tablist">
+                                    <li class="nav-item col-6 text-center"><a class="nav-link active " data-toggle="tab" href="#list-pemenang" id="pemenangTenderLink" role="tab">Pemenang Tender</a></li>
+                                    <li class="nav-item col-6 text-center"><a class="nav-link" data-toggle="tab" href="#tenderInkindoLink" id="tenderInkindoLink" role="tab">Tender Anggota INKINDO</a></li>
+                                </ul>
+                                <!--/ End Tab Nav -->
+                            </div>
 
-						</div>
-					</div>
-				</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row wow fadeInUp mx-0 my-2" id="list-pemenang" data-wow-delay="0.5s"></div>
@@ -707,11 +728,11 @@
 <script>
     // Inisialisasi Select2 pada dropdown select
     $(document).ready(function() {
-    
+
         showhide()
 
         $('#pagination-container-inkindo').hide();
-        
+
         // Secara default, sembunyikan elemen dengan ID 'list-inkindo' saat halaman pertama dimuat
         $('#list-inkindo').hide();
 
@@ -726,7 +747,7 @@
         var basicAuth = btoa("beetend" + ":" + "76oZ8XuILKys5");
 
         function addAuthorizationHeader(xhr) {
-                xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
+            xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
         }
         $.ajax({
             url: "<?= base_url('api/supplier/getCount') ?>",
@@ -741,127 +762,128 @@
                 // $('.belum-lengkap').html(data.data.belum_lengkap);
                 var belum = data.data.jumlah
                 $.ajax({
-                        url: "<?= base_url('api/supplier/getTotal') ?>",
-                        type: "GET",
-                        dataType: "JSON",
-                        data: {
-                            id_pengguna: id_pengguna
-                        },
-                        beforeSend: addAuthorizationHeader,
-                        success: function(data) {
-                            // $('.total-leads').html(data.total_leads);
-                            $('.total-leads').html(data.data);
-                            var total = data.data
+                    url: "<?= base_url('api/supplier/getTotal') ?>",
+                    type: "GET",
+                    dataType: "JSON",
+                    data: {
+                        id_pengguna: id_pengguna
+                    },
+                    beforeSend: addAuthorizationHeader,
+                    success: function(data) {
+                        // $('.total-leads').html(data.total_leads);
+                        $('.total-leads').html(data.data);
+                        var total = data.data
 
-                            var jumlah = total - belum
-                            $('.total').html(jumlah);
-                            
-                            $('#filter-pemenang').show();
-                        }
-                    })
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus, errorThrown);
+                        var jumlah = total - belum
+                        $('.total').html(jumlah);
 
-                }
-            })
-
-            // GET DATA LEADS BELUM DI PLOTING
-            $.ajax({
-                url: "<?= base_url('DashboardUserSupplier/getLeadsBelumPloting') ?>",
-                type: "GET",
-                dataType: "JSON",
-                data: {
-                    id_pengguna: id_pengguna
-                },
-                success: function(data) {
-                    // console.log('belum di ploting : '+ data);
-                    $('#leads_belum_ploting').html(data);
-
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus, errorThrown);
-                }
-            })
-
-            // get Recent DATA Leads
-            $.ajax({
-                url: "<?= base_url('DashboardUserSupplier/getRecentLeads') ?>",
-                type: "GET",
-                dataType: "JSON",
-                data: {
-                    id_pengguna: id_pengguna
-                },
-                success: function(data) {
-                    // console.log('belum di ploting : '+ data);
-                    $('#leads_terbaru').html(data);
-
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus, errorThrown);
-                }
-            })
-
-            // get data untuk tabel tim marketing
-            $.ajax({
-                url: "<?= base_url('DashboardUserSupplier/getTabelTimMarketing') ?>",
-                type: "GET",
-                dataType: "JSON",
-                data: {
-                    id_pengguna: id_pengguna
-                },
-                success: function(data) {
-                    // console.log(JSON.stringify(data, null, 2));
-
-                    // Fungsi untuk mengubah huruf pertama setiap kata menjadi huruf besar
-                    function capitalizeFirstLetter(string) {
-                        return string.replace(/\b\w/g, function(l) {
-                            return l.toUpperCase()
-                        });
+                        $('#filter-pemenang').show();
                     }
+                })
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
 
-                    let rows = '';
-                    data.forEach(function(item) {
-                        let namaTim = capitalizeFirstLetter(item.nama_tim);
-                        let alamat = capitalizeFirstLetter(item.alamat);
+            }
+        })
 
-                        rows += `
+        // GET DATA LEADS BELUM DI PLOTING
+        $.ajax({
+            url: "<?= base_url('DashboardUserSupplier/getLeadsBelumPloting') ?>",
+            type: "GET",
+            dataType: "JSON",
+            data: {
+                id_pengguna: id_pengguna
+            },
+            success: function(data) {
+                // console.log('belum di ploting : '+ data);
+                $('#leads_belum_ploting').html(data);
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        })
+
+        // get Recent DATA Leads
+        $.ajax({
+            url: "<?= base_url('DashboardUserSupplier/getRecentLeads') ?>",
+            type: "GET",
+            dataType: "JSON",
+            data: {
+                id_pengguna: id_pengguna
+            },
+            success: function(data) {
+                // console.log('belum di ploting : '+ data);
+                $('#leads_terbaru').html(data);
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        })
+
+
+        // get data untuk tabel tim marketing
+        $.ajax({
+            url: "<?= base_url('DashboardUserSupplier/getTabelTimMarketing') ?>",
+            type: "GET",
+            dataType: "JSON",
+            data: {
+                id_pengguna: id_pengguna
+            },
+            success: function(data) {
+                // console.log(JSON.stringify(data, null, 2));
+
+                // Fungsi untuk mengubah huruf pertama setiap kata menjadi huruf besar
+                function capitalizeFirstLetter(string) {
+                    return string.replace(/\b\w/g, function(l) {
+                        return l.toUpperCase()
+                    });
+                }
+
+                let rows = '';
+                data.forEach(function(item) {
+                    let namaTim = capitalizeFirstLetter(item.nama_tim);
+                    let alamat = capitalizeFirstLetter(item.alamat);
+
+                    rows += `
                             <tr>
                                 <td><strong>${namaTim}</strong><br>${alamat}</td>
                                 <td><span class="circle">${item.jumlah_perusahaan}</span></td>
                             </tr>
                         `;
-                    });
-                    $('#tim-marketing').html(rows);
+                });
+                $('#tim-marketing').html(rows);
 
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus, errorThrown);
-                }
-            })
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        })
 
-            // ajax  mengambil data untuk membuat grafik donat
-            $.ajax({
-                url: "<?= base_url('DashboardUserSupplier/getDonatChart') ?>",
-                type: "GET",
-                dataType: "JSON",
-                data: {
-                    id_pengguna: id_pengguna
-                },
-                success: function(data) {
-                    // console.log(data)
-                    // panggil fungsi menamilkan grafik donan + keterangannya
-                    GrafikDonat(data)
-                    updateKeterangan(data)
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus, errorThrown);
-                }
-            })
+        // ajax  mengambil data untuk membuat grafik donat
+        $.ajax({
+            url: "<?= base_url('DashboardUserSupplier/getDonatChart') ?>",
+            type: "GET",
+            dataType: "JSON",
+            data: {
+                id_pengguna: id_pengguna
+            },
+            success: function(data) {
+                // console.log(data)
+                // panggil fungsi menamilkan grafik donan + keterangannya
+                GrafikDonat(data)
+                updateKeterangan(data)
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        })
 
     }); //akhir ready function
 
-    function showhide(){
+    function showhide() {
         // Handler untuk saat link "Pemenang Tender" diklik
         $('#pemenangTenderLink').click(function() {
             // Sembunyikan elemen yang berkaitan dengan "Tender Anggota INKINDO"
@@ -876,7 +898,7 @@
             $('#list-inkindo').show();
         });
     }
-    
+
 
     // ajax grafik pemenang
     function Grafikpemenang(selectedYear = $("#tahunSelect").val()) {
@@ -954,7 +976,7 @@
     // Data untuk chart
     function GrafikDonat(data) {
         var data = {
-            labels: ["Tanpa Status", "Sedang dihubungi", "Proses Negosiasi", "Disetujui", "Ditolak"],
+
             datasets: [{
                 data: [
                     data['tanpa-status'],
@@ -1132,18 +1154,18 @@
                             }
                         },
                         callback: function(data, pagination) {
-                                console.log(data.length);
-                                $('#sec-pemenang-terbaru').show();
-                                if (data != '') {
-                                    let html = template(data);
-                                    $('#list-pemenang').html(html);
-                                }
+                            console.log(data.length);
+                            $('#sec-pemenang-terbaru').show();
+                            if (data != '') {
+                                let html = template(data);
+                                $('#list-pemenang').html(html);
+                            }
                         }
                     });
-                        showhide();
-                    } else {
-                        $('#sec-pemenang-terbaru').show();
-                        $('#list-pemenang').html(`
+                    showhide();
+                } else {
+                    $('#sec-pemenang-terbaru').show();
+                    $('#list-pemenang').html(`
                             <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
                                 <div class="col-md-2 p-3 text-center text-md-end">
                                     <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
@@ -1157,68 +1179,69 @@
                                 </div>
                             </div>
                         `);
-                        
-                        $('#pagination-container').hide();
-                        $('#tenderInkindoLink').click();
-                        showhideerror()
-                    }
-            },error: function (jqXHR, textStatus, errorThrown){
-                    $('#sec-pemenang-terbaru').show();
-                    $('#list-pemenang').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
-                    console.error(`Error: ${textStatus}, ${errorThrown}`);
+
+                    $('#pagination-container').hide();
+                    $('#tenderInkindoLink').click();
                     showhideerror()
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                $('#sec-pemenang-terbaru').show();
+                $('#list-pemenang').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
+                console.error(`Error: ${textStatus}, ${errorThrown}`);
+                showhideerror()
             }
-        
+
         });
         // Ajax pemenang Inkindo
         $.ajax({
-                // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
-                url : "<?= base_url() ?>Tender/gatJumLogPemenangTerbaruInkindo/"+id_pengguna,
-                type: "GET",
-                dataType: "JSON",
-                success : function(data){
-                    jum_pemenang = data.jumlah;
-                                    
-                    if (jum_pemenang > 0) {
-                        $('#pagination-container-inkindo').pagination({
-                            // dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna/"+id_pengguna+"/"+jum_pemenang,
-                            dataSource: "<?= base_url() ?>tender/get_pemenang_terbaru_inkindo/"+id_pengguna+"/"+jum_pemenang,
-                            locator: '',
-                            totalNumber: jum_pemenang,
-                            pageSize: 10,
-                            autoHidePrevious: true,
-                            autoHideNext: true,
-                            showNavigator: true,
-                            formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
-                            position: 'bottom',
-                            className: 'paginationjs-theme-red paginationjs-big',
-                            ajax: {
-                                beforeSend: function(xhr, settings) {
-                                    const url = settings.url
-                                    const params = new URLSearchParams(url)
-                                    let currentPageNum = params.get('pageNumber')
-                                    currentPageNum = parseInt(currentPageNum)
-                                    if (currentPageNum >= 2 && id_pengguna == 0) {
-                                        window.location.href = `${base_url}login`
-                                        return false
-                                    }
-                                            
-                                    $('#list-inkindo').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
+            // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
+            url: "<?= base_url() ?>Tender/gatJumLogPemenangTerbaruInkindo/" + id_pengguna,
+            type: "GET",
+            dataType: "JSON",
+            success: function(data) {
+                jum_pemenang = data.jumlah;
+
+                if (jum_pemenang > 0) {
+                    $('#pagination-container-inkindo').pagination({
+                        // dataSource: "<?= base_url() ?>api/getKatalogPemenangTerbaruByPengguna/"+id_pengguna+"/"+jum_pemenang,
+                        dataSource: "<?= base_url() ?>tender/get_pemenang_terbaru_inkindo/" + id_pengguna + "/" + jum_pemenang,
+                        locator: '',
+                        totalNumber: jum_pemenang,
+                        pageSize: 10,
+                        autoHidePrevious: true,
+                        autoHideNext: true,
+                        showNavigator: true,
+                        formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> pemenang tender terbaru',
+                        position: 'bottom',
+                        className: 'paginationjs-theme-red paginationjs-big',
+                        ajax: {
+                            beforeSend: function(xhr, settings) {
+                                const url = settings.url
+                                const params = new URLSearchParams(url)
+                                let currentPageNum = params.get('pageNumber')
+                                currentPageNum = parseInt(currentPageNum)
+                                if (currentPageNum >= 2 && id_pengguna == 0) {
+                                    window.location.href = `${base_url}login`
+                                    return false
                                 }
-                            },
-                            callback: function(data, pagination) {
-                                console.log(data.length);
-                                $('#sec-pemenang-terbaru').show();
-                                if (data != '') {
-                                    let html = templateInkindo(data);
-                                    $('#list-inkindo').html(html);
-                                }
+
+                                $('#list-inkindo').html('<div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan pemenang tender terbaru...</span></div>');
                             }
-                        });
-                        showhide();
-                    } else {
-                        $('#list-inkindo').show();
-                        $('#list-inkindo').html(`
+                        },
+                        callback: function(data, pagination) {
+                            console.log(data.length);
+                            $('#sec-pemenang-terbaru').show();
+                            if (data != '') {
+                                let html = templateInkindo(data);
+                                $('#list-inkindo').html(html);
+                            }
+                        }
+                    });
+                    showhide();
+                } else {
+                    $('#list-inkindo').show();
+                    $('#list-inkindo').html(`
                             <div class="row align-items-center rounded-3 bg-white shadow mx-0 my-3">
                                 <div class="col-md-2 p-3 text-center text-md-end">
                                     <img src="<?= base_url("assets/img/rincian 2.png") ?>" width="140" alt="">
@@ -1232,20 +1255,21 @@
                                 </div>
                             </div>
                         `);
-                        
-                        $('#pagination-container-inkindo').hide();
-                        showhideerror2()
-                    }
-                },error: function (jqXHR, textStatus, errorThrown){
-                    $('#sec-pemenang-terbaru').show();
-                    $('#list-inkindo').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
-                    console.error(`Error: ${textStatus}, ${errorThrown}`);
+
+                    $('#pagination-container-inkindo').hide();
                     showhideerror2()
                 }
-            });
-            
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                $('#sec-pemenang-terbaru').show();
+                $('#list-inkindo').html('<div class="alert alert-danger">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>');
+                console.error(`Error: ${textStatus}, ${errorThrown}`);
+                showhideerror2()
+            }
+        });
 
-        
+
+
     });
 
     // Function to handle the filter click event
@@ -1286,7 +1310,7 @@
             data: params,
             success: function(data) {
                 jum_filter = data;
-                console.log('jumlah data filter',data)
+                console.log('jumlah data filter', data)
 
                 // console.log(data)
                 // return
@@ -1324,8 +1348,8 @@
                                 let html = template(data);
                                 $('#list-pemenang').html(html);
 
-                                console.log("hasil filter: ",data);
-                                
+                                console.log("hasil filter: ", data);
+
                             }
                         }
                     });
@@ -1377,12 +1401,12 @@
             data: params,
             success: function(data) {
                 jum_filter = data;
-                console.log('jumlah data inkindo filter',data)
+                console.log('jumlah data inkindo filter', data)
                 // return
 
                 if (jum_filter > 0) {
                     $('#pagination-container-inkindo').pagination({
-                        dataSource: "<?= base_url() ?>Tender/getHasilFilterPemenangTerbaruInkindo/"+id_pengguna,
+                        dataSource: "<?= base_url() ?>Tender/getHasilFilterPemenangTerbaruInkindo/" + id_pengguna,
                         locator: '',
                         totalNumber: jum_filter,
                         pageSize: 10,
@@ -1413,8 +1437,8 @@
                                 let html = templateInkindo(data);
                                 $('#list-inkindo').html(html);
 
-                                console.log("hasil filter inkindo: ",data);
-                                
+                                console.log("hasil filter inkindo: ", data);
+
                             }
                         }
                     });
@@ -1686,20 +1710,20 @@
             cache: true
         },
         templateResult: formatData
-        }).on('change', function() {
-            let wilayah = $(this).val();
+    }).on('change', function() {
+        let wilayah = $(this).val();
 
-            if (wilayah != null) {
-                if (wilayah.includes('00')) {
-                    prov = wilayah;
-                    kab = '';
-                } else {
-                    kab = wilayah;
-                    prov = '';
-                }
-            } else kab = prov = '';
+        if (wilayah != null) {
+            if (wilayah.includes('00')) {
+                prov = wilayah;
+                kab = '';
+            } else {
+                kab = wilayah;
+                prov = '';
+            }
+        } else kab = prov = '';
 
-            filterTender();
+        filterTender();
     });
 
     $('.select2-jenis-pengadaan').select2({
@@ -1747,16 +1771,16 @@
             },
             cache: true
         }
-        }).on('change', function() {
-            jenis_pengadaan = $(this).val();
-            console.log('jenis pengadaan :',jenis_pengadaan)
-            filterTender();
-            filterTenderInkindo();
+    }).on('change', function() {
+        jenis_pengadaan = $(this).val();
+        console.log('jenis pengadaan :', jenis_pengadaan)
+        filterTender();
+        filterTenderInkindo();
 
     });
 
 
-    function showhideerror(){
+    function showhideerror() {
         // Handler untuk saat link "Pemenang Tender" diklik
         $('#pemenangTenderLink').click(function() {
             // Sembunyikan elemen yang berkaitan dengan "Tender Anggota INKINDO"
@@ -1767,7 +1791,7 @@
         });
     }
 
-    function showhideerror2(){
+    function showhideerror2() {
         // Handler untuk saat link "Tender Anggota INKINDO" diklik
         $('#tenderInkindoLink').click(function() {
             // Sembunyikan elemen yang berkaitan dengan "Pemenang Tender"
@@ -1776,7 +1800,8 @@
             $('#pagination-container-inkindo').hide();
         });
     }
-    function showhide(){
+
+    function showhide() {
         // Handler untuk saat link "Pemenang Tender" diklik
         $('#pemenangTenderLink').click(function() {
             // Sembunyikan elemen yang berkaitan dengan "Tender Anggota INKINDO"
