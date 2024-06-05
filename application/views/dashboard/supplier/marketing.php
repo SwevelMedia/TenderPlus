@@ -381,7 +381,7 @@
                             </td>
                         </tr> -->
                     </tbody>
-                </table>    
+                </table>
             </div>
             <!-- Pagination controls -->
             <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s"></div>
@@ -463,46 +463,40 @@
 
                     <div class="modal-body border-0">
 
-                        <h3 class="modal-title" id="detailMarketingModalLabel">Detail Marketing</h3>
+                        <!-- <h3 class="modal-title" id="detailMarketingModalLabel">Detail Marketing</h3> -->
 
                         <div class="d-flex justify-content-center mt-3 mb-2">
-                            <img src="<?= base_url("assets/img/user-icon-detail.svg") ?>" style="width: 50px; height: 50px;">
+
+                            <img src="<?= base_url("assets/img/user-icon.svg") ?>" style="width: 80px; height: 80px;">
                         </div>
 
                         <div class="input-popup justify-content-end">
 
-                            <p class="text-center" name="nama_tim" id="nama" style=" margin-bottom:10px; font-style:bold; font-size:20px;"></p>
-                            <!-- <input type="text" class="form-control" name="nama_tim" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-sm" disabled> -->
+                            <p class="text-center" name="nama_tim" id="nama" style=" margin-bottom:3px;font-weight: bold; font-size:27px;"></p>
 
-                            <div class="input-group input-group-sm mb-3">
+                            <p class="text-center" name="posisi" id="posisi" style="margin-bottom:9px;  font-size:15px;"></p>
 
-                                <span class="input-group-text" id="inputPosisi" style=" background-color:#DF3131; color:#FCFCFC;">Posisi</span>
+                            <div class="input-group mb-3">
 
-                                <input type="text" class="form-control" name="posisi" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-sm" disabled>
+                                <span class="input-group-text" id="inputEmail" style=" background-color:#DF3131; color:#FCFCFC; "> <i class="fas fa-envelope me-3"></i> Email</span>
 
-                            </div>
-
-                            <div class="input-group input-group-sm mb-3">
-
-                                <span class="input-group-text" id="inputEmail" style=" background-color:#DF3131; color:#FCFCFC;">Email</span>
-
-                                <input type="text" class="form-control" name="email" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-sm" disabled>
+                                <input type="text" class="form-control" name="email" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-default" disabled>
 
                             </div>
 
-                            <div class="input-group input-group-sm mb-3">
+                            <div class="input-group mb-3">
 
-                                <span class="input-group-text" id="inputNoHP" style=" background-color:#DF3131; color:#FCFCFC;">No.Hp/Wa</span>
+                                <span class="input-group-text" id="inputNoHP" style=" background-color:#DF3131; color:#FCFCFC; "><i class="fab fa-whatsapp me-2 1x"></i>No.Telp</span>
 
-                                <input type="text" class="form-control" name="no_telp" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-sm" disabled>
+                                <input type="text" class="form-control" name="no_telp" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-default" disabled>
 
                             </div>
 
-                            <div class="input-group input-group-sm mb-3">
+                            <div class="input-group mb-3">
 
-                                <span class="input-group-text" id="inputAlamat" style=" background-color:#DF3131; color:#FCFCFC;">Alamat</span>
+                                <span class="input-group-text" id="inputAlamat" style=" background-color:#DF3131; color:#FCFCFC; "><i class="fas fa-home me-2"></i>Alamat</span>
 
-                                <input type="text" class="form-control" name="alamat" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-sm" disabled>
+                                <input type="text" class="form-control" name="alamat" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-default" disabled>
 
                             </div>
 
@@ -621,7 +615,6 @@
                     </div>
 
 
-
                     <div class="modal-body border-0">
 
                         <h3 class="modal-title" id="editMarketingModalLabel">Edit Marketing</h3>
@@ -690,16 +683,16 @@
 
     $(document).ready(function() {
         // Clear form fields when the modal is closed
-        $('#detailMarketingModal').on('hidden.bs.modal', function () {
+        $('#detailMarketingModal').on('hidden.bs.modal', function() {
             $('#nama').text('');
-            $('input[name=posisi]').val('');
+            $('#posisi').text('');
             $('input[name=email]').val('');
             $('input[name=no_telp]').val('');
             $('input[name=alamat]').val('');
         });
-        $('#editMarketingModal').on('hidden.bs.modal', function () {
+        $('#editMarketingModal').on('hidden.bs.modal', function() {
             $('#nama').text('');
-            $('input[name=posisi]').val('');
+            $('#posisi').val('');
             $('input[name=email]').val('');
             $('input[name=no_telp]').val('');
             $('input[name=alamat]').val('');
@@ -708,7 +701,7 @@
         load();
     });
 
-    function load(){
+    function load() {
         $.ajax({
             url: "<?= base_url('api/supplier/getTotalTimMarketingById') ?>",
             type: "GET",
@@ -719,67 +712,67 @@
             data: {
                 id_pengguna: id_pengguna
             },
-                success: function(data) {
-                    console.log('total tim:',data);
-                    total_tim = data;
-                        if (total_tim > 0) {
-                            $('#pagination-container').pagination({
-                                dataSource: "<?= base_url() ?>api/supplier/getTimMarketingByIdSup",
-                                locator: '',
-                                totalNumber: total_tim,
-                                pageSize: 10,
-                                autoHidePrevious: true,
-                                autoHideNext: true,
-                                showNavigator: true,
-                                formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> tim marketing',
-                                position: 'bottom',
-                                className: 'paginationjs-theme-red paginationjs-big',
-                                ajax: {
-                                    type: "GET",
-                                    data: {
-                                        id_pengguna: id_pengguna,
-                                        total_tim:total_tim
-                                    },
-                                    headers: {
-                                        Authorization: `Basic ${basicAuth}`
-                                    },
+            success: function(data) {
+                console.log('total tim:', data);
+                total_tim = data;
+                if (total_tim > 0) {
+                    $('#pagination-container').pagination({
+                        dataSource: "<?= base_url() ?>api/supplier/getTimMarketingByIdSup",
+                        locator: '',
+                        totalNumber: total_tim,
+                        pageSize: 10,
+                        autoHidePrevious: true,
+                        autoHideNext: true,
+                        showNavigator: true,
+                        formatNavigator: 'Menampilkan <span class="count-paket"><%= rangeStart %> - <%= rangeEnd %></span> dari <span class="count-paket"><%= totalNumber %></span> tim marketing',
+                        position: 'bottom',
+                        className: 'paginationjs-theme-red paginationjs-big',
+                        ajax: {
+                            type: "GET",
+                            data: {
+                                id_pengguna: id_pengguna,
+                                total_tim: total_tim
+                            },
+                            headers: {
+                                Authorization: `Basic ${basicAuth}`
+                            },
 
-                                    beforeSend: function(xhr, settings) {
-                                        const url = settings.url
-                                        const params = new URLSearchParams(url)
-                                        let currentPageNum = params.get('pageNumber')
-                                        currentPageNum = parseInt(currentPageNum)
-                                        if (currentPageNum >= 2 && id_pengguna == 0) {
-                                            window.location.href = `${base_url}login`
-                                            return false
-                                        }
-                                        $('#data-marketing').html(`<tr id="loading-row"><td colspan="6" class="text-center"><div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan tim marketing ...</span></div></td></tr>`);
-                                    },
-                                },
-                                callback: function(data, pagination) {
-                                    console.log("Pagination callback triggered");
-                                    if (data != '') {
-                                    currentPage = pagination.pageNumber;
-                                    let html = tampilData(data);
-                                    } 
+                            beforeSend: function(xhr, settings) {
+                                const url = settings.url
+                                const params = new URLSearchParams(url)
+                                let currentPageNum = params.get('pageNumber')
+                                currentPageNum = parseInt(currentPageNum)
+                                if (currentPageNum >= 2 && id_pengguna == 0) {
+                                    window.location.href = `${base_url}login`
+                                    return false
                                 }
-
-                            })
-                            
-                            
-                        } else{
-                            alert('gagal memuat');
-
+                                $('#data-marketing').html(`<tr id="loading-row"><td colspan="6" class="text-center"><div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Menampilkan tim marketing ...</span></div></td></tr>`);
+                            },
+                        },
+                        callback: function(data, pagination) {
+                            console.log("Pagination callback triggered");
+                            if (data != '') {
+                                currentPage = pagination.pageNumber;
+                                let html = tampilData(data);
+                            }
                         }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus, errorThrown);
+
+                    })
+
+
+                } else {
+                    alert('gagal memuat');
+
                 }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
         });
-    } 
-    
-    function closeModal(){
-         // Menutup modal dengan mengklik tombol dengan atribut data-dismiss="modal"
+    }
+
+    function closeModal() {
+        // Menutup modal dengan mengklik tombol dengan atribut data-dismiss="modal"
         $('[data-dismiss="modal"]').click();
     }
 
@@ -834,11 +827,11 @@
     });
 
     // Clear the form fields when the modal is closed
-    $('#inputMarketingModal').on('hidden.bs.modal', function () {
+    $('#inputMarketingModal').on('hidden.bs.modal', function() {
         $('#form-input')[0].reset();
     });
 
-    function tampilData(data){
+    function tampilData(data) {
         let html = '';
         for (let i = 0; i < data.length; i++) {
             html += '<tr>' +
@@ -905,7 +898,7 @@
     function attachDeleteEvent() {
         $(".btn-del").click(function() {
             var id_tim = $(this).data("id");
-            console.log('id tim yg di hapus:',id_tim)
+            console.log('id tim yg di hapus:', id_tim)
 
 
             $('#hapus-modal').off('click').on('click', function(event) {
@@ -950,7 +943,7 @@
         });
     }
 
-    function detail(){
+    function detail() {
         //Detail Marketing Action
         $(".btn-det").click(function() {
             var id_tim = $(this).data("id");
@@ -978,7 +971,7 @@
                     // $('input[name=nama_tim]').val(data.data.nama_tim);
                     $('#nama').text(data.data.nama_tim);
 
-                    $('input[name=posisi]').val(data.data.posisi);
+                    $('#posisi').text(data.data.posisi);
 
                     $('input[name=email]').val(data.data.email);
 
@@ -997,14 +990,14 @@
     }
 
 
-    function edit(){
+    function edit() {
         //Edit Action
         $(".btn-edt").click(function() {
             var id_tim = $(this).data("id");
-    
+
             // $('#submit-input').click(function(event) {
             //     event.preventDefault();
-    
+
             // Get the form instance
             var formData = {
                 nama_tim: $('input[name=nama_tim]').val(),
@@ -1013,47 +1006,47 @@
                 no_telp: $('input[name=no_telp]').val(),
                 alamat: $('textarea[name=alamat]').val(),
             };
-    
+
             // Get data from id
             $.ajax({
                 url: "<?= base_url('api/supplier/getId/') ?>" + id_tim,
-    
+
                 type: 'GET',
-    
+
                 dataType: "json",
-    
+
                 beforeSend: addAuthorizationHeader,
-    
+
                 success: function(data) {
                     console.log(data);
-    
+
                     $('input[name=nama_tim]').val(data.data.nama_tim);
-    
+
                     $('input[name=posisi]').val(data.data.posisi);
-    
+
                     $('input[name=email]').val(data.data.email);
-    
+
                     $('input[name=no_telp]').val(data.data.no_telp);
-    
+
                     $('textarea[name=alamat]').val(data.data.alamat);
-    
+
                     aksi_edit(id_tim)
                 },
-    
+
                 error: function(xhr, status, error) {
-    
+
                     console.log(xhr.responseText);
                 }
             });
         });
     }
-    
+
     function aksi_edit(id_tim) {
         $('#submit-edit').click(function(event) {
-    
+
             // var id_tim = $(this).data("id");
             event.preventDefault();
-    
+
             // Get the form instance
             var formData = {
                 nama_tim: $('#editNama').val(),
@@ -1063,71 +1056,69 @@
                 alamat: $('#editAlamat').val(),
             };
 
-            console.log('fotmat data edit:',formData)
-            console.log('id tim yg di edit:',id_tim)
-    
-        // // Make an AJAX request
-        $.ajax({
-    
-            url: '<?= base_url("api/supplier/update/") ?>' + id_tim,
-    
-            type: 'POST',
-    
-            data: formData,
-    
-            beforeSend: addAuthorizationHeader,
-    
+            console.log('fotmat data edit:', formData)
+            console.log('id tim yg di edit:', id_tim)
+
+            // // Make an AJAX request
+            $.ajax({
+
+                url: '<?= base_url("api/supplier/update/") ?>' + id_tim,
+
+                type: 'POST',
+
+                data: formData,
+
+                beforeSend: addAuthorizationHeader,
+
                 success: function(response) {
-    
+
                     console.log(response)
-    
-                        if (response.status == true) {
-    
-                            Swal.fire({
-    
-                                icon: "success",
-    
-                                title: "Data berhasil diubah!",
-    
-                                showConfirmButton: false,
-    
-                                timer: 2000
-    
-                            }).then(function() {
-    
-                                // window.location.href = "<?= base_url('suplier/marketing') ?>";
-                                load();
-                                closeModal();
-    
-                            });
-    
-                        } else {
-    
-                            Swal.fire({
-    
-                                icon: "eror",
-    
-                                title: "Data gagal diubah!",
-    
-                                showConfirmButton: false,
-    
-                                timer: 2000
-    
-                            })
-                        }
+
+                    if (response.status == true) {
+
+                        Swal.fire({
+
+                            icon: "success",
+
+                            title: "Data berhasil diubah!",
+
+                            showConfirmButton: false,
+
+                            timer: 2000
+
+                        }).then(function() {
+
+                            // window.location.href = "<?= base_url('suplier/marketing') ?>";
+                            load();
+                            closeModal();
+
+                        });
+
+                    } else {
+
+                        Swal.fire({
+
+                            icon: "eror",
+
+                            title: "Data gagal diubah!",
+
+                            showConfirmButton: false,
+
+                            timer: 2000
+
+                        })
+                    }
                 },
-    
+
                 error: function(xhr, status, error) {
-    
-                  console.log(xhr.responseText);
-    
+
+                    console.log(xhr.responseText);
+
                 }
-        });
-        
+            });
+
         });
     }
-
-
 </script>
 
 
