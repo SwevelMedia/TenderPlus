@@ -848,10 +848,11 @@
                 '<td style="width:20px;"><a class="email" href="mailto:' + data[i].email + '">' + data[i].email + '</a></td>' +
                 '<td class="no_telp">' + data[i].no_telp + '</td>' +
                 '<td style="text-align:center">' +
-                '<a class="btn-det" data-toggle="modal" data-target="#detailMarketingModal" data-id="' + data[i].id_tim + '"><i class="fas fa-info-circle me-2"></i></a>' +
-                '<a href="#" class="btn-edt" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data[i].id_tim + '"><i class="fas fa-edit me-2"></i></a>' +
-                '<a class="btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data[i].id_tim + '"><i class="fas fa-trash me-2"></i></a>' +
-                '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data[i].id_tim + '"><i class="fas fa-paper-plane"></i></a>' +
+                '<a class="btn-det" data-toggle="modal" data-target="#detailMarketingModal" data-id="' + data[i].id_tim + '" title="Lihat Detail"><i class="fas fa-info-circle me-2"></i></a>' +
+                '<a href="#" class="btn-edt" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data[i].id_tim + '" title="Edit"><i class="fas fa-edit me-2"></i></a>' +
+                '<a class="btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data[i].id_tim + '" title="Hapus"><i class="fas fa-trash me-2"></i></a>' +
+                '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data[i].id_tim + '" title="Kirim Email"><i class="fas fa-paper-plane"></i></a>' +
+            
                 '</td>' +
                 '</tr>';
         }

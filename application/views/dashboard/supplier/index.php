@@ -460,14 +460,35 @@
                             </div>
                         </div>
                     </div>
-
+                    <style>
+        .card-title {
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+        .circle2 {
+            position: absolute;
+            right: 0;
+            margin-right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            line-height: 30px;
+            font-size: 14px;
+        }
+    </style>
                     <div class="col-md-4 wow fadeInUp animation">
                         <!-- Tabel Tim Marketing -->
                         <div class="shadow rounded-3 bg-white ">
                             <div class="card-body ">
-                                <div h1 class="card-title wow fadeInUp" data-wow-delay="0.5s">
+                                <div class="card-title wow fadeInUp" data-wow-delay="0.5s">
                                     <h3 style="font-size: 18px; font-weight: bold;">Tim Marketing</h3>
-
+                                    <span class="circle2">100</span>
                                 </div>
                                 <div style="height: 310px;max-height: 310px; overflow-y: auto;">
                                     <table class="table custom-table-container">
@@ -545,8 +566,8 @@
                             </div>
                             <div class="col-sm-2 form-select-custom d-flex" style="width: 190px; margin-right:10px">
                                 <img src="<?= base_url('assets\img\icon_filter.svg') ?>" width="20" alt="">
-                                <!-- <select class="select2-wilayah" id="wilayah" style="border:none;"> -->
-                                <input id="wilayah" type="text" class="form-input-custom" style="border:none;" placeholder="Lokasi Pekerjaan">
+                                <select class="select2-wilayah" id="wilayah" style="border:none;">
+                                <!-- <input id="wilayah" type="text" class="form-input-custom" style="border:none;" placeholder="Lokasi Pekerjaan"> -->
 
                                 </select>
                             </div>
@@ -701,10 +722,12 @@
                         <div class="pemenang-info">
                             <div id="nav-pemenang" class="nav-main mt-3 custom-nav ">
                                 <!-- Tab Nav -->
+                                <?php if ($status == 'inkindo'): ?>
                                 <ul class="nav nav-tab justify-content-center" id="myTab" role="tablist">
                                     <li class="nav-item col-6 text-center"><a class="nav-link active " data-toggle="tab" href="#list-pemenang" id="pemenangTenderLink" role="tab">Pemenang Tender</a></li>
                                     <li class="nav-item col-6 text-center"><a class="nav-link" data-toggle="tab" href="#tenderInkindoLink" id="tenderInkindoLink" role="tab">Tender Anggota INKINDO</a></li>
                                 </ul>
+                                <?php endif; ?>
                                 <!--/ End Tab Nav -->
                             </div>
 
@@ -713,10 +736,19 @@
                 </div>
             </div>
 
-            <div class="row wow fadeInUp mx-0 my-2" id="list-pemenang" data-wow-delay="0.5s"></div>
-            <div class="row wow fadeInUp mx-0 my-2" id="list-inkindo" data-wow-delay="0.5s"></div>
-            <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s"></div>
-            <div class="wow fadeInUp" id="pagination-container-inkindo" data-wow-delay="0.5s"></div>
+                <div class="row wow fadeInUp mx-0 my-2" id="list-pemenang" data-wow-delay="0.5s"></div>
+            
+            <?php if ($status == 'inkindo'): ?>
+                <div class="row wow fadeInUp mx-0 my-2" id="list-inkindo" data-wow-delay="0.5s"></div>
+            <?php endif; ?>
+
+                <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s"></div>
+
+            <?php if ($status == 'inkindo'): ?>
+                <div class="wow fadeInUp" id="pagination-container-inkindo" data-wow-delay="0.5s"></div>
+            <?php endif; ?>
+
+            
         </div>
     </div>
 </section>
@@ -823,6 +855,22 @@
             }
         })
 
+        // hitung total tim marketing
+        $.ajax({
+            url: "<?= base_url('DashboardUserSupplier/countTimMarketing') ?>",
+            type: "GET",
+            dataType: "JSON",
+            data: {
+                id_pengguna: id_pengguna
+            },
+            success: function(data) {
+               console.log('total tim marketing',data)
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        })
 
         // get data untuk tabel tim marketing
         $.ajax({
@@ -1043,7 +1091,11 @@
         timer = setTimeout(function() {
             keyword = $('#keyword').val();
             filterTender();
+            
+            <?php if ($status == 'inkindo'): ?>
             filterTenderInkindo();
+            <?php endif; ?>
+        
             // console.log(keyword);
         }, 1000);
     });
@@ -1054,8 +1106,12 @@
         timer = setTimeout(function() {
             lokasi = $('#wilayah').val();
             filterTender();
+
+            <?php if ($status == 'inkindo'): ?>
             filterTenderInkindo();
             // console.log(wilayah);
+            <?php endif; ?>
+
         }, 1000);
     });
 
@@ -1077,7 +1133,11 @@
         }
         // console.log(hps_awal,"+",hps_akhir)
         filterTender();
+            
+        <?php if ($status == 'inkindo'): ?>
         filterTenderInkindo();
+        <?php endif; ?>
+
 
     });
 
@@ -1099,7 +1159,11 @@
         else {
             $('#nilai_hps_akhir').removeClass('is-invalid');
             filterTender();
+
+            <?php if ($status == 'inkindo'): ?>
             filterTenderInkindo();
+            <?php endif; ?>
+
             // console.log(hps_awal,"+",hps_akhir)
         }
     });
@@ -1193,6 +1257,8 @@
             }
 
         });
+        
+        <?php if ($status == 'inkindo'): ?>
         // Ajax pemenang Inkindo
         $.ajax({
             // url : "<?= base_url() ?>api/getJumKatalogPemenangTerbaruByPengguna/"+id_pengguna,
@@ -1267,6 +1333,8 @@
                 showhideerror2()
             }
         });
+        <?php endif; ?>
+
 
 
 
@@ -1277,7 +1345,10 @@
         const sortValue = event.target.getAttribute('data-sort');
         filterTender(sortValue); // Call your filter function with the selected sort value
         // If you need to call the filterTenderInkindo function instead, uncomment the line below
+        <?php if ($status == 'inkindo'): ?>
         filterTenderInkindo(sortValue);
+        <?php endif; ?>
+
     }
 
     // Attach event listeners to dropdown items
@@ -1376,6 +1447,7 @@
         });
     }
 
+    <?php if ($status == 'inkindo'): ?>
     // Functin filter tender inkindo
     function filterTenderInkindo(sort = 3) {
         let params = {
@@ -1463,6 +1535,7 @@
             error: function(jqXHR, textStatus, errorThrown) {}
         });
     }
+    <?php endif; ?>
 
     function template(data) {
         var pemenang = '';
@@ -1598,7 +1671,7 @@
                         <div class="d-flex justify-content-between mt-3">
                             <div></div>
                             <div class="link d-flex flex-row align-items-center">
-                                <span><a class="btn btn-sm border btn-outline" href="${base_url}detail-pemenang-inkindo/${data[i].kode_tender}" target="_blank"><i class="fas fa-info-circle me-1"></i>Detail Pemenang</a></span>
+                                <span><a class="btn btn-sm border btn-outline" href="${base_url}detail-pemenang/${data[i].kode_tender}" target="_blank"><i class="fas fa-info-circle me-1"></i>Detail Pemenang</a></span>
                             </div>
                         </div>
                     </div>
@@ -1608,56 +1681,7 @@
         return pemenang;
     }
 
-    // $('.dropdown-sorting .dropdown-item').on('click', function() {
-    //     let sort = $(this).data('sort');
-
-    //     filterTender(sort);
-    // });
-
-    // $('#checkallhps').on('click', function() {
-    //     let allhps = this.checked;
-    //     $('#nilai_hps_awal, #nilai_hps_akhir').prop('disabled', allhps);
-
-    //     if (allhps) hps_awal = hps_akhir = 0;
-    //     else {
-    //         $('#nilai_hps_awal').focus();
-    //         hps_awal = $('#nilai_hps_awal').val();
-    //         hps_akhir = $('#nilai_hps_akhir').val();
-    //     }
-
-    //     filterTender();
-    // });
-
-    // $('#nilai_hps_awal, #nilai_hps_akhir').inputmask('decimal', {
-    //     'alias': 'numeric',
-    //     'groupSeparator': '.',
-    //     'autoGroup': true,
-    //     'digits': 0,
-    //     'digitsOptional': false,
-    //     'allowMinus': false,
-    //     'placeholder': '0',
-    //     'rightAlign': false,
-    //     'autoUnmask': true
-    // }).on('keyup', function() {
-    //     hps_awal = $('#nilai_hps_awal').val();
-    //     hps_akhir = $('#nilai_hps_akhir').val();
-
-    //     if (parseInt(hps_akhir) < parseInt(hps_awal)) $('#nilai_hps_akhir').addClass('is-invalid');
-    //     else {
-    //         $('#nilai_hps_akhir').removeClass('is-invalid');
-    //         filterTender();
-    //     }
-    // });
-
-    // $('#keyword').on('keyup', function() {
-    //     clearTimeout(timer);
-
-    //     timer = setTimeout(function() {
-    //         keyword = $('#keyword').val();
-    //         filterTender();
-    //     }, 1000);
-    // });
-
+    
     function formatData(data) {
         if (!data.id) return data.text;
         if (data.kategori != "2") return "<b>" + data.text + "</b>";
@@ -1686,7 +1710,7 @@
             return markup;
         },
         ajax: {
-            url: "<?= base_url('api/getListLokasiPekerjaan') ?>",
+            url: "<?= base_url('/DashboardUserSupplier/getAllWilayah') ?>",
             dataType: 'json',
             delay: 250,
             data: function(params) {
@@ -1723,8 +1747,9 @@
             }
         } else kab = prov = '';
 
-        filterTender();
+        // filterTender();
     });
+
 
     $('.select2-jenis-pengadaan').select2({
         placeholder: "Jenis Pengadaan",
@@ -1775,7 +1800,10 @@
         jenis_pengadaan = $(this).val();
         console.log('jenis pengadaan :', jenis_pengadaan)
         filterTender();
+
+        <?php if ($status == 'inkindo'): ?>
         filterTenderInkindo();
+        <?php endif; ?>
 
     });
 

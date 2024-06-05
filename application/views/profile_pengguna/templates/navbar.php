@@ -373,7 +373,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="py-2 dropdown-item d-flex position-relative rounded-bottom" href="<?= base_url('suplier/crm') ?>">
+                                <a class="py-2 dropdown-item d-flex position-relative rounded-bottom" href="<?= base_url('suplier/plottim') ?>">
                                     <div class="shape-rounded">
                                         <iconify-icon icon="ic:outline-analytics" style="color: white;" width="18px" height="25px"></iconify-icon>
                                     </div>
@@ -424,7 +424,7 @@
                         </ul>
                     </li> -->
                 <?php endif; ?>
-                <!-- <?php if ($userCat == UserCategory::MARKETING && in_array($userStatus, [UserType::TRIAL, UserType::PAID])) : ?>
+                <?php if ($userCat == UserCategory::MARKETING && in_array($userStatus, [UserType::TRIAL, UserType::PAID])) : ?>
                     <li class="nav-item">
                         <a class="nav-link text-white link-danger text-center fw-bold" href="<?= base_url('suplier/leads') ?>" id="nav_dashboard">Leads</a>
                     </li>
@@ -451,7 +451,7 @@
                             </li>
                         </ul>
                     </li>
-                <?php endif; ?> -->
+                <?php endif; ?>
             </ul>
 
             <div class="dropdown dropdown-profile d-md-block">

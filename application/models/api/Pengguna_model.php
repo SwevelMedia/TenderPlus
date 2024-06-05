@@ -110,4 +110,15 @@ class Pengguna_model extends CI_Model
             ->where('id_pengguna', $id)
             ->get();
     }
+    public function getAnggotaAsosiasi($id_pengguna)
+    {
+        $this->db->select('anggota_asosiasi.npwp, pengguna.nama, anggota_asosiasi.status_anggota');
+        $this->db->from('anggota_asosiasi');
+        $this->db->join('pengguna', 'anggota_asosiasi.npwp = pengguna.npwp');
+        $this->db->where('pengguna.id_pengguna', $id_pengguna);
+        $this->db->where('anggota_asosiasi.status_anggota', 1);
+        $query = $this->db->get();
+
+        return $query->result(); // Mengembalikan semua baris hasil query
+    }
 }

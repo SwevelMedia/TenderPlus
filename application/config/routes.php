@@ -137,7 +137,9 @@ $route['suplier/getlead/(:num)'] = 'DashboardUserSupplier/getDataLeads/$1';
 $route['suplier/getKontak/(:num)'] = 'DashboardUserSupplier/getKontakLeadById/$1';
 $route['suplier/getKontakNama/(:any)'] = 'DashboardUserSupplier/getKontakLeadByNama/$1';
 $route['suplier/leads/(:num)'] = 'DashboardUserSupplier/detailDataLead/$1';
-$route['suplier/crm'] = 'DashboardUserSupplier/CRM';
+
+$route['suplier/plottim'] = 'DashboardUserSupplier/plottim';
+
 $route['suplier/marketing'] = 'DashboardUserSupplier/marketing';
 $route['suplier/statistik'] = 'DashboardUserSupplier/datastatistik';
 $route['marketing'] = 'DashboardUserMarketing';
@@ -145,7 +147,8 @@ $route['api/supplier/lead/filter'] = 'DashboardUserSupplier/getDataLeadFilter';
 $route['api/supplier/jumlah-pemenang'] = 'DashboardUserSupplier/getJumlahPemenangTender';
 $route['api/supplier/jumlah-pemenang-terbaru'] = 'DashboardUserSupplier/getJumlahPemenangTenderTerbaru';
 $route['api/supplier/tim'] = 'DashboardUserSupplier/getTimMarketing';
-$route['api/supplier/plot-tim'] = 'DashboardUserSupplier/getPlotTim';
+// $route['api/supplier/plot-tim'] = 'DashboardUserSupplier/getPlotTim';
+$route['api/supplier/nama-perusahaan'] = 'DashboardUserSupplier/getNamaPerusahaanNonPlot';
 $route['api/supplier/tim-suplier'] = 'DashboardUserSupplier/getTimMarketingByIdSupplier';
 $route['api/supplier/lead/tim'] = 'DashboardUserSupplier/getLeadByIdTim';
 $route['api/supplier/tim/add'] = 'DashboardUserSupplier/addTimMarketing';

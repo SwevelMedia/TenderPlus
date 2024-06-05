@@ -204,7 +204,9 @@ class Login extends CI_Controller
                             redirect('asosiasi');
                         } elseif ($userCat == UserCategory::SUPPLIER) {
                             redirect('suplier');
-                        } else {
+                        } elseif($userCat ==UserCategory::MARKETING){
+                            echo 'kamu adalah marketing';
+                        }else {
                             echo 'Not found!';
                         }
                     }

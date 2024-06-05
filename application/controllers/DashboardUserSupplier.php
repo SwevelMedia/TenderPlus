@@ -19,28 +19,48 @@ class DashboardUserSupplier extends CI_Controller
         $this->load->model('Lpse_model');
         $this->load->model('Pemenang_model');
         $this->load->model('Supplier_model');
+        $this->load->model('api/Pengguna_model');
         $this->load->model('Tender_model');
         $this->load->model('api/Supplier_api');
         $this->load->model('api/Pemenang_model', 'pemenang');
+        $this->load->model('api/Wilayah_model');
 
         $this->init();
     }
 
     public function index()
     {
-        $jenisTender = $this->Tender_model->getAllJenisTender();
+        $id_pengguna = $this->input->cookie('id_pengguna', true);
 
-        // echo json_encode($jenisTender);
+        $anggota_asosiasi = $this->Pengguna_model->getAnggotaAsosiasi($id_pengguna);
+        // var_dump($anggota_asosiasi);
+        
+        // Cek apakah dia masuk ke dalam anggota asosiasi, misalnya apakah dia anggota dari INKINDO
+        if (!empty($anggota_asosiasi)) {
+        // Jika ada hasil, pengguna adalah anggota asosiasi
+            $status = 'inkindo';
+        } else {
+            // Jika tidak ada hasil, pengguna bukan anggota asosiasi
+            $status = 'umum';
+        }
+        // echo $status;
+        
         $data = [
             'title' => 'Dashboard',
-            // 'jenisTender'=>$jenisTender,
-
+            'status'=>$status,
         ];
+
+        // echo json_encode($data);
 
         $this->load->view('templates/header', $data);
         $this->load->view('profile_pengguna/templates/navbar');
         $this->load->view('dashboard/supplier/index');
         $this->load->view('templates/footer');
+    }
+
+    public function getAllWilayah(){
+        $wilayah =$this->Wilayah_model->getAllWilayah();
+        echo json_encode($wilayah);
     }
 
     public function dataLeads()
@@ -496,21 +516,21 @@ class DashboardUserSupplier extends CI_Controller
         $this->load->view('dashboard/supplier/crmReal');
         $this->load->view('templates/footer');
     }
-    public function CRM()
+    public function plottim()
     {
         // $data = $this->Supplier_model->insertUpdatePlotTim(1, 12);
         // var_dump($data);
         // die;
 
         $data = [
-            'title' => 'Dashboard'
+            'title' => 'Plot Tim'
         ];
 
         // var_dump($_COOKIE['id_pengguna']);
         // die;
         $this->load->view('templates/header', $data);
         $this->load->view('profile_pengguna/templates/navbar');
-        $this->load->view('dashboard/supplier/crm');
+        $this->load->view('dashboard/supplier/plot_tim');
         $this->load->view('templates/footer');
     }
 
@@ -542,6 +562,13 @@ class DashboardUserSupplier extends CI_Controller
     public function getPlotTim()
     {
         $data = $this->Supplier_model->getPlotTim();
+        $json_data = json_encode($data);
+        $this->output->set_content_type('application/json')->set_output($json_data);
+    }
+
+    public function getNamaPerusahaanNonPlot()
+    {
+        $data = $this->Supplier_model->getNamaPerusahaanNonPlot(350);
         $json_data = json_encode($data);
         $this->output->set_content_type('application/json')->set_output($json_data);
     }
@@ -999,6 +1026,15 @@ class DashboardUserSupplier extends CI_Controller
         $id_pengguna = $this->input->get('id_pengguna');
         // $id_pengguna = 350;
         $data = $this->Supplier_model->getTabelTimMarketing($id_pengguna);
+
+        echo json_encode($data);
+    }
+
+    public function countTimMarketing()
+    {
+        $id_pengguna = $this->input->get('id_pengguna');
+        // $id_pengguna = 350;
+        $data = $this->Supplier_model->countTimMarketing($id_pengguna);
 
         echo json_encode($data);
     }

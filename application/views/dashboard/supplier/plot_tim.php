@@ -181,7 +181,7 @@
     border-radius: 5px;
   }
 
-  .box::-webkit-scrollbar-track {}
+  /* .box::-webkit-scrollbar-track {} */
 
   .card:hover {
     transform: scale(1.05);
@@ -214,9 +214,9 @@
       background: #888;
     }
 
-    .box::-webkit-scrollbar-track {
+    /* .box::-webkit-scrollbar-track { */
       /* background: #f1f1f1; Warna latar belakang track */
-    }
+    /* } */
   }
 
   .card:hover {
@@ -284,8 +284,9 @@
           getDataLead();
           getDataTim();
           getLeadByTim();
-          getPlotTim();
+          // getPlotTim();
           recounting();
+          getNamaPerusahaanNonPlot()
 
           // Handle form submission
           $('#submit-input').click(function(event) {
@@ -323,10 +324,10 @@
           });
         });
 
-        function getPlotTim() {
+        function getNamaPerusahaanNonPlot() {
           var data = [];
           $.ajax({
-            url: "<?= base_url('api/supplier/plot-tim'); ?>",
+            url: "<?= base_url('api/supplier/nama-perusahaan'); ?>",
             type: "GET",
             beforeSend: addAuthorizationHeader,
             async: false,
