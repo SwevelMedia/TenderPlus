@@ -654,7 +654,7 @@
   }
 
   .datepicker,
-  .time-input {
+  .timepicker {
     border: none !important;
     background-color: white;
     font-size: 13px;
@@ -692,6 +692,60 @@
   p {
     margin-bottom: 5px !important;
   }
+
+  .selectBox {
+    border: 1px solid #ccc;
+    position: relative;
+    padding: 12px 24px;
+    cursor: pointer;
+
+    &__value {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+
+    &:after {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%) rotate(0deg);
+      transition: all 0.2s ease-in-out;
+      content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14.001' height='8.165' viewBox='0 0 14.001 8.165'%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill:%23212121;%7D%3C/style%3E%3C/defs%3E%3Cpath class='a' d='M13.861,60.224l-.7-.7a.441.441,0,0,0-.645,0L7,65.036,1.487,59.522a.441.441,0,0,0-.645,0l-.7.7a.441.441,0,0,0,0,.645l6.537,6.538a.441.441,0,0,0,.645,0l6.538-6.538a.442.442,0,0,0,0-.645Z' transform='translate(0 -59.382)'/%3E%3C/svg%3E");
+    }
+
+    .dropdown-menu {
+      transition: all 0.5s ease-in-out;
+      opacity: 0;
+      display: block;
+      top: 100%;
+      width: 100%;
+      max-height: 250px;
+      z-index: -1;
+      overflow-y: auto;
+      transform: translateY(-15%);
+      visibility: hidden;
+    }
+
+    &.show {
+      background-color: #fff;
+
+      &:after {
+        transform: translateY(-50%) rotate(180deg);
+      }
+
+      .dropdown-menu {
+        transition: all 0.3s ease-in-out;
+        visibility: visible;
+
+        opacity: 1;
+        z-index: 1;
+
+        transform: translateY(0);
+      }
+    }
+  }
 </style>
 
 <section class="bg-white pt-5 mt-5">
@@ -704,7 +758,7 @@
   <div class="container wow fadeInUp animation statusCRM">
     <div class="row justify-content-center mt-2 mx-1 px-1">
     </div>
-    <div class="row">
+    <div class="row col-12">
       <div class="col-3">
         <div class="grafikCRMContainer">
           <div class="chart2" style="margin:0; padding:0">
@@ -713,7 +767,7 @@
         </div>
       </div>
       <!-- Keterangan -->
-      <div class="col-3 pt-4">
+      <div class="col-3 pt-4 my-4">
         <h4 class="text-center">Status</h4>
         <div class="keterangan" style="margin-top:10px; padding:0">
           <p id="tanpa-status" class="crmstats-summary vertical-align-center" style="margin-left: 10%;">
@@ -739,7 +793,7 @@
           </p>
         </div>
       </div>
-      <div class="col-3 my-auto">
+      <!-- <div class="col-3 my-auto">
         <div>
           <div class="custom-container fw-semibold mb-5">
             <div class="container" style="color: #6A6A6A;">
@@ -764,9 +818,9 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-3 text-center d-flex justify-content-center align-items-center">
-        <img src="<?= base_url('assets/img/icon-crm.svg') ?>" class="my-auto d-block" alt="CRM">
+      </div> -->
+      <div class="col-6 justify-content-center align-items-center float-end">
+        <img src="<?= base_url('assets/img/icon-crm.svg') ?>" class="my-4 float-end" style="width:300px" alt="CRM">
       </div>
     </div>
   </div>
@@ -951,39 +1005,34 @@
       return d.toLocaleDateString('id-ID', options);
     }
 
-    function formatTime(date) {
-      if (!date) return '';
-      const d = new Date(date);
-      return d.toLocaleTimeString('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    }
 
     function setTableLeads(data) {
       var leads = "";
       $.each(data, function(index, value) {
         var rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
         var formattedDate = formatDate(value.jadwal);
-        var time = value.jadwal ? formatTime(value.jadwal) : '';
-
+        var timeValue = value.waktu ? value.waktu : "klik untuk ubah waktu";
+        var statusOptions = `
+      <option value="" ${!value.status ? 'selected' : '' }disabled><a class = "text-decorartion-underline">Klik untuk ubah status</a></option>
+      <option value="sedang-dihubungi" ${value.status === 'sedang-dihubungi' ? 'selected' : ''}>Sedang Dihubungi</option>
+      <option value="proses-negosiasi" ${value.status === 'proses-negosiasi' ? 'selected' : ''}>Proses Negosiasi</option>
+      <option value="ditunda" ${value.status === 'ditunda' ? 'selected' : ''}>Ditunda</option>
+      <option value="disetujui" ${value.status === 'disetujui' ? 'selected' : ''}>Disetujui</option>
+      <option value="dibatalkan" ${value.status === 'dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
+    `;
         leads +=
           `<tr data-id="` + value.id + ` " class="data-lead-table" data-searchable="true">
                     <td style="text-align:center">` + rowNumber + `</td>
                     <td class="perusahaan" >` + (value.nama_perusahaan || '') + `</td>
                     <td class="no_telp" >${value.no_telp || ''}</td>
                     <td class="status" contenteditable="false">
-                    <select class="status-select btn rounded-pill btn-arrow"  disabled>
-                      <option value="sedang-dihubungi" ${value.status === 'sedang-dihubungi' ? 'selected' : ''}>Sedang Dihubungi</option>
-                      <option value="proses-negosiasi" ${value.status === 'proses-negosiasi' ? 'selected' : ''}>Proses Negosiasi</option>
-                      <option value="ditunda" ${value.status === 'ditunda' ? 'selected' : ''}>Ditunda</option>
-                      <option value="disetujui" ${value.status === 'disetujui' ? 'selected' : ''}>Disetujui</option>
-                      <option value="dibatalkan" ${value.status === 'dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
-                    </select>
-                    </td>
+          <select class="status-select btn rounded-pill btn-arrow" disabled>
+            ${statusOptions}
+          </select>
+        </td>
                     <td class="jadwal" contenteditable="false">
                       <input type="text" class="datepicker" value="${formattedDate}" disabled />
-                      <input type="text" class="time-input" value="${time}" disabled />
+                      <input type="text" class="timepicker" value="${timeValue}" disabled />
                     </td>
                     <td class="catatan" contenteditable="false">${value.catatan}</td>
                     <td class="text-center">
@@ -1064,12 +1113,19 @@
         $row.find('td[contenteditable="false"]').prop('contenteditable', true);
         $row.find('.jadwal input.datepicker').prop('disabled', false).datepicker({
           format: 'dd mmmm yyyy',
+          todayHighlight: true,
+          language: 'id',
           // uiLibrary: 'bootstrap3',
           onSelect: function() {
             $(this).data('datepicker-selected', true);
           }
         });
-        $row.find('.jadwal input.time-input').addClass('hidden');
+        $row.find('.jadwal input.timepicker').prop('disabled', false).timepicker({
+          mode: '24hr',
+          onSelect: function() {
+            $(this).data('timepicker-selected', true);
+          }
+        });
         $row.find('.tambah').addClass('hidden');
         $row.find('.riwayat').addClass('hidden');
         $row.find('.edit-lead').addClass('hidden');
@@ -1085,11 +1141,8 @@
         var no_telp = $row.find('.no_telp').text();
         var status = $row.find('.status-select').val();
         var date = $row.find('.jadwal input.datepicker').val();
-        var time = $row.find('.jadwal input.time-input').val();
+        var time = $row.find('.jadwal input.timepicker').val();
         var catatan = $row.find('.catatan').text();
-
-        // Combine date and time for display purposes
-        var jadwal = date + ' ' + time + ' WIB';
 
         $.ajax({
           url: `<?= base_url() ?>api/supplier/updateDataLeadCRM/${idLead}`,
@@ -1103,7 +1156,8 @@
             no_telp: no_telp,
             status: status,
             jadwal: date, // Only send date part to the server
-            catatan: catatan
+            catatan: catatan,
+            waktu: `${time} WIB`
           }),
           contentType: "application/json",
           success: function(response) {
@@ -1251,13 +1305,9 @@
         if (isSearchable) {
           // Get the company name from the current row
           var companyName = $(this).find('.perusahaan').text().toLowerCase();
-
-          // Check if the company name contains the search text
           if (companyName.includes(searchText)) {
-            // If the company name matches the search text, show the row
             $(this).show();
           } else {
-            // If the company name does not match the search text, hide the row
             $(this).hide();
           }
         }
@@ -1268,9 +1318,7 @@
 
       // Loop through each row of the table
       $('.data-lead-table').each(function() {
-        var status = $(this).find('.status-select').val(); // Assuming the status is stored in a dropdown with the class 'status-select'
-
-        // Check if the selected status matches the row's status or if "All" is selected
+        var status = $(this).find('.status-select').val();
         if (selectedStatus === status || selectedStatus === "") {
           $(this).show();
         } else {
@@ -1278,29 +1326,5 @@
         }
       });
     });
-
-    // filterElement.addEventListener("input", function(event) {
-    //   // Fungsi ini akan dipanggil setiap kali ada perubahan pada input
-    //   var filterValue = event.target.value;
-    //   filterLeads(id_pengguna, filterValue);
-    //   console.log("Input yang diketik: " + filterValue);
-    // });
-
-    // function filterLeads(id_pengguna, key) {
-    //   $.ajax({
-    //     url: "<?php echo site_url('api/supplier/lead/filter'); ?>",
-    //     type: "GET",
-    //     data: {
-    //       id_pengguna: id_pengguna,
-    //       key: key
-    //     },
-    //     dataType: "json",
-    //     beforeSend: addAuthorizationHeader,
-    //     success: function(data) {
-    //       console.log(data, 'data');
-    //       setTableLeads(data)
-    //     }
-    //   });
-    // }
   });
 </script>

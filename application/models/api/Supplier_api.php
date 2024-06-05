@@ -281,7 +281,7 @@ class Supplier_api extends CI_Model
     }
     public function updateDataLeadCRM($data, $id)
     {
-        $valid_fields = ['status', 'jadwal', 'catatan'];
+        $valid_fields = ['status', 'jadwal', 'catatan', 'waktu'];
         $update_data = array();
 
         foreach ($data as $key => $value) {
@@ -412,6 +412,14 @@ AND (data_leads.id_lead NOT IN (SELECT id_lead FROM plot_tim) OR data_leads.id_l
         $this->db->from('plot_tim'); // Ganti dengan nama tabel riwayat Anda
         $this->db->where('id_lead', $id_lead);
         $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function insertRiwayat($id_lead)
+    {
+        $this->db->select('status, jadwal, catatan, create_at');
+        $this->db->from('plot_tim'); // Ganti dengan nama tabel riwayat Anda
+        $this->db->where('id_lead', $id_lead);
+        $query = $this->db->insert();
         return $query->result_array();
     }
 
