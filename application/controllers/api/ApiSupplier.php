@@ -51,7 +51,7 @@ class ApiSupplier extends RestController
     public function getbyId_get($id)
     {
         // $id = $this->get('id_tim');
-        $data = $this->Supplier_api->getTimMarketingById($id);
+        $data = $this->Supplier_api->getTimMarketingWithFotoById($id);
 
         if ($data) {
             $this->response([
@@ -66,6 +66,57 @@ class ApiSupplier extends RestController
         }
     }
 
+    // public function create_post()
+    // {
+    //     $data = [
+    //         'nama_tim' => $this->post('nama_tim'),
+    //         'posisi' => $this->post('posisi'),
+    //         'no_telp' => $this->post('no_telp'),
+    //         'email' => $this->post('email'),
+    //         'alamat' => $this->post('alamat'),
+    //         'id_supplier' => $_COOKIE['id_pengguna'],
+    //     ];
+
+    //     $token = random_string('alnum', 25);
+
+    //     $data_pengguna = [
+    //         'nama' => $this->post('nama_tim'),
+    //         'email' => $this->post('email'),
+    //         'alamat' => $this->post('alamat'),
+    //         'no_telp' => $this->post('no_telp'),
+    //         'kategori' => UserCategory::MARKETING,
+    //         // 'password' => md5($this->post('password')),
+    //         'token' => $token,
+    //         'is_active' => 1,
+    //         'tgl_update' => date('Y-m-d H:i:s'),
+    //         'status' => UserType::PAID,
+    //     ];
+
+    //     // if($this->Supplier_api->insertTimToPengguna($data_pengguna) > 0){
+    //     //     $this->response([
+    //     //         'status' => true,
+    //     //         'message' => 'Data berhasil ditambahkan'
+    //     //     ], RestController::HTTP_CREATED);
+    //     // } else {
+    //     //     $this->response([
+    //     //         'status' => false,
+    //     //         'message' => 'Data gagal ditambahkan'
+    //     //     ], RestController::HTTP_BAD_REQUEST);
+    //     // }
+    //     $this->Supplier_api->insertTimToPengguna($data_pengguna);
+    //     if ($this->Supplier_api->createTimMarketing($data) > 0) {
+    //         $this->response([
+    //             'status' => true,
+    //             'message' => 'Data berhasil ditambahkan'
+    //         ], RestController::HTTP_CREATED);
+    //         $this->Supplier_api->insertTimToPengguna($data_pengguna);
+    //     } else {
+    //         $this->response([
+    //             'status' => false,
+    //             'message' => 'Data gagal ditambahkan'
+    //         ], RestController::HTTP_BAD_REQUEST);
+    //     }
+    // }
     public function create_post()
     {
         $data = [
@@ -85,38 +136,38 @@ class ApiSupplier extends RestController
             'alamat' => $this->post('alamat'),
             'no_telp' => $this->post('no_telp'),
             'kategori' => UserCategory::MARKETING,
-            // 'password' => md5($this->post('password')),
             'token' => $token,
             'is_active' => 1,
             'tgl_update' => date('Y-m-d H:i:s'),
             'status' => UserType::PAID,
         ];
 
-        // if($this->Supplier_api->insertTimToPengguna($data_pengguna) > 0){
-        //     $this->response([
-        //         'status' => true,
-        //         'message' => 'Data berhasil ditambahkan'
-        //     ], RestController::HTTP_CREATED);
-        // } else {
-        //     $this->response([
-        //         'status' => false,
-        //         'message' => 'Data gagal ditambahkan'
-        //     ], RestController::HTTP_BAD_REQUEST);
-        // }
-        $this->Supplier_api->insertTimToPengguna($data_pengguna);
-        if ($this->Supplier_api->createTimMarketing($data) > 0) {
-            $this->response([
-                'status' => true,
-                'message' => 'Data berhasil ditambahkan'
-            ], RestController::HTTP_CREATED);
-            $this->Supplier_api->insertTimToPengguna($data_pengguna);
+        // Menyimpan data pengguna baru dan mendapatkan id_pengguna yang baru saja dibuat
+        $id_pengguna_baru = $this->Supplier_api->insertTimToPengguna($data_pengguna);
+
+        if ($id_pengguna_baru) {
+            // Menambahkan id_pengguna baru ke dalam data tim marketing
+            $data['id_pengguna'] = $id_pengguna_baru;
+
+            if ($this->Supplier_api->createTimMarketing($data) > 0) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data berhasil ditambahkan'
+                ], RestController::HTTP_CREATED);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data gagal ditambahkan'
+                ], RestController::HTTP_BAD_REQUEST);
+            }
         } else {
             $this->response([
                 'status' => false,
-                'message' => 'Data gagal ditambahkan'
+                'message' => 'Gagal membuat pengguna baru'
             ], RestController::HTTP_BAD_REQUEST);
         }
     }
+
 
     public function deleteTim_delete($id)
     {
