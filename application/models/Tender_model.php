@@ -424,7 +424,8 @@ class Tender_model extends CI_Model
             $this->db->like('pemenang.provinsi', $data['prov']);
         }
         if (!empty($data['kab'])) {
-            $this->db->like('pemenang.kabupaten', $data['kab']);
+            // Using REPLACE to remove extra spaces in kabupaten column
+            $this->db->like('REPLACE(REPLACE(pemenang.kabupaten, "   ", " "), "  ", " ")', $data['kab']);
         }
 
         // Sorting criteria
@@ -456,7 +457,7 @@ class Tender_model extends CI_Model
 
     
     public function getHasilFilterPemenangTerbaruInkindo($id_pengguna,$offset, $limit,$data){
-        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender, lpse.nama_lpse, jenis_tender.jenis_tender, pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang,anggota_asosiasi.npwp AS npwp_inkindo,COALESCE(DATEDIFF(CURRENT_DATE,tgl_pemenang),0) AS update_hari');
+        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender, lpse.nama_lpse, jenis_tender.jenis_tender, pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang,anggota_asosiasi.npwp AS npwp_inkindo,COALESCE(DATEDIFF(CURRENT_DATE,tgl_pemenang),0) AS update_hari,pemenang.provinsi,pemenang.kabupaten');
         $this->db->from('data_leads');
         $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
         $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
@@ -486,8 +487,10 @@ class Tender_model extends CI_Model
        if (!empty($data['prov'])) {
             $this->db->like('pemenang.provinsi', $data['prov']);
         }
+        
         if (!empty($data['kab'])) {
-            $this->db->like('pemenang.kabupaten', $data['kab']);
+            // Using REPLACE to remove extra spaces in kabupaten column
+            $this->db->like('REPLACE(REPLACE(pemenang.kabupaten, "   ", " "), "  ", " ")', $data['kab']);
         }
 
 
@@ -555,7 +558,8 @@ class Tender_model extends CI_Model
             $this->db->like('pemenang.provinsi', $data['prov']);
         }
         if (!empty($data['kab'])) {
-            $this->db->like('pemenang.kabupaten', $data['kab']);
+            // Using REPLACE to remove extra spaces in kabupaten column
+            $this->db->like('REPLACE(REPLACE(pemenang.kabupaten, "   ", " "), "  ", " ")', $data['kab']);
         }
 
         // Sorting criteria
@@ -616,7 +620,8 @@ class Tender_model extends CI_Model
             $this->db->like('pemenang.provinsi', $data['prov']);
         }
         if (!empty($data['kab'])) {
-            $this->db->like('pemenang.kabupaten', $data['kab']);
+            // Using REPLACE to remove extra spaces in kabupaten column
+            $this->db->like('REPLACE(REPLACE(pemenang.kabupaten, "   ", " "), "  ", " ")', $data['kab']);
         }
 
         // Sorting criteria
