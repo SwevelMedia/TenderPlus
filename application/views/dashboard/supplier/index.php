@@ -1462,7 +1462,6 @@
         });
     }
 
-<<<<<<< HEAD
     <?php if ($status == 'inkindo'): ?>
     // Functin filter tender inkindo
     function filterTenderInkindo(sort = 3) {
@@ -1477,22 +1476,6 @@
             // 'lokasi': lokasi,
             'sort': sort
         };
-=======
-    <?php if ($status == 'inkindo') : ?>
-        // Functin filter tender inkindo
-        function filterTenderInkindo(sort = 3) {
-            let params = {
-                'id_pengguna': id_pengguna,
-                'keyword': keyword,
-                'jenis_pengadaan': jenis_pengadaan,
-                'nilai_hps_awal': hps_awal,
-                'nilai_hps_akhir': hps_akhir,
-                // 'prov': prov,
-                // 'kab': kab,
-                'lokasi': lokasi,
-                'sort': sort
-            };
->>>>>>> 7c564ec89fb81d238149ef988275a8463272cadd
 
             // console.log("param :",params);
             // return
