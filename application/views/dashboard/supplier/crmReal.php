@@ -1011,9 +1011,10 @@
       $.each(data, function(index, value) {
         var rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
         var formattedDate = formatDate(value.jadwal);
-        var timeValue = value.waktu ? value.waktu : "klik untuk ubah waktu";
+        var timeValue = value.waktu ? value.waktu : "";
+        var catatanValue = value.catatan ? value.catatan : "";
         var statusOptions = `
-      <option value="" ${!value.status ? 'selected' : '' }disabled><a class = "text-decorartion-underline">Klik untuk ubah status</a></option>
+      <option value="" ${!value.status ? 'selected' : '' }disabled></option>
       <option value="sedang-dihubungi" ${value.status === 'sedang-dihubungi' ? 'selected' : ''}>Sedang Dihubungi</option>
       <option value="proses-negosiasi" ${value.status === 'proses-negosiasi' ? 'selected' : ''}>Proses Negosiasi</option>
       <option value="ditunda" ${value.status === 'ditunda' ? 'selected' : ''}>Ditunda</option>
@@ -1034,7 +1035,7 @@
                       <input type="text" class="datepicker" value="${formattedDate}" disabled />
                       <input type="text" class="timepicker" value="${timeValue}" disabled />
                     </td>
-                    <td class="catatan" contenteditable="false">${value.catatan}</td>
+                    <td class="catatan" contenteditable="false">${catatanValue}</td>
                     <td class="text-center">
                     <div>
                       <a class="edit-lead" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
