@@ -1195,6 +1195,9 @@
         $('#pagination-container').pagination('refresh');
       });
     }
+    $(document).on('click', '.edit', function() {
+
+    });
 
     function refreshDashboard() {
       $.ajax({
