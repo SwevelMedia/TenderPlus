@@ -24,6 +24,7 @@ class DashboardUserSupplier extends CI_Controller
         $this->load->model('api/Supplier_api');
         $this->load->model('api/Pemenang_model', 'pemenang');
         $this->load->model('api/Wilayah_model');
+        $this->load->model('JenisTender_model');
 
         $this->init();
     }
@@ -59,8 +60,26 @@ class DashboardUserSupplier extends CI_Controller
     }
 
     public function getAllWilayah(){
-        $wilayah =$this->Wilayah_model->getAllWilayah();
+        $q = $this->input->get('q'); // Mendapatkan parameter pencarian dari URL
+        if($q) {
+            $wilayah = $this->Wilayah_model->getWilayahByName($q); // Memanggil model untuk mencari wilayah berdasarkan parameter pencarian
+        } else {
+            $wilayah = $this->Wilayah_model->getAllWilayah(); // Mendapatkan semua wilayah jika tidak ada parameter pencarian
+        }
+
         echo json_encode($wilayah);
+    }
+
+    public function getJenispengadaan(){
+        $q = $this->input->get('q'); // Mendapatkan parameter pencarian dari URL
+        
+        if($q) {
+            $jenis = $this->JenisTender_model->getListJenisTender($q,'',''); // Memanggil model untuk mencari jenis berdasarkan parameter pencarian
+        } else {
+            $jenis = $this->JenisTender_model->getAllJenisTender(); // Mendapatkan semua jenis jika tidak ada parameter pencarian
+        }
+
+        echo json_encode($jenis);
     }
 
     public function dataLeads()
