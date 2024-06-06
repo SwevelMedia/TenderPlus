@@ -542,6 +542,11 @@ class ApiSupplier extends RestController
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
     }
+    public function tambahRiwayat()
+    {
+        $id_lead = $this->input->post('id_lead');
+        $data = $this->Supplier_api->insertContact_post($id_lead);
+    }
     public function getPlotTimByIdLead_get()
     {
         $id_lead = $this->input->get('id_lead');
@@ -573,7 +578,8 @@ class ApiSupplier extends RestController
         }
     }
 
-    public function getTotalTimMarketingById_get(){
+    public function getTotalTimMarketingById_get()
+    {
         $id_supplier = $this->input->get('id_pengguna');
         $data = $this->Supplier_api->getTotalTimMarketingById($id_supplier);
 
