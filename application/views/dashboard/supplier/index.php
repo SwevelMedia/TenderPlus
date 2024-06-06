@@ -1175,9 +1175,9 @@
         jenis_pengadaan = '',
         hps_awal = '',
         hps_akhir = '',
-        // prov = '',
-        // kab = '',
-        lokasi = '',
+        prov = '',
+        kab = '',
+        // lokasi = '',
         jum_pemenang, timer;
 
     $(document).ready(function() {
@@ -1364,9 +1364,9 @@
             'jenis_pengadaan': jenis_pengadaan,
             'nilai_hps_awal': hps_awal,
             'nilai_hps_akhir': hps_akhir,
-            // 'prov': prov,
-            // 'kab': kab,
-            'lokasi': lokasi,
+            'prov': prov,
+            'kab': kab,
+            // 'lokasi': lokasi,
             'sort': sort
         };
 
@@ -1456,9 +1456,9 @@
             'jenis_pengadaan': jenis_pengadaan,
             'nilai_hps_awal': hps_awal,
             'nilai_hps_akhir': hps_akhir,
-            // 'prov': prov,
-            // 'kab': kab,
-            'lokasi': lokasi,
+            'prov': prov,
+            'kab': kab,
+            // 'lokasi': lokasi,
             'sort': sort
         };
 
@@ -1688,67 +1688,149 @@
         else return "<span style='padding-left: 20px;'>" + data.text + "</span>";
     }
 
-    $('.select2-wilayah').select2({
-        placeholder: "Lokasi Pekerjaan",
-        theme: 'bootstrap-5',
-        allowClear: true,
-        "language": {
-            noResults: function() {
-                return "<span>Tidak ada lokasi pekerjaan</span>";
-            },
-            loadingMore: function() {
-                return "<span>Menampilkan lainnya...</span>";
-            },
-            searching: function() {
-                return "<span>Mencari hasil...</span>";
-            },
-            errorLoading: function() {
-                return "<span>Gagal menampilkan lokasi pekerjaan</span>";
-            }
-        },
-        escapeMarkup: function(markup) {
-            return markup;
-        },
-        ajax: {
-            url: "<?= base_url('/DashboardUserSupplier/getAllWilayah') ?>",
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-                return {
-                    q: params.term,
-                    id_pengguna: id_pengguna,
-                    jenis: '4',
-                    page_limit: 10,
-                    page: (params.page > 1 ? params.page - 1 : params.page)
-                };
-            },
-            processResults: function(data, params) {
-                params.page = params.page || 1;
-                return {
-                    results: data.results,
-                    pagination: {
-                        more: (params.page * 10) < data.total_count
-                    }
-                };
-            },
-            cache: true
-        },
-        templateResult: formatData
-    }).on('change', function() {
-        let wilayah = $(this).val();
+    // $('.select2-wilayah').select2({
+    //     placeholder: "Lokasi Pekerjaan",
+    //     theme: 'bootstrap-5',
+    //     allowClear: true,
+    //     "language": {
+    //         noResults: function() {
+    //             return "<span>Tidak ada lokasi pekerjaan</span>";
+    //         },
+    //         loadingMore: function() {
+    //             return "<span>Menampilkan lainnya...</span>";
+    //         },
+    //         searching: function() {
+    //             return "<span>Mencari hasil...</span>";
+    //         },
+    //         errorLoading: function() {
+    //             return "<span>Gagal menampilkan lokasi pekerjaan</span>";
+    //         }
+    //     },
+    //     escapeMarkup: function(markup) {
+    //         return markup;
+    //     },
+    //     ajax: {
+    //         url: "<?= base_url('/DashboardUserSupplier/getAllWilayah') ?>",
+    //         dataType: 'json',
+    //         delay: 250,
+    //         data: function(params) {
+    //             return {
+    //                 q: params.term,
+    //                 id_pengguna: id_pengguna,
+    //                 jenis: '4',
+    //                 page_limit: 10,
+    //                 page: (params.page > 1 ? params.page - 1 : params.page)
+    //             };
+    //         },
+    //         processResults: function(data, params) {
+    //             params.page = params.page || 1;
+    //             return {
+    //                 results: data.results,
+    //                 pagination: {
+    //                     more: (params.page * 10) < data.total_count
+    //                 }
+    //             };
+    //         },
+    //         cache: true
+    //     },
+    //     templateResult: formatData
+    // }).on('change', function() {
+    //     let wilayah = $(this).val();
 
-        if (wilayah != null) {
-            if (wilayah.includes('00')) {
-                prov = wilayah;
-                kab = '';
-            } else {
-                kab = wilayah;
-                prov = '';
-            }
-        } else kab = prov = '';
+    //     if (wilayah != null) {
+    //         if (wilayah.includes('00')) {
+    //             prov = wilayah;
+    //             kab = '';
+    //         } else {
+    //             kab = wilayah;
+    //             prov = '';
+    //         }
+    //     } else kab = prov = '';
 
-        // filterTender();
-    });
+    //     // filterTender();
+    // });
+
+
+
+$('.select2-wilayah').select2({
+    placeholder: "Lokasi Pekerjaan",
+    theme: 'bootstrap-5',
+    allowClear: true,
+    minimumInputLength: 1,
+    "language": {
+        noResults: function() {
+            return "<span>Tidak ada lokasi pekerjaan</span>";
+        },
+        loadingMore: function() {
+            return "<span>Menampilkan lainnya...</span>";
+        },
+        searching: function() {
+            return "<span>Mencari hasil...</span>";
+        },
+        errorLoading: function() {
+            return "<span>Gagal menampilkan lokasi pekerjaan</span>";
+        }
+    },
+    escapeMarkup: function(markup) {
+        return markup;
+    },
+    ajax: {
+        url: "<?= base_url('/DashboardUserSupplier/getAllWilayah') ?>",
+        dataType: 'json',
+        delay: 250,
+        processResults: function(data) {
+            // Membuat array untuk menyimpan hasil kelompok provinsi dan kabupaten
+            var groupedData = [];
+
+            // Mengelompokkan data wilayah berdasarkan provinsi
+            data.forEach(function(item) {
+                if (item.id_wilayah.endsWith('00')) {
+                    // Ini adalah provinsi
+                    groupedData.push({ id: item.id_wilayah, text: "<strong>" + item.wilayah + "</strong>", isProvinsi: true });
+                } else {
+                    // Ini adalah kabupaten
+                    groupedData.push({ id: item.id_wilayah, text: item.wilayah, isProvinsi: false });
+                }
+            });
+
+            return {
+                results: groupedData
+            };
+        },
+        cache: true
+    }
+}).on('change', function(){
+    let selectedOption = $(this).select2('data')[0];
+    
+    console.log("Selected wilayah:", selectedOption); // Debug log
+
+    // Periksa apakah wilayah yang dipilih adalah provinsi atau kabupaten
+    if (selectedOption != null) {
+        if (selectedOption.isProvinsi) { 
+            // Jika wilayah yang dipilih adalah provinsi, set kabupaten kosong
+            prov = selectedOption.text.replace(/<\/?strong>/g, ""); // Menghapus tag <strong>
+            kab = ''; 
+        } else { 
+            // Jika wilayah yang dipilih adalah kabupaten, set provinsi kosong
+            kab = selectedOption.text;
+            prov = ''; 
+        }
+    } else {
+        // Jika tidak ada wilayah yang dipilih, kosongkan keduanya
+        kab = '';
+        prov = '';
+    }
+    
+    console.log("Provinsi:", prov); // Debug log
+    console.log("Kabupaten:", kab); // Debug log
+
+    filterTender();
+    
+    <?php if ($status == 'inkindo'): ?>
+    filterTenderInkindo();
+    <?php endif; ?>
+});
+
 
 
     $('.select2-jenis-pengadaan').select2({

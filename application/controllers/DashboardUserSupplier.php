@@ -59,7 +59,13 @@ class DashboardUserSupplier extends CI_Controller
     }
 
     public function getAllWilayah(){
-        $wilayah =$this->Wilayah_model->getAllWilayah();
+         $q = $this->input->get('q'); // Mendapatkan parameter pencarian dari URL
+        if($q) {
+            $wilayah = $this->Wilayah_model->getWilayahByName($q); // Memanggil model untuk mencari wilayah berdasarkan parameter pencarian
+        } else {
+            $wilayah = $this->Wilayah_model->getAllWilayah(); // Mendapatkan semua wilayah jika tidak ada parameter pencarian
+        }
+
         echo json_encode($wilayah);
     }
 

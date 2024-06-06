@@ -391,7 +391,7 @@ class Tender_model extends CI_Model
     }
 
     public function getHasilFilterPemenangTerbaru($id_pengguna, $offset, $limit, $data) {
-        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender, lpse.nama_lpse, jenis_tender.jenis_tender, pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang,COALESCE(DATEDIFF(CURRENT_DATE,tgl_pemenang),0) AS update_hari');
+        $this->db->select('data_leads.nama_perusahaan, pemenang.kode_tender, lpse.nama_lpse, jenis_tender.jenis_tender, pemenang.nama_tender, pemenang.lokasi_pekerjaan, pemenang.harga_penawaran, pemenang.tgl_pemenang,COALESCE(DATEDIFF(CURRENT_DATE,tgl_pemenang),0) AS update_hari,pemenang.provinsi,pemenang.kabupaten');
         $this->db->from('data_leads');
         $this->db->join('pemenang', 'pemenang.id_pemenang = data_leads.id_pemenang');
         $this->db->join('lpse', 'pemenang.id_lpse = lpse.id_lpse');
@@ -420,8 +420,11 @@ class Tender_model extends CI_Model
             $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
         }
 
-        if (!empty($data['lokasi'])) {
-            $this->db->like('pemenang.lokasi_pekerjaan', $data['lokasi']);
+        if (!empty($data['prov'])) {
+            $this->db->like('pemenang.provinsi', $data['prov']);
+        }
+        if (!empty($data['kab'])) {
+            $this->db->like('pemenang.kabupaten', $data['kab']);
         }
 
         // Sorting criteria
@@ -480,8 +483,11 @@ class Tender_model extends CI_Model
             $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
         }
 
-       if (!empty($data['lokasi'])) {
-            $this->db->like('pemenang.lokasi_pekerjaan', $data['lokasi']);
+       if (!empty($data['prov'])) {
+            $this->db->like('pemenang.provinsi', $data['prov']);
+        }
+        if (!empty($data['kab'])) {
+            $this->db->like('pemenang.kabupaten', $data['kab']);
         }
 
 
@@ -545,8 +551,11 @@ class Tender_model extends CI_Model
             $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
         }
 
-        if (!empty($data['lokasi'])) {
-            $this->db->like('pemenang.lokasi_pekerjaan', $data['lokasi']);
+        if (!empty($data['prov'])) {
+            $this->db->like('pemenang.provinsi', $data['prov']);
+        }
+        if (!empty($data['kab'])) {
+            $this->db->like('pemenang.kabupaten', $data['kab']);
         }
 
         // Sorting criteria
@@ -603,8 +612,11 @@ class Tender_model extends CI_Model
             $this->db->where('pemenang.harga_penawaran <=', $data['nilai_hps_akhir']);
         }
 
-        if (!empty($data['lokasi'])) {
-            $this->db->like('pemenang.lokasi_pekerjaan', $data['lokasi']);
+        if (!empty($data['prov'])) {
+            $this->db->like('pemenang.provinsi', $data['prov']);
+        }
+        if (!empty($data['kab'])) {
+            $this->db->like('pemenang.kabupaten', $data['kab']);
         }
 
         // Sorting criteria
