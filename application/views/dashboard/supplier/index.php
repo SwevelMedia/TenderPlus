@@ -387,7 +387,7 @@
         <div class="row justify-content d-flex content-above-navbar">
             <div class="col-md-5 d-flex justify-content-left align-items-left wow fadeInUp" data-wow-delay="0.1s">
                 <h4 class="mb-0 ms-2 mt-4 wow fadeInUp w-660" style="padding-top:8px;">
-                    Selamat Datang <span class="fw-semibold nama-pengguna" style="color: #df3131;"></span>!<p class="pt-2">Yuk! Temukan Calon Customermu
+                    Selamat Datang, <span class="fw-semibold nama-pengguna" style="color: #df3131;"></span>!<p class="pt-2">Ayo Temukan Calon Customer Anda!
                     <p>
                 </h4>
             </div>
@@ -555,7 +555,7 @@
                         </p>
                         <p id="ditolak" class="crmstats-summary" style="margin-left: 10%;">
                             <span style="border-left: 4px solid red; font-size:11px; margin-right:4px"></span>
-                            Disetujui <span class="crmstats-summary-number badge-right">0</span>
+                            Ditolak <span class="crmstats-summary-number badge-right">0</span>
                         </p>
                     </div>
                 </div>
@@ -1462,20 +1462,20 @@
         });
     }
 
-    <?php if ($status == 'inkindo'): ?>
-    // Functin filter tender inkindo
-    function filterTenderInkindo(sort = 3) {
-        let params = {
-            'id_pengguna': id_pengguna,
-            'keyword': keyword,
-            'jenis_pengadaan': jenis_pengadaan,
-            'nilai_hps_awal': hps_awal,
-            'nilai_hps_akhir': hps_akhir,
-            'prov': prov,
-            'kab': kab,
-            // 'lokasi': lokasi,
-            'sort': sort
-        };
+    <?php if ($status == 'inkindo') : ?>
+        // Functin filter tender inkindo
+        function filterTenderInkindo(sort = 3) {
+            let params = {
+                'id_pengguna': id_pengguna,
+                'keyword': keyword,
+                'jenis_pengadaan': jenis_pengadaan,
+                'nilai_hps_awal': hps_awal,
+                'nilai_hps_akhir': hps_akhir,
+                'prov': prov,
+                'kab': kab,
+                // 'lokasi': lokasi,
+                'sort': sort
+            };
 
             // console.log("param :",params);
             // return
@@ -1767,84 +1767,92 @@
 
 
 
-$('.select2-wilayah').select2({
-    placeholder: "Lokasi Pekerjaan",
-    theme: 'bootstrap-5',
-    allowClear: true,
-    minimumInputLength: 1,
-    "language": {
-        noResults: function() {
-            return "<span>Tidak ada lokasi pekerjaan</span>";
+    $('.select2-wilayah').select2({
+        placeholder: "Lokasi Pekerjaan",
+        theme: 'bootstrap-5',
+        allowClear: true,
+        minimumInputLength: 1,
+        "language": {
+            noResults: function() {
+                return "<span>Tidak ada lokasi pekerjaan</span>";
+            },
+            loadingMore: function() {
+                return "<span>Menampilkan lainnya...</span>";
+            },
+            searching: function() {
+                return "<span>Mencari hasil...</span>";
+            },
+            errorLoading: function() {
+                return "<span>Gagal menampilkan lokasi pekerjaan</span>";
+            }
         },
-        loadingMore: function() {
-            return "<span>Menampilkan lainnya...</span>";
+        escapeMarkup: function(markup) {
+            return markup;
         },
-        searching: function() {
-            return "<span>Mencari hasil...</span>";
-        },
-        errorLoading: function() {
-            return "<span>Gagal menampilkan lokasi pekerjaan</span>";
+        ajax: {
+            url: "<?= base_url('/DashboardUserSupplier/getAllWilayah') ?>",
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+                // Membuat array untuk menyimpan hasil kelompok provinsi dan kabupaten
+                var groupedData = [];
+
+                // Mengelompokkan data wilayah berdasarkan provinsi
+                data.forEach(function(item) {
+                    if (item.id_wilayah.endsWith('00')) {
+                        // Ini adalah provinsi
+                        groupedData.push({
+                            id: item.id_wilayah,
+                            text: "<strong>" + item.wilayah + "</strong>",
+                            isProvinsi: true
+                        });
+                    } else {
+                        // Ini adalah kabupaten
+                        groupedData.push({
+                            id: item.id_wilayah,
+                            text: item.wilayah,
+                            isProvinsi: false
+                        });
+                    }
+                });
+
+                return {
+                    results: groupedData
+                };
+            },
+            cache: true
         }
-    },
-    escapeMarkup: function(markup) {
-        return markup;
-    },
-    ajax: {
-        url: "<?= base_url('/DashboardUserSupplier/getAllWilayah') ?>",
-        dataType: 'json',
-        delay: 250,
-        processResults: function(data) {
-            // Membuat array untuk menyimpan hasil kelompok provinsi dan kabupaten
-            var groupedData = [];
+    }).on('change', function() {
+        let selectedOption = $(this).select2('data')[0];
 
-            // Mengelompokkan data wilayah berdasarkan provinsi
-            data.forEach(function(item) {
-                if (item.id_wilayah.endsWith('00')) {
-                    // Ini adalah provinsi
-                    groupedData.push({ id: item.id_wilayah, text: "<strong>" + item.wilayah + "</strong>", isProvinsi: true });
-                } else {
-                    // Ini adalah kabupaten
-                    groupedData.push({ id: item.id_wilayah, text: item.wilayah, isProvinsi: false });
-                }
-            });
+        console.log("Selected wilayah:", selectedOption); // Debug log
 
-            return {
-                results: groupedData
-            };
-        },
-        cache: true
-    }
-}).on('change', function(){
-    let selectedOption = $(this).select2('data')[0];
-    
-    console.log("Selected wilayah:", selectedOption); // Debug log
-
-    // Periksa apakah wilayah yang dipilih adalah provinsi atau kabupaten
-    if (selectedOption != null) {
-        if (selectedOption.isProvinsi) { 
-            // Jika wilayah yang dipilih adalah provinsi, set kabupaten kosong
-            prov = selectedOption.text.replace(/<\/?strong>/g, ""); // Menghapus tag <strong>
-            kab = ''; 
-        } else { 
-            // Jika wilayah yang dipilih adalah kabupaten, set provinsi kosong
-            kab = selectedOption.text;
-            prov = ''; 
+        // Periksa apakah wilayah yang dipilih adalah provinsi atau kabupaten
+        if (selectedOption != null) {
+            if (selectedOption.isProvinsi) {
+                // Jika wilayah yang dipilih adalah provinsi, set kabupaten kosong
+                prov = selectedOption.text.replace(/<\/?strong>/g, ""); // Menghapus tag <strong>
+                kab = '';
+            } else {
+                // Jika wilayah yang dipilih adalah kabupaten, set provinsi kosong
+                kab = selectedOption.text;
+                prov = '';
+            }
+        } else {
+            // Jika tidak ada wilayah yang dipilih, kosongkan keduanya
+            kab = '';
+            prov = '';
         }
-    } else {
-        // Jika tidak ada wilayah yang dipilih, kosongkan keduanya
-        kab = '';
-        prov = '';
-    }
-    
-    console.log("Provinsi:", prov); // Debug log
-    console.log("Kabupaten:", kab); // Debug log
 
-    filterTender();
-    
-    <?php if ($status == 'inkindo'): ?>
-    filterTenderInkindo();
-    <?php endif; ?>
-});
+        console.log("Provinsi:", prov); // Debug log
+        console.log("Kabupaten:", kab); // Debug log
+
+        filterTender();
+
+        <?php if ($status == 'inkindo') : ?>
+            filterTenderInkindo();
+        <?php endif; ?>
+    });
 
 
 

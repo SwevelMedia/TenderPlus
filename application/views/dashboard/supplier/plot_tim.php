@@ -215,7 +215,7 @@
     }
 
     /* .box::-webkit-scrollbar-track { */
-      /* background: #f1f1f1; Warna latar belakang track */
+    /* background: #f1f1f1; Warna latar belakang track */
     /* } */
   }
 
@@ -242,7 +242,7 @@
   <div class="container">
     <div class="mt-5">
       <h4>Selamat Datang!</h4>
-      <h4>Yuk Segera Bagi Tugas Tim Marketingmu</h4>
+      <h4>Yuk Segera Bagi Tugas Tim Marketing Anda</h4>
     </div>
     <div class="col-md-3 pt-3">
       <button class="btn-add bg-color text-light" id="addContainerBtn" data-toggle="modal" data-target="#inputMarketingModal">Tambahkan Anggota

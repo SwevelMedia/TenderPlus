@@ -329,7 +329,7 @@
         <div class="col-6">
             <h2 class="mb-0 ms-0 wow fadeInUp" style="order: 1;">
                 Selamat Datang!
-                <p>Ini daftar tim kamu!</p>
+                <p>Berikut Daftar Anggota Tim Anda!</p>
             </h2>
             <div class="d-flex justify-content-start">
                 <div class="link d-flex flex-row align-items-center" style="margin-top:10px">
@@ -467,7 +467,7 @@
 
                         <div class="d-flex justify-content-center mt-3 mb-2">
 
-                            <img src="<?= base_url("assets/img/user-icon.svg") ?>" style="width: 80px; height: 80px;">
+                            <img src="<?= base_url("assets/img/user-icon-detail.svg") ?>" style="width: 80px; height: 80px;">
                         </div>
 
                         <div class="input-popup justify-content-end">
@@ -845,7 +845,7 @@
                 '<a href="#" class="btn-edt" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data[i].id_tim + '" title="Edit"><i class="fas fa-edit me-2"></i></a>' +
                 '<a class="btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data[i].id_tim + '" title="Hapus"><i class="fas fa-trash me-2"></i></a>' +
                 '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data[i].id_tim + '" title="Kirim Email"><i class="fas fa-paper-plane"></i></a>' +
-            
+
                 '</td>' +
                 '</tr>';
         }
