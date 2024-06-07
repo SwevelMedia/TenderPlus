@@ -61,6 +61,16 @@ class Supplier_api extends CI_Model
         $query = $this->db->get();
         return $query->row_array();
     }
+    public function getTimMarketingWithFotoById($id)
+    {
+        $this->db->select('tim_marketing.*, pengguna.foto');
+        $this->db->from('tim_marketing');
+        $this->db->join('pengguna', 'tim_marketing.id_pengguna = pengguna.id_pengguna');
+        $this->db->where('tim_marketing.id_tim', $id);
+        $query = $this->db->get();
+        return $query->row_array();
+
+    }
 
     public function getTimMarketingByNama($nama)
     {
@@ -117,8 +127,17 @@ class Supplier_api extends CI_Model
     public function insertTimToPengguna($data)
     {
         $this->db->insert('pengguna', $data);
-        return $this->db->affected_rows();
+        // return $this->db->affected_rows();
+        return $this->db->insert_id();
+
     }
+    // // Insert the same Tim to table pengguna
+    // public function insertTimToPengguna($data)
+    // {
+    //     $this->db->insert('pengguna', $data);
+    //     return $this->db->affected_rows();
+    // }
+
 
     // Get profile field only from data_lead
     public function getProfile($id)

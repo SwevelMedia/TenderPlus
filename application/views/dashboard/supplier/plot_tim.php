@@ -196,6 +196,31 @@
     color: black;
   }
 
+  .flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .overflow-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 80px);
+    /* Adjust the width to leave space for the dropdown and badge */
+  }
+
+  .flex-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .badge {
+    margin-left: 10px;
+    /* Optional: add some space between the image and the badge */
+  }
+
+
   @media (max-width: 768px) {
     .container-fluid {
       flex-direction: column;
@@ -311,7 +336,7 @@
                 if (response.status == true) {
                   // alert('Data berhasil ditambahkan');
                   console.log('Data berhasil ditambahkan');
-                  window.location.href = "<?= base_url('suplier/crm') ?>";
+                  window.location.href = "<?= base_url('suplier/plottim') ?>";
                 } else {
                   // alert('Data gagal ditambahkan');
                   console.log('Data gagal ditambahkan');
@@ -385,16 +410,19 @@
                 var rowNumber = index + 1;
                 leads +=
                   `<div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="title bg-color" style="padding: 10px; margin-top:15px">
-                <div class="card rounded-3" style="height: 40px;padding-top:2%">
-                  <h5 style="margin-left:10px" onclick="toggleCardVisibility('container` + index + 2 + `')">` + value.nama_tim + `
-                  <span ><img src="<?= base_url("assets/img/arrow_drop_down.svg") ?>" style="width: 32px; height: 32px;float:right"></span>
-                  <span id="card-count-container` + index + 2 + `" class="badge" style="margin-top:3px">` + value.jumlah + `</span>
-                  </h5>
-                </div>
-                </div>
+                  <div class="title bg-color" style="padding: 10px; margin-top:15px">
+  <div class="card rounded-3 px-2" style="height: 40px; padding-top: 2%">
+    <h5 class="flex-container ps-2" onclick="toggleCardVisibility('container` + index + 2 + `')">
+      <span class="overflow-text ">` + value.nama_tim + `</span>
+      <span class="flex-right">
+      <span id="card-count-container` + index + 2 + `" class="badge">` + value.jumlah + `</span>
+        <img src="<?= base_url("assets/img/arrow_drop_down.svg") ?>" style="width: 32px; height: 32px;">
+      </span>
+    </h5>
+  </div>
+</div>
           <div class="">
-            <div id="container` + index + 2 + `" class="workspace box bg-color" style="margin-left:15px" data-id="` + value.id_tim + `">` +
+            <div id="container` + index + 2 + `" class="workspace box bg-color" style="margin-left:15px; " data-id="` + value.id_tim + `">` +
                   getLeadByTim(value.id_tim) +
                   `</div>
           </div></div>`;

@@ -466,8 +466,9 @@
                         <!-- <h3 class="modal-title" id="detailMarketingModalLabel">Detail Marketing</h3> -->
 
                         <div class="d-flex justify-content-center mt-3 mb-2">
-
-                            <img src="<?= base_url("assets/img/user-icon-detail.svg") ?>" style="width: 80px; height: 80px;">
+                        
+                            <img id="user-photo" src="<?= base_url("assets/img/user-icon-detail.svg") ?>" style="border-radius: 50%; width: 90px; height: 90px; object-fit: cover;">
+                            
                         </div>
 
                         <div class="input-popup justify-content-end">
@@ -477,24 +478,26 @@
                             <p class="text-center" name="posisi" id="posisi" style="margin-bottom:9px;  font-size:15px;"></p>
 
                             <div class="input-group mb-3">
+                                <a href="#">
+                                    <span class="input-group-text clickable" id="inputEmail2" style=" background-color:#DF3131; color:#FCFCFC;width: 120px; "> <i class="fas fa-envelope me-3"></i> Email</span>
+                                </a>
 
-                                <span class="input-group-text" id="inputEmail" style=" background-color:#DF3131; color:#FCFCFC; "> <i class="fas fa-envelope me-3"></i> Email</span>
+                                <input id="email" type="text" class="form-control" name="email" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-default" disabled>
 
-                                <input type="text" class="form-control" name="email" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-default" disabled>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <a href="#">
+                                    <span class="input-group-text clickable" id="inputNoHP" style=" background-color:#DF3131; color:#FCFCFC;width: 120px; "><i class="fab fa-whatsapp me-2 1x"></i>WA / telp</span>
+                                </a>
+
+                                <input id="no_telp" type="text" class="form-control" name="no_telp" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-default" disabled>
 
                             </div>
 
                             <div class="input-group mb-3">
 
-                                <span class="input-group-text" id="inputNoHP" style=" background-color:#DF3131; color:#FCFCFC; "><i class="fab fa-whatsapp me-2 1x"></i>No.Telp</span>
-
-                                <input type="text" class="form-control" name="no_telp" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-default" disabled>
-
-                            </div>
-
-                            <div class="input-group mb-3">
-
-                                <span class="input-group-text" id="inputAlamat" style=" background-color:#DF3131; color:#FCFCFC; "><i class="fas fa-home me-2"></i>Alamat</span>
+                                <span class="input-group-text clickable" id="inputAlamat" style=" background-color:#DF3131; color:#FCFCFC; border-radius: 5px;width: 120px;"><i class="fas fa-home me-2"></i>Alamat</span>
 
                                 <input type="text" class="form-control" name="alamat" aria-label="Detail profil marketing" aria-describedby="inputGroup-sizing-default" disabled>
 
@@ -633,11 +636,11 @@
                                     <input type="text" name="posisi" class="form-control" id="editPosisi" placeholder="Masukkan Posisi" required>
                                 </div>
                                 <div class="col-12">
-                                    <label for="inputEmail" class="form-label text-start">Email</label>
+                                    <label id="inputEmail" for="inputEmail" class="form-label text-start">Email</label>
                                     <input type="text" name="email" class="form-control" id="editEmail" placeholder="Masukkan Email" required>
                                 </div>
                                 <div class="col-12">
-                                    <label for="inputNoHP" class="form-label text-start">No. HP/WA</label>
+                                    <label id="inputNoHP" for="inputNoHP" class="form-label text-start">No. HP/WA</label>
                                     <input type="text" name="no_telp" class="form-control" id="editNoHP" placeholder="Masukkan No. HP/WA" required>
                                 </div>
                                 <div class="col-12">
@@ -689,6 +692,7 @@
             $('input[name=email]').val('');
             $('input[name=no_telp]').val('');
             $('input[name=alamat]').val('');
+             $('#user-photo').attr('src', '<?= base_url("assets/img/user-icon-detail.svg") ?>');
         });
         $('#editMarketingModal').on('hidden.bs.modal', function() {
             $('#nama').text('');
@@ -979,6 +983,13 @@
 
                     $('input[name=alamat]').val(data.data.alamat);
 
+                    // Update user photo if available
+                    if(data.data.foto) {
+                        $('#user-photo').attr('src', '<?= base_url("assets/upload/") ?>' + data.data.foto);
+                    } else {
+                        $('#user-photo').attr('src', '<?= base_url("assets/img/user-icon-detail.svg") ?>');
+                    }
+
                 },
 
                 error: function(xhr, status, error) {
@@ -986,6 +997,23 @@
                     console.log(xhr.responseText);
                 }
             });
+        });
+        // Add click event to email and phone inputs
+        $(document).on('click', '#inputEmail2', function() {
+            var email = $('#email').val();
+            console.log(email)
+            if (email) {
+                window.location.href = 'mailto:' + email;
+            }
+        });
+
+        $(document).on('click', '#inputNoHP', function() {
+            var no_telp = $('#no_telp').val();
+            console.log(no_telp)
+
+            if (no_telp) {
+                window.location.href = 'https://wa.me/' + no_telp.replace(/^0/, '62'); // Assuming the phone number is in Indonesian format
+            }
         });
     }
 

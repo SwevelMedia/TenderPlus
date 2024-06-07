@@ -481,13 +481,14 @@ class Supplier_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
-    public function getNamaPerusahaanNonPlot($id_pengguna){
-         $this->db->select('data_leads.nama_perusahaan');
+    public function getNamaPerusahaanNonPlot($id_pengguna)
+    {
+        $this->db->select('data_leads.nama_perusahaan');
         $this->db->from('plot_tim');
         $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead', 'right');
         $this->db->where('data_leads.id_pengguna', $id_pengguna);
         $this->db->where('plot_tim.id_plot IS NULL');
-        
+
         // Eksekusi query dan ambil hasilnya
         $query = $this->db->get();
 
@@ -612,15 +613,16 @@ class Supplier_model extends CI_Model
         return $query->result_array();
     }
 
-    public function countTimMarketing($id_pengguna){
+    public function countTimMarketing($id_pengguna)
+    {
         // Menyusun query untuk menghitung jumlah tim marketing
         $this->db->select('COUNT(id_tim) as team_count');
         $this->db->from('tim_marketing');
         $this->db->where('id_supplier', $id_pengguna);
-        
+
         // Eksekusi query dan mengambil hasilnya
         $query = $this->db->get();
-        
+
         // Mengembalikan hasil hitungan
         if ($query->num_rows() > 0) {
             return $query->row()->team_count;
