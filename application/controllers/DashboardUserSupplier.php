@@ -588,6 +588,7 @@ class DashboardUserSupplier extends CI_Controller
     public function getNamaPerusahaanNonPlot()
     {
         $data = $this->Supplier_model->getNamaPerusahaanNonPlot(350);
+        $data['jumlah'] = $this->Supplier_model->getTotalNamaPerusahaanNonPlot(350);
         $json_data = json_encode($data);
         $this->output->set_content_type('application/json')->set_output($json_data);
     }
