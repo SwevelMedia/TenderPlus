@@ -168,6 +168,18 @@ class ApiSupplier extends RestController
         }
     }
 
+    public function sendEmail_post(){
+        $this->load->library('email');
+
+        $id = $this->input->post('id');
+        $return =[
+            'status'=>'success',
+
+        ];
+        echo json_encode($return);
+
+    }
+
 
     public function deleteTim_delete($id)
     {
