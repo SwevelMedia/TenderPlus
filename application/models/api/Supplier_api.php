@@ -355,7 +355,7 @@ class Supplier_api extends CI_Model
         tim_marketing ON tim_marketing.id_supplier = data_leads.id_pengguna
     WHERE
         data_leads.id_pengguna = {$id_pengguna}
-AND (data_leads.id_lead NOT IN (SELECT id_lead FROM plot_tim) OR data_leads.id_lead IN (SELECT id_lead FROM plot_tim WHERE id_tim = 0))
+        AND (data_leads.id_lead NOT IN (SELECT id_lead FROM plot_tim) OR data_leads.id_lead IN (SELECT id_lead FROM plot_tim WHERE id_tim = 0))
     GROUP BY
         data_leads.id_lead;
     ";
