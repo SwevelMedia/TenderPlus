@@ -555,7 +555,7 @@
                         </p>
                         <p id="ditolak" class="crmstats-summary" style="margin-left: 10%;">
                             <span style="border-left: 4px solid red; font-size:11px; margin-right:4px"></span>
-                            Disetujui <span class="crmstats-summary-number badge-right">0</span>
+                            Ditolak <span class="crmstats-summary-number badge-right">0</span>
                         </p>
                     </div>
                 </div>
@@ -879,7 +879,7 @@
                 id_pengguna: id_pengguna
             },
             success: function(data) {
-               // Asumsi data berisi angka yang ingin Anda tampilkan
+                // Asumsi data berisi angka yang ingin Anda tampilkan
                 var iconHtml = $('#total-tim .total-summary-number i').prop('outerHTML');
                 $('#total-tim .total-summary-number').html(iconHtml + data);
 
@@ -1464,20 +1464,20 @@
         });
     }
 
-    <?php if ($status == 'inkindo'): ?>
-    // Functin filter tender inkindo
-    function filterTenderInkindo(sort = 3) {
-        let params = {
-            'id_pengguna': id_pengguna,
-            'keyword': keyword,
-            'jenis_pengadaan': jenis_pengadaan,
-            'nilai_hps_awal': hps_awal,
-            'nilai_hps_akhir': hps_akhir,
-            'prov': prov,
-            'kab': kab,
-            // 'lokasi': lokasi,
-            'sort': sort
-        };
+    <?php if ($status == 'inkindo') : ?>
+        // Functin filter tender inkindo
+        function filterTenderInkindo(sort = 3) {
+            let params = {
+                'id_pengguna': id_pengguna,
+                'keyword': keyword,
+                'jenis_pengadaan': jenis_pengadaan,
+                'nilai_hps_awal': hps_awal,
+                'nilai_hps_akhir': hps_akhir,
+                'prov': prov,
+                'kab': kab,
+                // 'lokasi': lokasi,
+                'sort': sort
+            };
 
             // console.log("param :",params);
             // return
@@ -1803,10 +1803,18 @@
                 data.forEach(function(item) {
                     if (item.id_wilayah.endsWith('00')) {
                         // Ini adalah provinsi
-                        groupedData.push({ id: item.id_wilayah, text: "<strong>" + item.wilayah + "</strong>", isProvinsi: true });
+                        groupedData.push({
+                            id: item.id_wilayah,
+                            text: "<strong>" + item.wilayah + "</strong>",
+                            isProvinsi: true
+                        });
                     } else {
                         // Ini adalah kabupaten
-                        groupedData.push({ id: item.id_wilayah, text: item.wilayah, isProvinsi: false });
+                        groupedData.push({
+                            id: item.id_wilayah,
+                            text: item.wilayah,
+                            isProvinsi: false
+                        });
                     }
                 });
 
@@ -1816,85 +1824,85 @@
             },
             cache: true
         }
-    }).on('change', function(){
+    }).on('change', function() {
         let selectedOption = $(this).select2('data')[0];
-        
+
         console.log("Selected wilayah:", selectedOption); // Debug log
 
         // Periksa apakah wilayah yang dipilih adalah provinsi atau kabupaten
         if (selectedOption != null) {
-            if (selectedOption.isProvinsi) { 
+            if (selectedOption.isProvinsi) {
                 // Jika wilayah yang dipilih adalah provinsi, set kabupaten kosong
                 prov = selectedOption.text.replace(/<\/?strong>/g, ""); // Menghapus tag <strong>
-                kab = ''; 
-            } else { 
+                kab = '';
+            } else {
                 // Jika wilayah yang dipilih adalah kabupaten, set provinsi kosong
                 kab = selectedOption.text;
-                prov = ''; 
+                prov = '';
             }
         } else {
             // Jika tidak ada wilayah yang dipilih, kosongkan keduanya
             kab = '';
             prov = '';
         }
-        
+
         console.log("Provinsi:", prov); // Debug log
         console.log("Kabupaten:", kab); // Debug log
 
         filterTender();
-        
-        <?php if ($status == 'inkindo'): ?>
-        filterTenderInkindo();
+
+        <?php if ($status == 'inkindo') : ?>
+            filterTenderInkindo();
         <?php endif; ?>
     });
 
 
 
-$('.select2-jenis-pengadaan').select2({
-    placeholder: "Jenis Pengadaan",
-    theme: 'bootstrap-5',
-    allowClear: true,
-    // minimumInputLength: 1,
-    language: {
-        noResults: function() {
-            return "<span>Tidak ada jenis pengadaan</span>";
+    $('.select2-jenis-pengadaan').select2({
+        placeholder: "Jenis Pengadaan",
+        theme: 'bootstrap-5',
+        allowClear: true,
+        // minimumInputLength: 1,
+        language: {
+            noResults: function() {
+                return "<span>Tidak ada jenis pengadaan</span>";
+            },
+            loadingMore: function() {
+                return "<span>Menampilkan lainnya...</span>";
+            },
+            searching: function() {
+                return "<span>Mencari hasil...</span>";
+            },
+            errorLoading: function() {
+                return "<span>Gagal menampilkan jenis pengadaan</span>";
+            }
         },
-        loadingMore: function() {
-            return "<span>Menampilkan lainnya...</span>";
+        escapeMarkup: function(markup) {
+            return markup;
         },
-        searching: function() {
-            return "<span>Mencari hasil...</span>";
-        },
-        errorLoading: function() {
-            return "<span>Gagal menampilkan jenis pengadaan</span>";
-        }
-    },
-    escapeMarkup: function(markup) {
-        return markup;
-    },
-    ajax: {
-        url: "<?= base_url('DashboardUserSupplier/getJenispengadaan') ?>",
-        dataType: 'json',
-        delay: 250,
-        processResults: function(data, params) {
-            console.log('Data dari server:', data); // Debug log
-            
-            // Langsung gunakan data yang diterima dari server tanpa memproses ulang
-            return {
-                results: data
-            };
-        },
-        cache: true
-    }
-}).on('change', function() {
-    jenis_pengadaan = $(this).val();
-    console.log('jenis pengadaan:', jenis_pengadaan);
-    filterTender();
+        ajax: {
+            url: "<?= base_url('DashboardUserSupplier/getJenispengadaan') ?>",
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data, params) {
+                console.log('Data dari server:', data); // Debug log
 
-    <?php if ($status == 'inkindo') : ?>
-        filterTenderInkindo();
-    <?php endif; ?>
-});
+                // Langsung gunakan data yang diterima dari server tanpa memproses ulang
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        }
+    }).on('change', function() {
+        jenis_pengadaan = $(this).val();
+        console.log('jenis pengadaan:', jenis_pengadaan);
+        filterTender();
+
+        <?php if ($status == 'inkindo') : ?>
+            filterTenderInkindo();
+        <?php endif; ?>
+    });
 
 
 
