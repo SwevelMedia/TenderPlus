@@ -1043,6 +1043,8 @@
                       <a class="riwayat" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px" ></a>
                       <a class="save-lead float-left hidden" ><img src="<?= base_url('assets/img/ceklis.svg') ?>" style="width: 25px"></a>
                       <a class="cancel-lead float-right hidden" ><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
+                      <a class="save-new hidden" ><img src="<?= base_url('assets/img/ceklis.svg') ?>" style="width: 25px"></a>
+            <a class="cancel-new hidden" ><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
                     </div>
                     </td>
                 </tr>
@@ -1083,7 +1085,7 @@
               $.each(response, function(index, item) {
                 content += `<tr>
                                         <td>  ${item.status}  </td>
-                                        <td>  ${item.jadwal}  </td>
+                                        <td>  ${formatDate(item.jadwal)}  </td>
                                         <td>  ${item.catatan}  </td>
                                     </tr>`;
               });
@@ -1106,6 +1108,7 @@
       $(document).off('click', '.edit-lead');
       $(document).off('click', '.save-lead');
       $(document).off('click', '.cancel-lead');
+      // $(document).off('click', '.tambah');
 
       // Bind new event handlers
       $(document).on('click', '.edit-lead', function() {
@@ -1194,10 +1197,114 @@
         $row.find('.jadwal input.time-input').prop('disabled', true);
         $('#pagination-container').pagination('refresh');
       });
-    }
-    $(document).on('click', '.edit', function() {
+      $(document).on('click', '.tambah', function() {
+        var $row = $(this).closest('tr');
+        var idLead = $row.data('id');
+        $row.find('.riwayat').addClass('hidden');
+        $row.find('.edit-lead').addClass('hidden');
+        // Add input fields for new data
+        $row.find('.status').html(`
+        <select class="status-select btn rounded-pill btn-arrow">
+            <option value="" disabled selected></option>
+            <option value="sedang-dihubungi">Sedang Dihubungi</option>
+            <option value="proses-negosiasi">Proses Negosiasi</option>
+            <option value="ditunda">Ditunda</option>
+            <option value="disetujui">Disetujui</option>
+            <option value="dibatalkan">Dibatalkan</option>
+        </select>
+    `);
+        $row.find('.jadwal').html(`
+        <input type="text" class="datepicker" placeholder="Tanggal" />
+        <input type="text" class="timepicker" placeholder="Waktu" />
+    `);
+        $row.find('.catatan').html('<input type="text" class="catatan-input" placeholder="Catatan" />');
 
-    });
+        // Initialize datepicker and timepicker
+        $row.find('.jadwal input.datepicker').prop('disabled', false).datepicker({
+          format: 'dd mmmm yyyy',
+          todayHighlight: true,
+          language: 'id',
+          // uiLibrary: 'bootstrap3',
+          onSelect: function() {
+            $(this).data('datepicker-selected', true);
+          }
+        });
+        $row.find('.timepicker').timepicker({
+          mode: '24hr'
+        });
+
+        // Show save and cancel buttons
+        $(this).siblings('.save-new, .cancel-new').removeClass('hidden');
+        $(this).addClass('hidden');
+      });
+
+      $(document).off('click', '.save-new').on('click', '.save-new', function() {
+        var $row = $(this).closest('tr');
+        var idLead = $row.data('id');
+        var status = $row.find('.status-select').val();
+        var date = $row.find('.datepicker').val();
+        var time = $row.find('.timepicker').val();
+        var catatan = $row.find('.catatan-input').val();
+        var dateFormat = formatDate(date);
+        // Validate inputs
+        if (!status || !date || !time || !catatan) {
+          alert('Semua bidang harus diisi.');
+          return;
+        }
+
+        // Save new data to the database
+        $.ajax({
+          url: `<?= base_url() ?>api/supplier/tambahRiwayat/${idLead}`,
+          type: "POST",
+          headers: {
+            Authorization: `Basic ${basicAuth}`
+          },
+          data: JSON.stringify({
+            id: idLead,
+            status: status,
+            jadwal: dateFormat,
+            waktu: `${time} WIB`,
+            catatan: catatan
+          }),
+          contentType: "application/json",
+          success: function(response) {
+            console.log("Save success: ", response);
+            refreshDashboard();
+            $('#pagination-container').pagination('refresh');
+
+            // Reset the fields
+            $row.find('.status').html('');
+            $row.find('.jadwal').html('');
+            $row.find('.catatan').html('');
+
+            // Hide save and cancel buttons
+            $row.find('.save-new, .cancel-new').addClass('hidden');
+            $row.find('.tambah').removeClass('hidden');
+          },
+          error: function(xhr, status, error) {
+            console.error("Save error: ", error);
+          }
+        });
+      });
+
+      $(document).on('click', '.cancel-new', function() {
+        var $row = $(this).closest('tr');
+
+        // Reset the fields
+        $row.find('.status').html('');
+        $row.find('.jadwal').html('');
+        $row.find('.catatan').html('');
+
+        // Hide save and cancel buttons
+        $(this).addClass('hidden');
+        $row.find('.save-new').addClass('hidden');
+        $row.find('.tambah').removeClass('hidden');
+        $row.find('.riwayat').removeClass('hidden');
+        $row.find('.edit-lead').removeClass('hidden');
+      });
+
+    }
+
 
     function refreshDashboard() {
       $.ajax({

@@ -593,10 +593,25 @@ class ApiSupplier extends RestController
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
     }
-    public function tambahRiwayat()
+    public function tambahRiwayat_post($id_lead)
     {
-        $id_lead = $this->input->post('id_lead');
-        $data = $this->Supplier_api->insertContact_post($id_lead);
+        $data = json_decode($this->input->raw_input_stream, true);
+
+        // Add additional data processing if needed
+        $dataToInsert = [
+            'status' => $data['status'],
+            'jadwal' => $data['jadwal'],
+            'waktu' => $data['waktu'],
+            'catatan' => $data['catatan']
+        ];
+
+        // Insert the data and get the insert ID
+        $insertId = $this->Supplier_api->tambahRiwayat($id_lead, $dataToInsert);
+
+        // Return the response
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode(['insert_id' => $insertId]));
     }
     public function getPlotTimByIdLead_get()
     {
