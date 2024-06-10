@@ -542,10 +542,25 @@ class Supplier_model extends CI_Model
         }
         return $this->db->insert('plot_tim', ['id_tim' => $id_tim, 'id_lead' => $id_lead]);
     }
+    // public function deletePlotTimByIdLead($id_lead)
+    // {
+    //     $this->db->where('id_lead', $id_lead);
+    //     $this->db->delete('plot_tim');
+    // }
     public function deletePlotTimByIdLead($id_lead)
     {
+        // Mencari id_plot berdasarkan id_lead
+        $this->db->select('id_plot');
         $this->db->where('id_lead', $id_lead);
-        $this->db->delete('plot_tim');
+        $query = $this->db->get('plot_tim');
+        $result = $query->row();
+
+        if ($result) {
+            // Jika id_plot ditemukan, hapus berdasarkan id_plot
+            $id_plot = $result->id_plot;
+            $this->db->where('id_plot', $id_plot);
+            $this->db->delete('plot_tim');
+        }
     }
     public function updateDataLead($id, $data)
     {

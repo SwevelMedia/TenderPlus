@@ -382,6 +382,9 @@
                         </tr> -->
                     </tbody>
                 </table>
+                <div id="error-message" class="alert alert-danger d-none" role="alert">
+                    Gagal memuat data. Silakan coba lagi nanti.
+                </div>
             </div>
             <!-- Pagination controls -->
             <div class="wow fadeInUp" id="pagination-container" data-wow-delay="0.5s"></div>
@@ -788,12 +791,14 @@
 
 
                 } else {
-                    alert('gagal memuat');
-
+                    // alert('gagal memuat');
+                    $('#error-message').removeClass('d-none').text('Gagal memuat data. Silakan coba lagi nanti.');
+                    
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(textStatus, errorThrown);
+                $('#error-message').removeClass('d-none').text('Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.');
             }
         });
     }

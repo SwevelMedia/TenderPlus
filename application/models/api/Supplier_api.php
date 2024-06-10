@@ -92,11 +92,33 @@ class Supplier_api extends CI_Model
         return $this->db->affected_rows();
     }
 
+    // public function deleteTimMarketing($id)
+    // {
+    //     $this->db->delete('tim_marketing', ['id_tim' => $id]);
+    //     return $this->db->affected_rows();
+    // }
     public function deleteTimMarketing($id)
     {
+        // Mencari semua id_plot yang terkait dengan tim marketing yang akan dihapus
+        $this->db->select('id_plot');
+        $this->db->where('id_tim', $id);
+        $query = $this->db->get('plot_tim');
+        $results = $query->result();
+
+        // Menghapus tim marketing
         $this->db->delete('tim_marketing', ['id_tim' => $id]);
-        return $this->db->affected_rows();
+        $affected_rows_tim = $this->db->affected_rows();
+
+        if ($affected_rows_tim > 0 && !empty($results)) {
+            // Jika tim marketing berhasil dihapus dan terdapat entri di plot_tim
+            foreach ($results as $row) {
+                $this->db->delete('plot_tim', ['id_plot' => $row->id_plot]);
+            }
+        }
+
+        return $affected_rows_tim;
     }
+
     public function getPlotTimByIdLead($id_lead)
     {
         $this->db->select('*');

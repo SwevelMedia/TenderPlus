@@ -306,10 +306,14 @@
           xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
         }
         $(document).ready(function() {
+          function closeModal() {
+            // Menutup modal dengan mengklik tombol dengan atribut data-dismiss="modal"
+            $('[data-dismiss="modal"]').click();
+          }
           // getDataLead();
-          getDataTim();
           // getLeadByTim();
           // getPlotTim();
+          getDataTim();
           recounting();
           getNamaPerusahaanNonPlot()
 
@@ -327,25 +331,65 @@
             };
 
             // Make an AJAX request
+            // $.ajax({
+            //   url: '<?= base_url("api/supplier/create") ?>',
+            //   type: 'POST',
+            //   beforeSend: addAuthorizationHeader,
+            //   data: formData,
+            //   success: function(response) {
+            //     if (response.status == true) {
+            //       // alert('Data berhasil ditambahkan');
+            //       console.log('Data berhasil ditambahkan');
+            //       window.location.href = "<?= base_url('suplier/plottim') ?>";
+            //     } else {
+            //       // alert('Data gagal ditambahkan');
+            //       console.log('Data gagal ditambahkan');
+            //     }
+            //   },
+            //   error: function(xhr, status, error) {
+            //     console.log(xhr.responseText);
+            //   }
+            // });
+
+            // Ajax request
             $.ajax({
-              url: '<?= base_url("api/supplier/create") ?>',
-              type: 'POST',
-              beforeSend: addAuthorizationHeader,
-              data: formData,
-              success: function(response) {
-                if (response.status == true) {
-                  // alert('Data berhasil ditambahkan');
-                  console.log('Data berhasil ditambahkan');
-                  window.location.href = "<?= base_url('suplier/plottim') ?>";
-                } else {
-                  // alert('Data gagal ditambahkan');
-                  console.log('Data gagal ditambahkan');
+                url: '<?= base_url("api/supplier/create") ?>',
+                type: 'POST',
+                data: formData,
+                beforeSend: addAuthorizationHeader,
+                success: function(response) {
+                    if (response.status == true) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Data berhasil ditambahkan!",
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(function() {
+                            // Hide the modal
+                            closeModal();
+                            // Clear the form fields
+                            $('#form-input')[0].reset();
+
+                            // Call your function to refresh data display
+                            getDataTim();
+                            recounting();
+                            getNamaPerusahaanNonPlot()
+
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Data gagal ditambahkan!",
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr.responseText);
                 }
-              },
-              error: function(xhr, status, error) {
-                console.log(xhr.responseText);
-              }
             });
+
           });
         });
 
