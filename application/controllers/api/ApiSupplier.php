@@ -168,6 +168,49 @@ class ApiSupplier extends RestController
         }
     }
 
+    public function sendEmail_post(){
+        
+        $this->load->library('email');
+
+        $id = $this->input->post('id');
+        // Mengambil data tim dari model berdasarkan ID
+        $team_member = $this->Supplier_api->getTimMarketingById($id);
+
+        if ($team_member) {
+            $to = $team_member['email'];
+            $subject = 'Undangan Follow Up Perusahaan';
+            $message = 'Halo ' . $team_member['nama_tim'] . ', kamu diundang oleh [Nama Perusahaan] untuk menfollow up perusahaan [1,2,3,4]. Silakan login ke tenderplus.id dengan email ' . $team_member['email'] . '. Mohon setelah berhasil masuk ke dalam akun tenderplus.id Anda segera ganti password Anda dan lengkapi profil Anda. Terima kasih.';
+
+            // Konfigurasi email
+            $config['protocol'] = 'smtp';
+            $config['smtp_host'] = 'smtp.gmail.com';
+            $config['smtp_port'] = '465';
+            $config['smtp_crypto'] = 'ssl';
+            $config['smtp_user'] = 'm.iqbal.arjunanda@gmail.com'; // Ganti dengan email Anda
+            $config['smtp_pass'] = 'arjunanda'; // Ganti dengan password email Anda
+            $config['mailtype'] = 'html';
+            $config['charset'] = 'iso-8859-1';
+            $config['wordwrap'] = TRUE;
+
+            $this->email->initialize($config);
+
+            $this->email->from('m.iqbal.arjunanda@gmail.com', 'Arjunanda');  // Ganti dengan email dan nama perusahaan Anda
+            $this->email->to($to);
+            $this->email->subject($subject);
+            $this->email->message($message);
+
+            // Kirim email
+            if ($this->email->send()) {
+                echo json_encode(['status' => 'success', 'message' => 'Email undangan telah berhasil dikirim.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Gagal mengirim email undangan.']);
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Tim marketing tidak ditemukan.']);
+        }
+
+    }
+
 
     public function deleteTim_delete($id)
     {
@@ -534,6 +577,21 @@ class ApiSupplier extends RestController
 
         exit;
     }
+    // public function getCRMLeads_get()
+    // {
+    //     $id_pengguna = $this->input->get('id_pengguna');
+    //     $response = $this->Supplier_api->getCRMLeads($id_pengguna)->result();
+    //     $response['jumlah'] = $this->Supplier_api->countCRMLeads($id_pengguna)->row('jumlah');
+
+    //     $this->output
+    //         ->set_status_header(200)
+    //         ->set_content_type('application/json')
+    //         ->set_output(json_encode($response, JSON_PRETTY_PRINT))
+    //         ->_display();
+
+    //     exit;
+    // }
+    // dicoment oleh msib 6
     public function getCRMLeads_get()
     {
         $id_pengguna = $this->input->get('id_pengguna');

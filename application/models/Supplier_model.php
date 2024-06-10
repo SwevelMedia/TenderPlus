@@ -481,24 +481,44 @@ class Supplier_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+    
     public function getNamaPerusahaanNonPlot($id_pengguna)
     {
-        $this->db->select('data_leads.nama_perusahaan');
-        $this->db->from('plot_tim');
-        $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead', 'right');
+        $this->db->select('data_leads.id_lead, nama_perusahaan, pemenang.lokasi_pekerjaan');
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'data_leads.id_pemenang = pemenang.id_pemenang', 'left');
+        $this->db->join('kontak_lead', 'data_leads.id_lead = kontak_lead.id_lead', 'left');
+        $this->db->join('plot_tim', 'data_leads.id_lead = plot_tim.id_lead', 'left');
         $this->db->where('data_leads.id_pengguna', $id_pengguna);
-        $this->db->where('plot_tim.id_plot IS NULL');
-
-        // Eksekusi query dan ambil hasilnya
+        $this->db->where('kontak_lead.id_kontak IS NOT NULL', null, false); // Tidak NULL
+        $this->db->where('plot_tim.id_plot IS NULL', null, false); //  NULL
+        $this->db->group_by('data_leads.id_lead');
         $query = $this->db->get();
 
-        // Mengembalikan hasil dalam bentuk array
+        // Mengembalikan hasil dalam bentuk array jika ada hasil
         if ($query->num_rows() > 0) {
             return $query->result_array();
         } else {
-            return false;
+            return false; // Mengembalikan false jika tidak ada hasil
         }
     }
+
+    public function getTotalNamaPerusahaanNonPlot($id_pengguna) {
+        $this->db->select('data_leads.id_lead');
+        $this->db->from('data_leads');
+        $this->db->join('pemenang', 'data_leads.id_pemenang = pemenang.id_pemenang', 'left');
+        $this->db->join('kontak_lead', 'data_leads.id_lead = kontak_lead.id_lead', 'left');
+        $this->db->join('plot_tim', 'data_leads.id_lead = plot_tim.id_lead', 'left');
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+        $this->db->where('kontak_lead.id_kontak IS NOT NULL', null, false); // Tidak NULL
+        $this->db->where('plot_tim.id_plot IS NULL', null, false); //  NULL
+        $this->db->group_by('data_leads.id_lead');
+        $query = $this->db->get();
+
+        // Mengembalikan total jumlah baris
+        return $query->num_rows();
+    }
+
 
     public function getPlotTimById_lead($id_lead)
     {

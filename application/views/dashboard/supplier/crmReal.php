@@ -750,7 +750,7 @@
 
 <section class="bg-white pt-5 mt-5">
   <div class="container-lg d-flex justify-content-left align-items-left wow fadeInUp" data-wow-delay="0.1s">
-    <h4 class="mb-0 wow fadeInUp">Hi <span class="fw-semibold nama-pengguna" style="color: #df3131;"></span>!<p class="pt-2">Siap Menawarkan Produkmu Hari Ini ?</p>
+    <h4 class="mb-0 wow fadeInUp">Hi <span class="fw-semibold nama-pengguna" style="color: #df3131;"></span>!<p class="pt-2">Siap Menawarkan Produk Anda Hari Ini ?</p>
     </h4>
   </div>
 </section>

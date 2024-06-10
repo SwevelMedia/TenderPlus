@@ -329,7 +329,7 @@
         <div class="col-6">
             <h2 class="mb-0 ms-0 wow fadeInUp" style="order: 1;">
                 Selamat Datang!
-                <p>Ini daftar tim kamu!</p>
+                <p>Berikut Daftar Anggota Tim Anda!</p>
             </h2>
             <div class="d-flex justify-content-start">
                 <div class="link d-flex flex-row align-items-center" style="margin-top:10px">
@@ -664,6 +664,29 @@
         </div>
     </div>
     <!-- end modal edit marketing -->
+    <!-- kirim email modal -->
+    <div class="modal fade" id="kirimModal" tabindex="-1" role="dialog" aria-labelledby="kirimModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="kirimModalLabel">Kirim Email Undangan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Apakah Anda yakin ingin mengirim email undangan ini?
+                <input type="hidden" id="idTim" value="">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="confirmSendEmail">Kirim</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- end kirim email -->
 </section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.js" integrity="sha512-hJsxoiLoVRkwHNvA5alz/GVA+eWtVxdQ48iy4sFRQLpDrBPn6BFZeUcW4R4kU+Rj2ljM9wHwekwVtsb0RY/46Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -848,14 +871,15 @@
                 '<a class="btn-det" data-toggle="modal" data-target="#detailMarketingModal" data-id="' + data[i].id_tim + '" title="Lihat Detail"><i class="fas fa-info-circle me-2"></i></a>' +
                 '<a href="#" class="btn-edt" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data[i].id_tim + '" title="Edit"><i class="fas fa-edit me-2"></i></a>' +
                 '<a class="btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data[i].id_tim + '" title="Hapus"><i class="fas fa-trash me-2"></i></a>' +
-                '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data[i].id_tim + '" title="Kirim Email"><i class="fas fa-paper-plane"></i></a>' +
+                '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data[i].id_tim + '" title="Kirim Email Undangan"><i class="fas fa-paper-plane"></i></a>' +
             
                 '</td>' +
                 '</tr>';
         }
         $('#data-marketing').html(html);
         attachDeleteEvent();
-        attachDeleteEvent();
+        // attachDeleteEvent();
+        attachEmailEvent();
         detail();
         edit();
         // aksi_edit();
@@ -1147,6 +1171,49 @@
 
         });
     }
+
+    // Kirim email
+    function attachEmailEvent() {
+        $('.btn-kir').on('click', function () {
+            let idTim = $(this).data('id');
+            $('#idTim').val(idTim); // Set the idTim value in hidden input
+            console.log('id tim :',idTim)
+        });
+
+        $('#confirmSendEmail').on('click', function () {
+            let idTim = $('#idTim').val();
+            console.log('id tim sebelum kirim email :',idTim)
+
+            sendEmail(idTim);
+        });
+    }
+
+    function sendEmail(idTim) {
+        $.ajax({
+            url: "<?= base_url('/api/supplier/send-email'); ?>",  // Ganti dengan URL API backend Anda
+            type: 'POST',
+            dataType: 'json',  // Set content type to JSON
+            data: { id: idTim },  // Send idTim as JSON
+            beforeSend: addAuthorizationHeader,
+            success: function (response) {
+                if (response.status === 'success') {
+                    alert('Email undangan telah berhasil dikirim.');
+                } else {
+                    alert('Gagal mengirim email undangan: ' + response.message);
+                }
+                $('#kirimModal').modal('hide');
+            },
+            error: function (error) {
+                alert('Gagal mengirim email undangan.');
+                $('#kirimModal').modal('hide');
+            }
+        });
+    }
+
+
+
+
+
 </script>
 
 
