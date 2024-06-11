@@ -210,6 +210,19 @@ class ApiSupplier extends RestController
     //     }
 
     // }
+    public function beforSendEmail_get(){
+        $id = $this->input->get('id');
+        
+        $daftar_perusahaan = $this->Supplier_api->getDaftarPerusahaan($id); // Sesuaikan dengan method Anda
+
+        $team_member = $this->Supplier_api->getTimMarketingById($id);
+
+        $response = [
+            'teamName'=>$team_member['nama_tim'],
+            'leads'=>$daftar_perusahaan,
+        ];
+        echo json_encode($response);
+    }   
 
     public function sendEmail_post() {
         
@@ -263,6 +276,14 @@ class ApiSupplier extends RestController
 
             // Kirim email
             if ($this->email->send()) {
+                // Dapatkan id_pengguna dari tim_marketing
+                $id_pengguna = $this->Supplier_api->getPenggunaIdByTimId($id);
+
+                // Perbarui password pengguna
+                if ($id_pengguna) {
+                    $this->Pengguna_model->updatePassword($id_pengguna, $password);
+                }
+                
                 echo json_encode(['status' => 'success', 'message' => 'Email undangan telah berhasil dikirim.']);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Gagal mengirim email undangan.']);

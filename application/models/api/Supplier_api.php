@@ -494,4 +494,17 @@ class Supplier_api extends CI_Model
             return [];
         }
     }
+    public function getPenggunaIdByTimId($id_tim) {
+        $this->db->select('id_pengguna');
+        $this->db->from('tim_marketing');
+        $this->db->where('id_tim', $id_tim);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->row()->id_pengguna;
+        } else {
+            return false;
+        }
+    }
+
 }

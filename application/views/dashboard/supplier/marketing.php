@@ -668,7 +668,7 @@
     </div>
     <!-- end modal edit marketing -->
     <!-- kirim email modal -->
-    <div class="modal fade" id="kirimModal" tabindex="-1" role="dialog" aria-labelledby="kirimModalLabel" aria-hidden="true">
+    <!-- <div class="modal fade" id="kirimModal" tabindex="-1" role="dialog" aria-labelledby="kirimModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
             <div class="modal-header">
@@ -687,9 +687,60 @@
             </div>
             </div>
         </div>
-    </div>
-
+    </div> -->
     <!-- end kirim email -->
+    <!-- kirim email modal -->
+    <div class="col-12 py-5">
+        <div class="modal fade" id="kirimModal" tabindex="-1" role="dialog" aria-labelledby="kirimModalLabel" aria-hidden="true" style="margin-top: -30px;">
+            <div class="modal-dialog custom-modal" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <button type="button" class="btn btn-link" data-dismiss="modal" aria-label="Close" style="position: absolute; top: 10px; right: 10px; background: transparent; border: none;">
+                            <img src="<?= base_url("assets/img/button-x-popup.png") ?>" alt="Cancel" style="width: 32px; height: 32px; padding: 0;">
+                        </button>
+                    </div>
+                    <br>
+                    <div class="modal-body border-0">
+                        <h3 class="modal-title text-center mb-4" id="kirimModalLabel">Kirim Undangan Email</h3>
+
+                        <div class="d-flex justify-content-center mt-3 mb-2">
+
+                            <img src="<?= base_url("assets/img/email-kirim.svg") ?>" style=" width: 100px; height: 100px; ">
+
+                        </div>
+                        <input type="hidden" id="idTim" value="">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"><i class="fas fa-building me-2"></i>Tim Marketing</th>
+                                        <td id="teamName"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><i class="fas fa-book me-2"></i>Follow-up Leads</th>
+                                        <td>
+                                            <ul id="followUpLeads">
+                                                <!-- <li>PT Conda</li>
+                                                <li>Data lead 2</li>
+                                                <li>Data lead 3</li> -->
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        <div class="d-flex justify-content-end mt-4 gap-2">
+                            <a class="btn-custom text-white text-center" id="confirmSendEmail" style="background-color: #DF3131;  width: 200px; height: 40px;">
+                                <i class="fas me-1"></i>Kirim
+                            </a>
+                            <button class="btn btn-batal btn-sm btn-outline-danger" data-dismiss="modal" style=" width: 200px; height: 40px; color:red;">
+                                <i class="fas me-1"></i>Batal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end kirim email modal -->
 </section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.js" integrity="sha512-hJsxoiLoVRkwHNvA5alz/GVA+eWtVxdQ48iy4sFRQLpDrBPn6BFZeUcW4R4kU+Rj2ljM9wHwekwVtsb0RY/46Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -885,11 +936,11 @@
         attachDeleteEvent();
         // attachDeleteEvent();
         attachEmailEvent();
+
         detail();
         edit();
         // aksi_edit();
     }
-
 
     // function tampilData(){
     //     $.ajax({
@@ -1182,13 +1233,43 @@
         $('.btn-kir').on('click', function () {
             let idTim = $(this).data('id');
             $('#idTim').val(idTim); // Set the idTim value in hidden input
-            console.log('id tim :',idTim)
+            // console.log('id tim :',idTim)
+            // Tampilkan modal
+            // $('#kirimModal').modal('show');
+            $.ajax({
+                url: '<?=base_url('api/supplier/before-send-mail'); ?>', // Ganti dengan URL endpoint PHP Anda
+                type: 'GET',
+                data: { id: idTim },
+                dataType: 'json',
+                beforeSend: addAuthorizationHeader,
+                success: function(response) {
+                    // Perbarui elemen dalam modal dengan data dari response
+                    $('#kirimModalLabel').text(response.modalTitle);
+                    $('#teamName').text(response.teamName);
+                    $('#followUpLeads').empty();
+                    
+                    if (response.leads.length === 0) {
+                        $('#followUpLeads').append('<li>Tidak ada data leads.</li>');
+                        $('#confirmSendEmail').prop('disabled', true); // Disable the "Kirim" button
+                    } else {
+                        response.leads.forEach(function(lead) {
+                            $('#followUpLeads').append('<li>' + lead.nama_perusahaan + '</li>');
+                        });
+                        $('#confirmSendEmail').prop('disabled', false); // Enable the "Kirim" button
+                    }
+                },
+                error: function(xhr, error) {
+                    console.error('AJAX Error: '  + error);
+                    $('#followUpLeads').append('<li>Gagal memuat data leads.</li>');
+
+                }
+            });
+            
         });
 
         $('#confirmSendEmail').on('click', function () {
             let idTim = $('#idTim').val();
             console.log('id tim sebelum kirim email :',idTim)
-
             sendEmail(idTim);
         });
     }
@@ -1202,14 +1283,29 @@
             beforeSend: addAuthorizationHeader,
             success: function (response) {
                 if (response.status === 'success') {
-                    alert('Email undangan telah berhasil dikirim.');
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: 'Email undangan telah berhasil dikirim.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
                 } else {
-                    alert('Gagal mengirim email undangan: ' + response.message);
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Gagal mengirim email undangan: ' + response.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 }
                 $('#kirimModal').modal('hide');
             },
             error: function (error) {
-                alert('Gagal mengirim email undangan.');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Gagal mengirim email undangan.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
                 $('#kirimModal').modal('hide');
             }
         });

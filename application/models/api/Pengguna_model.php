@@ -128,5 +128,15 @@ class Pengguna_model extends CI_Model
             return false; // Mengembalikan false jika tidak ada hasil
         }
     }
+    
+    public function updatePassword($id_pengguna, $password) {
+        $data = [
+            'password' => md5($password) // Menggunakan MD5 untuk hashing password
+        ];
+
+        $this->db->where('id_pengguna', $id_pengguna);
+        return $this->db->update('pengguna', $data);
+    }
+
 
 }
