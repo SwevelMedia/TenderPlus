@@ -128,4 +128,5 @@ class Pengguna_model extends CI_Model
             return false; // Mengembalikan false jika tidak ada hasil
         }
     }
+
 }

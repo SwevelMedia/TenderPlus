@@ -168,9 +168,53 @@ class ApiSupplier extends RestController
         }
     }
 
-    public function sendEmail_post(){
+    // public function sendEmail_post(){
+        
+    //     $this->load->library('email');
+
+    //     $id = $this->input->post('id');
+    //     // Mengambil data tim dari model berdasarkan ID
+    //     $team_member = $this->Supplier_api->getTimMarketingById($id);
+
+    //     if ($team_member) {
+    //         $to = $team_member['email'];
+    //         $subject = 'Undangan Follow Up Perusahaan';
+    //         $message = 'Halo ' . $team_member['nama_tim'] . ', kamu diundang oleh [Nama Perusahaan] untuk menfollow up perusahaan [1,2,3,4]. Silakan login ke tenderplus.id dengan email ' . $team_member['email'] . '. Mohon setelah berhasil masuk ke dalam akun tenderplus.id Anda segera ganti password Anda dan lengkapi profil Anda. Terima kasih.';
+
+    //         // Konfigurasi email
+    //         $config['protocol'] = 'smtp';
+    //         $config['smtp_host'] = 'smtp.hostinger.com';
+    //         $config['smtp_port'] = '465';
+    //         $config['smtp_crypto'] = 'ssl';
+    //         $config['smtp_user'] = 'm.iqbal.arjunanda@pandakong88.com'; // Ganti dengan email Anda
+    //         $config['smtp_pass'] = 'Arjunanda_271'; // Ganti dengan password email Anda
+    //         $config['mailtype'] = 'html';
+    //         $config['charset'] = 'iso-8859-1';
+    //         $config['wordwrap'] = TRUE;
+
+    //         $this->email->initialize($config);
+
+    //         $this->email->from('m.iqbal.arjunanda@pandakong88.com', 'Tenderplus.id');  // Ganti dengan email dan nama perusahaan Anda
+    //         $this->email->to($to);
+    //         $this->email->subject($subject);
+    //         $this->email->message($message);
+
+    //         // Kirim email
+    //         if ($this->email->send()) {
+    //             echo json_encode(['status' => 'success', 'message' => 'Email undangan telah berhasil dikirim.']);
+    //         } else {
+    //             echo json_encode(['status' => 'error', 'message' => 'Gagal mengirim email undangan.']);
+    //         }
+    //     } else {
+    //         echo json_encode(['status' => 'error', 'message' => 'Tim marketing tidak ditemukan.']);
+    //     }
+
+    // }
+
+    public function sendEmail_post() {
         
         $this->load->library('email');
+        $this->load->helper('url');
 
         $id = $this->input->post('id');
         // Mengambil data tim dari model berdasarkan ID
@@ -178,8 +222,26 @@ class ApiSupplier extends RestController
 
         if ($team_member) {
             $to = $team_member['email'];
+            
+            $password = str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+            $password = substr($password, 0, 8);
+            
+            // Mengambil nama perusahaan dari tabel pengguna
+            $nama_perusahaan = $this->Pengguna_model->getPenggunaById(350); // Sesuaikan dengan method Anda
+            
+            // Mengambil daftar perusahaan yang akan di-follow up
+            $daftar_perusahaan = $this->Supplier_api->getDaftarPerusahaan($id); // Sesuaikan dengan method Anda
+            
             $subject = 'Undangan Follow Up Perusahaan';
-            $message = 'Halo ' . $team_member['nama_tim'] . ', kamu diundang oleh [Nama Perusahaan] untuk menfollow up perusahaan [1,2,3,4]. Silakan login ke tenderplus.id dengan email ' . $team_member['email'] . '. Mohon setelah berhasil masuk ke dalam akun tenderplus.id Anda segera ganti password Anda dan lengkapi profil Anda. Terima kasih.';
+
+            // Load view dan masukkan data yang diperlukan
+            $message = $this->load->view('dashboard/supplier/email_udangan_marketing', [
+                'nama_tim' => $team_member['nama_tim'],
+                'email' => $team_member['email'],
+                'password' => $password,
+                'nama_perusahaan' => $nama_perusahaan['nama'],
+                'daftar_perusahaan' => $daftar_perusahaan
+            ], TRUE); // TRUE untuk mengembalikan view sebagai string
 
             // Konfigurasi email
             $config['protocol'] = 'smtp';
@@ -189,12 +251,12 @@ class ApiSupplier extends RestController
             $config['smtp_user'] = 'm.iqbal.arjunanda@pandakong88.com'; // Ganti dengan email Anda
             $config['smtp_pass'] = 'Arjunanda_271'; // Ganti dengan password email Anda
             $config['mailtype'] = 'html';
-            $config['charset'] = 'iso-8859-1';
+            $config['charset'] = 'utf-8';
             $config['wordwrap'] = TRUE;
 
             $this->email->initialize($config);
 
-            $this->email->from('m.iqbal.arjunanda@pandakong88.com', 'Arjunanda');  // Ganti dengan email dan nama perusahaan Anda
+            $this->email->from('m.iqbal.arjunanda@pandakong88.com', 'Tenderplus.id');  // Ganti dengan email dan nama perusahaan Anda
             $this->email->to($to);
             $this->email->subject($subject);
             $this->email->message($message);
@@ -208,7 +270,6 @@ class ApiSupplier extends RestController
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Tim marketing tidak ditemukan.']);
         }
-
     }
 
 

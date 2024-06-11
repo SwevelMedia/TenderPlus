@@ -481,4 +481,17 @@ class Supplier_api extends CI_Model
             return array();
         }
     }
+    public function getDaftarPerusahaan($id_tim){
+        $this->db->select('data_leads.nama_perusahaan');
+        $this->db->from('plot_tim');
+        $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead');
+        $this->db->where('plot_tim.id_tim', $id_tim);
+        $query = $this->db->get();
+        
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return [];
+        }
+    }
 }
