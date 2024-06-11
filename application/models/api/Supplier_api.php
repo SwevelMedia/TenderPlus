@@ -289,6 +289,8 @@ class Supplier_api extends CI_Model
 			plot_tim ON data_leads.id_lead = plot_tim.id_lead
         WHERE
             data_leads.id_pengguna = $id_pengguna
+            AND kontak_lead.id_kontak IS NOT NULL
+            AND plot_tim.id_lead IS NOT NULL
         GROUP BY
             data_leads.id_lead
         ORDER BY
@@ -316,7 +318,7 @@ class Supplier_api extends CI_Model
             return false;
         }
 
-        $this->db->where('id_lead', $id);
+        $this->db->where('id_plot', $id);
         $result = $this->db->update('plot_tim', $update_data);
 
         // Log the SQL query and result
@@ -425,7 +427,7 @@ class Supplier_api extends CI_Model
     }
     public function getRiwayatByIdLead($id_lead)
     {
-        $this->db->select('status, jadwal, catatan');
+        $this->db->select('status, jadwal, catatan, waktu');
         $this->db->from('plot_tim'); // Ganti dengan nama tabel riwayat Anda
         $this->db->where('id_lead', $id_lead);
         $query = $this->db->get();
