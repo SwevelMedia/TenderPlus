@@ -506,6 +506,34 @@ ORDER BY
             return array();
         }
     }
+    public function getDaftarPerusahaan($id_tim)
+    {
+        $this->db->select('data_leads.nama_perusahaan');
+        $this->db->from('plot_tim');
+        $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead');
+        $this->db->where('plot_tim.id_tim', $id_tim);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return [];
+        }
+    }
+    public function getPenggunaIdByTimId($id_tim)
+    {
+        $this->db->select('id_pengguna');
+        $this->db->from('tim_marketing');
+        $this->db->where('id_tim', $id_tim);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->row()->id_pengguna;
+        } else {
+            return false;
+        }
+    }
+
     public function getDonatChartCRM($id_pengguna)
     {
         $this->db->select('plot_tim.id_plot, plot_tim.id_tim, plot_tim.status, data_leads.id_lead, data_leads.id_pengguna');

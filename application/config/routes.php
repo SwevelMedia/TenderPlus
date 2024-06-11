@@ -416,6 +416,7 @@ $route['api/supplier/get'] = 'api/ApiSupplier';
 // MSIB 6
 $route['api/supplier/getTotalTimMarketingById'] = 'api/ApiSupplier/getTotalTimMarketingById';
 $route['api/supplier/getTimMarketingByIdSup'] = 'api/ApiSupplier/getTimMarketingByIdSup';
+$route['api/supplier/before-send-mail'] = 'api/ApiSupplier/beforSendEmail';
 $route['api/supplier/send-email'] = 'api/ApiSupplier/sendEmail';
 
 // END MSIB 6
