@@ -674,11 +674,14 @@
 
   .btn {
     font-size: 13px !important;
+    text-align: left !important;
   }
 
   .btn-arrow,
-  .btn-arrow:disabled {
+  .btn-arrow:disabled,
+  .btn-arrow:focus-visible {
     border: 0px !important;
+    text-align: left;
     /* for Firefox */
     -moz-appearance: none;
     /* for Safari, Chrome, Opera */
@@ -750,7 +753,7 @@
 
 <section class="bg-white pt-5 mt-5">
   <div class="container-lg d-flex justify-content-left align-items-left wow fadeInUp" data-wow-delay="0.1s">
-    <h4 class="mb-0 wow fadeInUp">Hi <span class="fw-semibold nama-pengguna" style="color: #df3131;"></span>!<p class="pt-2">Siap Menawarkan Produk Anda Hari Ini ?</p>
+    <h4 class="mb-0 wow fadeInUp">Hi <span class="fw-semibold nama-pengguna" style="color: #df3131;"></span>!<p class="pt-2">Siap Menawarkan Produkmu Hari Ini ?</p>
     </h4>
   </div>
 </section>
@@ -1027,7 +1030,7 @@
                     <td class="perusahaan" >` + (value.nama_perusahaan || '') + `</td>
                     <td class="no_telp" >${value.no_telp || ''}</td>
                     <td class="status" contenteditable="false">
-          <select class="status-select btn rounded-pill btn-arrow" disabled>
+          <select class="status-select btn-arrow" disabled>
             ${statusOptions}
           </select>
         </td>
@@ -1038,17 +1041,18 @@
                     <td class="catatan" contenteditable="false">${catatanValue}</td>
                     <td class="text-center">
                     <div>
-                      <a class="edit-lead" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
+                      <a class="edit-lead" data-id-plot="` + value.id_plot + `" data-id-tim="` + value.id_tim + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
                       <a class="tambah" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
                       <a class="riwayat" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px" ></a>
-                      <a class="save-lead float-left hidden" ><img src="<?= base_url('assets/img/ceklis.svg') ?>" style="width: 25px"></a>
+                      <a class="save-lead float-left hidden" data-id-plot="` + value.id_plot + `" data-id-tim="` + value.id_tim + `" ><img src="<?= base_url('assets/img/ceklis.svg') ?>" style="width: 25px"></a>
                       <a class="cancel-lead float-right hidden" ><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
+                      <a class="close-riwayat float-right hidden" ><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
                       <a class="save-new hidden" ><img src="<?= base_url('assets/img/ceklis.svg') ?>" style="width: 25px"></a>
             <a class="cancel-new hidden" ><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
                     </div>
                     </td>
                 </tr>
-                <tr class="riwayat" data-id="` + value.id + `" style="display:none;" data-searchable="false">
+                <tr id="riwayat" class="riwayat" data-id="` + value.id + `" style="display:none;" data-searchable="false">
                     <td colspan="7" class="riwayat-content"></td>
                 </tr>`;
         $(leads).data('.jadwal', value.jadwal);
@@ -1071,6 +1075,9 @@
             data: {
               id_lead: idLead
             },
+            // beforeSend: function() {
+            //   $('#riwayat').html('<tr> <td colspan="7"><div class="d-flex justify-content-center my-2"><div role="status" class="spinner-border text-danger"></div><span class="ms-2 pt-1">Update Data Terbaru...</span></div></td> </tr>');
+            // },
             success: function(response) {
               let content = `<div class="row table justify-content-center">
                         <table class="table custom-table-container col-8 align-items-center">
@@ -1085,7 +1092,7 @@
               $.each(response, function(index, item) {
                 content += `<tr>
                                         <td>  ${item.status}  </td>
-                                        <td>  ${formatDate(item.jadwal)}  </td>
+                                        <td>  ${formatDate(item.jadwal)} <br> ${item.waktu}  </td>
                                         <td>  ${item.catatan}  </td>
                                     </tr>`;
               });
@@ -1114,6 +1121,9 @@
       $(document).on('click', '.edit-lead', function() {
         console.log("Edit lead clicked");
         var $row = $(this).closest('tr');
+        var idPlot = $(this).data('id-plot');
+        var idTim = $(this).data('id-tim');
+        console.log(idPlot);
         $row.find('td[contenteditable="false"]').prop('contenteditable', true);
         $row.find('.jadwal input.datepicker').prop('disabled', false).datepicker({
           format: 'dd mmmm yyyy',
@@ -1134,13 +1144,15 @@
         $row.find('.riwayat').addClass('hidden');
         $row.find('.edit-lead').addClass('hidden');
         $row.find('.save-lead, .cancel-lead').removeClass('hidden');
-        $row.find('.status-select').prop('disabled', false);
+        // $row.find('.status-select').prop('disabled', false);
       });
 
       $(document).on('click', '.save-lead', function() {
         console.log("Save lead clicked");
         var $row = $(this).closest('tr');
-        var idLead = $row.data('id');
+        var idPlot = $(this).data('id-plot');
+        var idTim = $(this).data('id-tim');
+        console.log(idPlot);
         var perusahaan = $row.find('.perusahaan').text();
         var no_telp = $row.find('.no_telp').text();
         var status = $row.find('.status-select').val();
@@ -1149,15 +1161,14 @@
         var catatan = $row.find('.catatan').text();
 
         $.ajax({
-          url: `<?= base_url() ?>api/supplier/updateDataLeadCRM/${idLead}`,
+          url: `<?= base_url() ?>api/supplier/updateDataLeadCRM/${idPlot}`,
           type: "POST",
           headers: {
             Authorization: `Basic ${basicAuth}`
           },
           data: JSON.stringify({
-            id: idLead,
-            nama_perusahaan: perusahaan,
-            no_telp: no_telp,
+            id: idPlot,
+            id_tim: idTim,
             status: status,
             jadwal: date, // Only send date part to the server
             catatan: catatan,
@@ -1204,7 +1215,7 @@
         $row.find('.edit-lead').addClass('hidden');
         // Add input fields for new data
         $row.find('.status').html(`
-        <select class="status-select btn rounded-pill btn-arrow">
+        <select class="status-select btn-arrow">
             <option value="" disabled selected></option>
             <option value="sedang-dihubungi">Sedang Dihubungi</option>
             <option value="proses-negosiasi">Proses Negosiasi</option>
@@ -1245,7 +1256,7 @@
         var date = $row.find('.datepicker').val();
         var time = $row.find('.timepicker').val();
         var catatan = $row.find('.catatan-input').val();
-        var dateFormat = formatDate(date);
+        var formattedDate = new Date(date).toISOString().split('T')[0];
         // Validate inputs
         if (!status || !date || !time || !catatan) {
           alert('Semua bidang harus diisi.');
@@ -1262,7 +1273,7 @@
           data: JSON.stringify({
             id: idLead,
             status: status,
-            jadwal: dateFormat,
+            jadwal: formattedDate,
             waktu: `${time} WIB`,
             catatan: catatan
           }),
@@ -1301,6 +1312,7 @@
         $row.find('.tambah').removeClass('hidden');
         $row.find('.riwayat').removeClass('hidden');
         $row.find('.edit-lead').removeClass('hidden');
+        $('#pagination-container').pagination('refresh');
       });
 
     }
