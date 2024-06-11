@@ -117,8 +117,15 @@ class Pengguna_model extends CI_Model
         $this->db->join('pengguna', 'anggota_asosiasi.npwp = pengguna.npwp');
         $this->db->where('pengguna.id_pengguna', $id_pengguna);
         $this->db->where('anggota_asosiasi.status_anggota', 1);
+        $this->db->where('anggota_asosiasi.npwp IS NOT NULL', null, false);
+        $this->db->where('anggota_asosiasi.npwp !=', '');
         $query = $this->db->get();
 
-        return $query->result(); // Mengembalikan semua baris hasil query
+        // Mengembalikan hasil dalam bentuk array jika ada hasil
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return false; // Mengembalikan false jika tidak ada hasil
+        }
     }
 }

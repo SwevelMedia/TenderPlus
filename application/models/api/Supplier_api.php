@@ -69,7 +69,6 @@ class Supplier_api extends CI_Model
         $this->db->where('tim_marketing.id_tim', $id);
         $query = $this->db->get();
         return $query->row_array();
-
     }
 
     public function getTimMarketingByNama($nama)
@@ -93,11 +92,33 @@ class Supplier_api extends CI_Model
         return $this->db->affected_rows();
     }
 
+    // public function deleteTimMarketing($id)
+    // {
+    //     $this->db->delete('tim_marketing', ['id_tim' => $id]);
+    //     return $this->db->affected_rows();
+    // }
     public function deleteTimMarketing($id)
     {
+        // Mencari semua id_plot yang terkait dengan tim marketing yang akan dihapus
+        $this->db->select('id_plot');
+        $this->db->where('id_tim', $id);
+        $query = $this->db->get('plot_tim');
+        $results = $query->result();
+
+        // Menghapus tim marketing
         $this->db->delete('tim_marketing', ['id_tim' => $id]);
-        return $this->db->affected_rows();
+        $affected_rows_tim = $this->db->affected_rows();
+
+        if ($affected_rows_tim > 0 && !empty($results)) {
+            // Jika tim marketing berhasil dihapus dan terdapat entri di plot_tim
+            foreach ($results as $row) {
+                $this->db->delete('plot_tim', ['id_plot' => $row->id_plot]);
+            }
+        }
+
+        return $affected_rows_tim;
     }
+
     public function getPlotTimByIdLead($id_lead)
     {
         $this->db->select('*');
@@ -129,7 +150,6 @@ class Supplier_api extends CI_Model
         $this->db->insert('pengguna', $data);
         // return $this->db->affected_rows();
         return $this->db->insert_id();
-
     }
     // // Insert the same Tim to table pengguna
     // public function insertTimToPengguna($data)
@@ -433,13 +453,15 @@ class Supplier_api extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
-    public function insertRiwayat($id_lead)
+    public function tambahRiwayat($id_lead, $data)
     {
-        $this->db->select('status, jadwal, catatan, create_at');
-        $this->db->from('plot_tim'); // Ganti dengan nama tabel riwayat Anda
-        $this->db->where('id_lead', $id_lead);
-        $query = $this->db->insert();
-        return $query->result_array();
+        // Make sure idLead is included in the data array
+        $data['id_lead'] = $id_lead;
+
+        $this->db->insert('plot_tim', $data);
+
+        // Return the insert ID
+        return $this->db->insert_id();
     }
 
     public function getDonatChart($id_pengguna)
