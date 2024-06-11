@@ -183,18 +183,18 @@ class ApiSupplier extends RestController
 
             // Konfigurasi email
             $config['protocol'] = 'smtp';
-            $config['smtp_host'] = 'smtp.gmail.com';
+            $config['smtp_host'] = 'smtp.hostinger.com';
             $config['smtp_port'] = '465';
             $config['smtp_crypto'] = 'ssl';
-            $config['smtp_user'] = 'm.iqbal.arjunanda@gmail.com'; // Ganti dengan email Anda
-            $config['smtp_pass'] = 'arjunanda'; // Ganti dengan password email Anda
+            $config['smtp_user'] = 'm.iqbal.arjunanda@pandakong88.com'; // Ganti dengan email Anda
+            $config['smtp_pass'] = 'Arjunanda_271'; // Ganti dengan password email Anda
             $config['mailtype'] = 'html';
             $config['charset'] = 'iso-8859-1';
             $config['wordwrap'] = TRUE;
 
             $this->email->initialize($config);
 
-            $this->email->from('m.iqbal.arjunanda@gmail.com', 'Arjunanda');  // Ganti dengan email dan nama perusahaan Anda
+            $this->email->from('m.iqbal.arjunanda@pandakong88.com', 'Arjunanda');  // Ganti dengan email dan nama perusahaan Anda
             $this->email->to($to);
             $this->email->subject($subject);
             $this->email->message($message);
