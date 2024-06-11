@@ -35,20 +35,20 @@ class DashboardUserSupplier extends CI_Controller
 
         $anggota_asosiasi = $this->Pengguna_model->getAnggotaAsosiasi($id_pengguna);
         // var_dump($anggota_asosiasi);
-        
+
         // Cek apakah dia masuk ke dalam anggota asosiasi, misalnya apakah dia anggota dari INKINDO
         if (!empty($anggota_asosiasi)) {
-        // Jika ada hasil, pengguna adalah anggota asosiasi
+            // Jika ada hasil, pengguna adalah anggota asosiasi
             $status = 'inkindo';
         } else {
             // Jika tidak ada hasil, pengguna bukan anggota asosiasi
             $status = 'umum';
         }
         // echo $status;
-        
+
         $data = [
             'title' => 'Dashboard',
-            'status'=>$status,
+            'status' => $status,
         ];
 
         // echo json_encode($data);
@@ -59,9 +59,10 @@ class DashboardUserSupplier extends CI_Controller
         $this->load->view('templates/footer');
     }
 
-    public function getAllWilayah(){
+    public function getAllWilayah()
+    {
         $q = $this->input->get('q'); // Mendapatkan parameter pencarian dari URL
-        if($q) {
+        if ($q) {
             $wilayah = $this->Wilayah_model->getWilayahByName($q); // Memanggil model untuk mencari wilayah berdasarkan parameter pencarian
         } else {
             $wilayah = $this->Wilayah_model->getAllWilayah(); // Mendapatkan semua wilayah jika tidak ada parameter pencarian
@@ -70,11 +71,12 @@ class DashboardUserSupplier extends CI_Controller
         echo json_encode($wilayah);
     }
 
-    public function getJenispengadaan(){
+    public function getJenispengadaan()
+    {
         $q = $this->input->get('q'); // Mendapatkan parameter pencarian dari URL
-        
-        if($q) {
-            $jenis = $this->JenisTender_model->getListJenisTender($q,'',''); // Memanggil model untuk mencari jenis berdasarkan parameter pencarian
+
+        if ($q) {
+            $jenis = $this->JenisTender_model->getListJenisTender($q, '', ''); // Memanggil model untuk mencari jenis berdasarkan parameter pencarian
         } else {
             $jenis = $this->JenisTender_model->getAllJenisTender(); // Mendapatkan semua jenis jika tidak ada parameter pencarian
         }
@@ -568,11 +570,11 @@ class DashboardUserSupplier extends CI_Controller
     {
         $id_lead = $this->input->post('id_lead');
         $id_tim = $this->input->post('id_tim');
-        
-        if ($id_tim == 0 ) {
+
+        if ($id_tim == 0) {
             $data = $this->Supplier_model->deletePlotTimByIdLead($id_lead);
         } else {
-        $data = $this->Supplier_model->insertUpdatePlotTim($id_lead, $id_tim);
+            $data = $this->Supplier_model->insertUpdatePlotTim($id_lead, $id_tim);
         }
         // $data = $this->Supplier_model->insertUpdatePlotTim($id_lead, $id_tim);
         $json_data = json_encode($data);
@@ -1065,6 +1067,49 @@ class DashboardUserSupplier extends CI_Controller
         $id_pengguna = $this->input->get('id_pengguna');
         // $id_pengguna = 350;
         $data = $this->Supplier_api->getDonatChart($id_pengguna);
+
+        // Inisialisasi hasil dengan nilai default 0
+        $result = [
+            'sedang-dihubungi' => 0,
+            'proses-negosiasi' => 0,
+            'disetujui' => 0,
+            'ditolak' => 0,
+            'tanpa-status' => 0
+        ];
+
+        if (!empty($data)) {
+            // Jika data tidak kosong, hitung jumlah item berdasarkan status
+            foreach ($data as $item) {
+                switch ($item['status']) {
+                    case 'sedang-dihubungi':
+                        $result['sedang-dihubungi']++;
+                        break;
+                    case 'proses-negosiasi':
+                        $result['proses-negosiasi']++;
+                        break;
+                    case 'disetujui':
+                        $result['disetujui']++;
+                        break;
+                    case 'ditolak':
+                        $result['ditolak']++;
+                        break;
+                    default:
+                        $result['tanpa-status']++;
+                        break;
+                }
+            }
+        }
+
+        // Set content type to JSON and output the data
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+    public function getDonatChartCRM()
+    {
+        $id_pengguna = $this->input->get('id_pengguna');
+        // $id_pengguna = 350;
+        $data = $this->Supplier_api->getDonatChartCRM($id_pengguna);
 
         // Inisialisasi hasil dengan nilai default 0
         $result = [

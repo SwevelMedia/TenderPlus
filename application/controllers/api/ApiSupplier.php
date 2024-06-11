@@ -168,8 +168,9 @@ class ApiSupplier extends RestController
         }
     }
 
-    public function sendEmail_post(){
-        
+    public function sendEmail_post()
+    {
+
         $this->load->library('email');
 
         $id = $this->input->post('id');
@@ -208,7 +209,6 @@ class ApiSupplier extends RestController
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Tim marketing tidak ditemukan.']);
         }
-
     }
 
 
@@ -642,6 +642,23 @@ class ApiSupplier extends RestController
             ], RestController::HTTP_NOT_FOUND);
         }
     }
+    public function getTotalLeadTIM_get()
+    {
+        $id_pengguna = $this->input->get('id_pengguna');
+        $data = $this->Supplier_api->getTotalLeadTim($id_pengguna);
+
+        if ($data) {
+            $this->response([
+                'status' => true,
+                'data' => $data
+            ], RestController::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ], RestController::HTTP_NOT_FOUND);
+        }
+    }
     public function getLeadRiwayat_get()
     {
         $id_lead = $this->input->get('id_lead');
@@ -657,6 +674,7 @@ class ApiSupplier extends RestController
 
         // Add additional data processing if needed
         $dataToInsert = [
+            'id_tim' => $data['id_tim'],
             'status' => $data['status'],
             'jadwal' => $data['jadwal'],
             'waktu' => $data['waktu'],

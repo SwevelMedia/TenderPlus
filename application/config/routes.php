@@ -438,6 +438,7 @@ $route['api/supplier/getPemenangByNPWP/(:any)'] = 'api/ApiSupplier/getPemenangBy
 $route['api/supplier/getPemenangFilter'] = 'api/ApiSupplier/pemenangFiltered';
 $route['api/supplier/getCount'] = 'api/ApiSupplier/getCountLeadNull';
 $route['api/supplier/getTotal'] = 'api/ApiSupplier/getTotalLeads';
+$route['api/supplier/getTotalTim'] = 'api/ApiSupplier/getTotalLeadTim';
 $route['api/supplier/getLead'] = 'api/ApiSupplier/getLeads';
 $route['api/supplier/getCRMLeads'] = 'api/ApiSupplier/getCRMLeads';
 $route['api/supplier/getDataLeadCRM'] = 'api/ApiSupplier/getDataLeadCRM';

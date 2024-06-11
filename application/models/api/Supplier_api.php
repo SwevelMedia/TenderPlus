@@ -294,30 +294,39 @@ class Supplier_api extends CI_Model
     }
     public function getDataLeadCRM($id_pengguna, $page_size, $page_number)
     {
+        // Subquery to select the latest id_plot for each id_lead
+        $subquery = "(SELECT MAX(id_plot) AS latest_id_plot, id_lead
+    FROM plot_tim
+    GROUP BY id_lead) AS latest_plot_tim";
+
+        $offset = ($page_number - 1) * $page_size;
 
         $sql = "SELECT
-        data_leads.id_lead AS id,
-        id_pengguna,
-        nama_perusahaan,
-        profil,
-        kontak_lead.*,
-        COUNT(kontak_lead.id_kontak) AS jumlah_kontak,
-        plot_tim.*
-        FROM
-            data_leads
-        LEFT JOIN
-            kontak_lead ON data_leads.id_lead = kontak_lead.id_lead
-		LEFT JOIN
-			plot_tim ON data_leads.id_lead = plot_tim.id_lead
-        WHERE
-            data_leads.id_pengguna = $id_pengguna
-            AND kontak_lead.id_kontak IS NOT NULL
-            AND plot_tim.id_lead IS NOT NULL
-        GROUP BY
-            data_leads.id_lead
-        ORDER BY
-            id DESC
-        LIMIT {$page_number},{$page_size}";
+   data_leads.id_lead AS id,
+   data_leads.id_pengguna,
+   data_leads.nama_perusahaan,
+   data_leads.profil,
+   kontak_lead.*,
+   COUNT(kontak_lead.id_kontak) AS jumlah_kontak,
+   plot_tim.*
+FROM
+   data_leads
+LEFT JOIN
+   kontak_lead ON data_leads.id_lead = kontak_lead.id_lead
+LEFT JOIN
+   $subquery ON data_leads.id_lead = latest_plot_tim.id_lead
+LEFT JOIN
+   plot_tim ON latest_plot_tim.latest_id_plot = plot_tim.id_plot
+WHERE
+   data_leads.id_pengguna = $id_pengguna
+   AND kontak_lead.id_kontak IS NOT NULL
+   AND plot_tim.id_lead IS NOT NULL
+GROUP BY
+   data_leads.id_lead
+ORDER BY
+   data_leads.id_lead DESC
+            LIMIT {$page_number}, {$page_size}";
+
         return $this->db->query($sql);
     }
     public function updateDataLeadCRM($data, $id)
@@ -408,6 +417,23 @@ class Supplier_api extends CI_Model
         $query = $this->db->get();
         return $query->row()->total;
     }
+    public function getTotalLeadTim($id_pengguna)
+    {
+        $subquery = $this->db->select('MAX(id_plot) as id_plot, id_lead, id_tim')
+            ->from('plot_tim')
+            ->group_by(['id_lead', 'id_tim'])
+            ->get_compiled_select();
+
+        $this->db->select('COUNT(data_leads.id_lead) as total');
+        $this->db->from('data_leads');
+        $this->db->join("($subquery) latest_plot_tim", 'data_leads.id_lead = latest_plot_tim.id_lead', 'left');
+        $this->db->join('plot_tim', 'latest_plot_tim.id_plot = plot_tim.id_plot', 'left');
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+        $this->db->where('plot_tim.id_tim IS NOT NULL');
+        $query = $this->db->get();
+
+        return $query->row()->total;
+    }
 
     public function getCountDataLeads($id_pengguna)
     {
@@ -461,7 +487,6 @@ class Supplier_api extends CI_Model
         $data['id_lead'] = $id_lead;
 
         $this->db->insert('plot_tim', $data);
-
         // Return the insert ID
         return $this->db->insert_id();
     }
@@ -472,6 +497,23 @@ class Supplier_api extends CI_Model
         $this->db->from('plot_tim');
         $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead', 'right');
         $this->db->where('id_pengguna', $id_pengguna);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
+    public function getDonatChartCRM($id_pengguna)
+    {
+        $this->db->select('plot_tim.id_plot, plot_tim.id_tim, plot_tim.status, data_leads.id_lead, data_leads.id_pengguna');
+        $this->db->from('plot_tim');
+        $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead', 'right');
+        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+        $this->db->where('plot_tim.id_tim IS NOT NULL');
+        $this->db->where('plot_tim.id_plot IS NOT NULL');
 
         $query = $this->db->get();
 

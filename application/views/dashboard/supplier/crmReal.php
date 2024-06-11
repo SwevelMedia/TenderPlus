@@ -914,7 +914,7 @@
         $('.belum-lengkap').html(data.data.jumlah);
         let belum = data.data.jumlah;
         $.ajax({
-          url: "<?= base_url('api/supplier/getTotal') ?>",
+          url: "<?= base_url('api/supplier/getTotalTim') ?>",
           type: "GET",
           headers: {
             Authorization: `Basic ${basicAuth}`
@@ -937,7 +937,7 @@
     });
 
     $.ajax({
-      url: "<?= base_url('api/supplier/getTotal') ?>",
+      url: "<?= base_url('api/supplier/getTotalTim') ?>",
       type: "GET",
       dataType: "JSON",
       headers: {
@@ -1016,45 +1016,59 @@
         var formattedDate = formatDate(value.jadwal);
         var timeValue = value.waktu ? value.waktu : "";
         var catatanValue = value.catatan ? value.catatan : "";
+
+        var validStatuses = [
+          "sedang-dihubungi",
+          "proses-negosiasi",
+          "ditunda",
+          "disetujui",
+          "dibatalkan"
+        ];
+
         var statusOptions = `
-      <option value="" ${!value.status ? 'selected' : '' }disabled></option>
-      <option value="sedang-dihubungi" ${value.status === 'sedang-dihubungi' ? 'selected' : ''}>Sedang Dihubungi</option>
-      <option value="proses-negosiasi" ${value.status === 'proses-negosiasi' ? 'selected' : ''}>Proses Negosiasi</option>
-      <option value="ditunda" ${value.status === 'ditunda' ? 'selected' : ''}>Ditunda</option>
-      <option value="disetujui" ${value.status === 'disetujui' ? 'selected' : ''}>Disetujui</option>
-      <option value="dibatalkan" ${value.status === 'dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
-    `;
+          <option value="" ${!value.status || !validStatuses.includes(value.status) ? 'selected' : ''} disabled></option>
+          <option value="sedang-dihubungi" ${value.status === 'sedang-dihubungi' ? 'selected' : ''}>Sedang Dihubungi</option>
+          <option value="proses-negosiasi" ${value.status === 'proses-negosiasi' ? 'selected' : ''}>Proses Negosiasi</option>
+          <option value="ditunda" ${value.status === 'ditunda' ? 'selected' : ''}>Ditunda</option>
+          <option value="disetujui" ${value.status === 'disetujui' ? 'selected' : ''}>Disetujui</option>
+          <option value="dibatalkan" ${value.status === 'dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
+        `;
+
+        if (!validStatuses.includes(value.status)) {
+          statusOptions += '<option value="" selected disabled></option>';
+        }
+
         leads +=
           `<tr data-id="` + value.id + ` " class="data-lead-table" data-searchable="true">
-                    <td style="text-align:center">` + rowNumber + `</td>
-                    <td class="perusahaan" >` + (value.nama_perusahaan || '') + `</td>
-                    <td class="no_telp" >${value.no_telp || ''}</td>
-                    <td class="status" contenteditable="false">
-          <select class="status-select btn-arrow" disabled>
-            ${statusOptions}
-          </select>
-        </td>
-                    <td class="jadwal" contenteditable="false">
-                      <input type="text" class="datepicker" value="${formattedDate}" disabled />
-                      <input type="text" class="timepicker" value="${timeValue}" disabled />
-                    </td>
-                    <td class="catatan" contenteditable="false">${catatanValue}</td>
-                    <td class="text-center">
-                    <div>
-                      <a class="edit-lead" data-id-plot="` + value.id_plot + `" data-id-tim="` + value.id_tim + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
-                      <a class="tambah" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
-                      <a class="riwayat" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px" ></a>
-                      <a class="save-lead float-left hidden" data-id-plot="` + value.id_plot + `" data-id-tim="` + value.id_tim + `" ><img src="<?= base_url('assets/img/ceklis.svg') ?>" style="width: 25px"></a>
-                      <a class="cancel-lead float-right hidden" ><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
-                      <a class="close-riwayat float-right hidden" ><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
-                      <a class="save-new hidden" ><img src="<?= base_url('assets/img/ceklis.svg') ?>" style="width: 25px"></a>
-            <a class="cancel-new hidden" ><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
-                    </div>
-                    </td>
-                </tr>
-                <tr id="riwayat" class="riwayat" data-id="` + value.id + `" style="display:none;" data-searchable="false">
-                    <td colspan="7" class="riwayat-content"></td>
-                </tr>`;
+              <td style="text-align:center">` + rowNumber + `</td>
+              <td class="perusahaan">` + (value.nama_perusahaan || '') + `</td>
+              <td class="no_telp">${value.no_telp || ''}</td>
+              <td class="status" contenteditable="false">
+                <select class="status-select btn-arrow" disabled>
+                  ${statusOptions}
+                </select>
+              </td>
+              <td class="jadwal" contenteditable="false">
+                <input type="text" class="datepicker" value="${formattedDate}" disabled />
+                <input type="text" class="timepicker" value="${timeValue}" disabled />
+              </td>
+              <td class="catatan" contenteditable="false">${catatanValue}</td>
+              <td class="text-center">
+                <div>
+                  <a class="edit-lead" data-id-plot="` + value.id_plot + `" data-id-tim="` + value.id_tim + `"><img src="<?= base_url('assets/img/icon_edit_table.svg') ?>" style="width: 20px"></a>
+                  <a class="tambah" data-id-plot="` + value.id_plot + `" data-id-tim="` + value.id_tim + `"><img src="<?= base_url('assets/img/icon_tambah_table.svg') ?>" style="width: 20px"></a>
+                  <a class="riwayat" data-id="` + value.id + `"><img src="<?= base_url('assets/img/icon_riwayat_table.svg') ?>" style="width: 20px"></a>
+                  <a class="save-lead float-left hidden" data-id-plot="` + value.id_plot + `" data-id-tim="` + value.id_tim + `"><img src="<?= base_url('assets/img/ceklis.svg') ?>" style="width: 25px"></a>
+                  <a class="cancel-lead float-right hidden"><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
+                  <a class="close-riwayat float-right hidden"><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
+                  <a class="save-new hidden" data-id-plot="` + value.id_plot + `" data-id-tim="` + value.id_tim + `"><img src="<?= base_url('assets/img/ceklis.svg') ?>" style="width: 25px"></a>
+                  <a class="cancel-new hidden"><img src="<?= base_url('assets/img/x.svg') ?>" style="width: 25px"></a>
+                </div>
+              </td>
+          </tr>
+          <tr id="riwayat" class="riwayat" data-id="` + value.id + `" style="display:none;" data-searchable="false">
+              <td colspan="7" class="riwayat-content"></td>
+          </tr>`;
         $(leads).data('.jadwal', value.jadwal);
       });
       console.log("Table leads set");
@@ -1121,6 +1135,7 @@
       $(document).on('click', '.edit-lead', function() {
         console.log("Edit lead clicked");
         var $row = $(this).closest('tr');
+        var id = $row.data('id');
         var idPlot = $(this).data('id-plot');
         var idTim = $(this).data('id-tim');
         console.log(idPlot);
@@ -1210,7 +1225,10 @@
       });
       $(document).on('click', '.tambah', function() {
         var $row = $(this).closest('tr');
-        var idLead = $row.data('id');
+        var id = $row.data('id');
+        var idPlot = $(this).data('id-plot');
+        var idTim = $(this).data('id-tim');
+        console.log(idPlot, idTim);
         $row.find('.riwayat').addClass('hidden');
         $row.find('.edit-lead').addClass('hidden');
         // Add input fields for new data
@@ -1251,12 +1269,17 @@
 
       $(document).off('click', '.save-new').on('click', '.save-new', function() {
         var $row = $(this).closest('tr');
-        var idLead = $row.data('id');
+        var id = $row.data('id');
+        var idPlot = $(this).data('id-plot');
+        var idTim = $(this).data('id-tim');
         var status = $row.find('.status-select').val();
         var date = $row.find('.datepicker').val();
         var time = $row.find('.timepicker').val();
         var catatan = $row.find('.catatan-input').val();
         var formattedDate = new Date(date).toISOString().split('T')[0];
+
+        console.log(idPlot, idTim);
+
         // Validate inputs
         if (!status || !date || !time || !catatan) {
           alert('Semua bidang harus diisi.');
@@ -1265,13 +1288,14 @@
 
         // Save new data to the database
         $.ajax({
-          url: `<?= base_url() ?>api/supplier/tambahRiwayat/${idLead}`,
+          url: `<?= base_url() ?>api/supplier/tambahRiwayat/${id}`,
           type: "POST",
           headers: {
             Authorization: `Basic ${basicAuth}`
           },
           data: JSON.stringify({
-            id: idLead,
+            id_plot: idPlot,
+            id_tim: idTim,
             status: status,
             jadwal: formattedDate,
             waktu: `${time} WIB`,
@@ -1289,7 +1313,7 @@
             $row.find('.catatan').html('');
 
             // Hide save and cancel buttons
-            $row.find('.save-new, .cancel-new').addClass('hidden');
+            $row.find('.save-new .cancel-new').addClass('hidden');
             $row.find('.tambah').removeClass('hidden');
           },
           error: function(xhr, status, error) {
@@ -1320,7 +1344,7 @@
 
     function refreshDashboard() {
       $.ajax({
-        url: "<?= base_url('DashboardUserSupplier/getDonatChart') ?>",
+        url: "<?= base_url('DashboardUserSupplier/getDonatChartCRM') ?>",
         type: "GET",
         dataType: "JSON",
         data: {
