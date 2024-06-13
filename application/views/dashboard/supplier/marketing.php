@@ -469,9 +469,9 @@
                         <!-- <h3 class="modal-title" id="detailMarketingModalLabel">Detail Marketing</h3> -->
 
                         <div class="d-flex justify-content-center mt-3 mb-2">
-                        
+
                             <img id="user-photo" src="<?= base_url("assets/img/user-icon-detail.svg") ?>" style="border-radius: 50%; width: 90px; height: 90px; object-fit: cover;">
-                            
+
                         </div>
 
                         <div class="input-popup justify-content-end">
@@ -709,24 +709,24 @@
 
                         </div>
                         <input type="hidden" id="idTim" value="">
-                            <table class="table table-borderless">
-                                <tbody>
-                                    <tr>
-                                        <th scope="row"><i class="fas fa-building me-2"></i>Tim Marketing</th>
-                                        <td id="teamName"></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><i class="fas fa-book me-2"></i>Follow-up Leads</th>
-                                        <td>
-                                            <ul id="followUpLeads">
-                                                <!-- <li>PT Conda</li>
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><i class="fas fa-building me-2"></i>Tim Marketing</th>
+                                    <td id="teamName"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><i class="fas fa-book me-2"></i>Follow-up Leads</th>
+                                    <td>
+                                        <ul id="followUpLeads">
+                                            <!-- <li>PT Conda</li>
                                                 <li>Data lead 2</li>
                                                 <li>Data lead 3</li> -->
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <div class="d-flex justify-content-end mt-4 gap-2">
                             <a class="btn-custom text-white text-center" id="confirmSendEmail" style="background-color: #DF3131;  width: 200px; height: 40px;">
                                 <i class="fas me-1"></i>Kirim
@@ -769,7 +769,7 @@
             $('input[name=email]').val('');
             $('input[name=no_telp]').val('');
             $('input[name=alamat]').val('');
-             $('#user-photo').attr('src', '<?= base_url("assets/img/user-icon-detail.svg") ?>');
+            $('#user-photo').attr('src', '<?= base_url("assets/img/user-icon-detail.svg") ?>');
         });
         $('#editMarketingModal').on('hidden.bs.modal', function() {
             $('#nama').text('');
@@ -844,7 +844,7 @@
                 } else {
                     // alert('gagal memuat');
                     $('#error-message').removeClass('d-none').text('Gagal memuat data. Silakan coba lagi nanti.');
-                    
+
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -928,7 +928,7 @@
                 '<a href="#" class="btn-edt" data-toggle="modal" data-target="#editMarketingModal" data-id="' + data[i].id_tim + '" title="Edit"><i class="fas fa-edit me-2"></i></a>' +
                 '<a class="btn-del" data-toggle="modal" data-target="#deleteModal" data-id="' + data[i].id_tim + '" title="Hapus"><i class="fas fa-trash me-2"></i></a>' +
                 '<a class="btn-kir" data-toggle="modal" data-target="#kirimModal" data-id="' + data[i].id_tim + '" title="Kirim Email Undangan"><i class="fas fa-paper-plane"></i></a>' +
-            
+
                 '</td>' +
                 '</tr>';
         }
@@ -1064,7 +1064,7 @@
                     $('input[name=alamat]').val(data.data.alamat);
 
                     // Update user photo if available
-                    if(data.data.foto) {
+                    if (data.data.foto) {
                         $('#user-photo').attr('src', '<?= base_url("assets/upload/") ?>' + data.data.foto);
                     } else {
                         $('#user-photo').attr('src', '<?= base_url("assets/img/user-icon-detail.svg") ?>');
@@ -1230,16 +1230,18 @@
 
     // Kirim email
     function attachEmailEvent() {
-        $('.btn-kir').on('click', function () {
+        $('.btn-kir').on('click', function() {
             let idTim = $(this).data('id');
             $('#idTim').val(idTim); // Set the idTim value in hidden input
             // console.log('id tim :',idTim)
             // Tampilkan modal
             // $('#kirimModal').modal('show');
             $.ajax({
-                url: '<?=base_url('api/supplier/before-send-mail'); ?>', // Ganti dengan URL endpoint PHP Anda
+                url: '<?= base_url('api/supplier/before-send-mail'); ?>', // Ganti dengan URL endpoint PHP Anda
                 type: 'GET',
-                data: { id: idTim },
+                data: {
+                    id: idTim
+                },
                 dataType: 'json',
                 beforeSend: addAuthorizationHeader,
                 success: function(response) {
@@ -1247,7 +1249,7 @@
                     $('#kirimModalLabel').text(response.modalTitle);
                     $('#teamName').text(response.teamName);
                     $('#followUpLeads').empty();
-                    
+
                     if (response.leads.length === 0) {
                         $('#followUpLeads').append('<li>Tidak ada data leads.</li>');
                         $('#confirmSendEmail').prop('disabled', true); // Disable the "Kirim" button
@@ -1259,62 +1261,63 @@
                     }
                 },
                 error: function(xhr, error) {
-                    console.error('AJAX Error: '  + error);
+                    console.error('AJAX Error: ' + error);
                     $('#followUpLeads').append('<li>Gagal memuat data leads.</li>');
 
                 }
             });
-            
+
         });
 
-        $('#confirmSendEmail').on('click', function () {
+        $('#confirmSendEmail').on('click', function() {
             let idTim = $('#idTim').val();
-            console.log('id tim sebelum kirim email :',idTim)
+            console.log('id tim sebelum kirim email :', idTim)
             sendEmail(idTim);
         });
     }
 
     function sendEmail(idTim) {
         $.ajax({
-            url: "<?= base_url('/api/supplier/send-email'); ?>",  // Ganti dengan URL API backend Anda
+            url: "<?= base_url('/api/supplier/send-email'); ?>", // Ganti dengan URL API backend Anda
             type: 'POST',
-            dataType: 'json',  // Set content type to JSON
-            data: { id: idTim },  // Send idTim as JSON
+            dataType: 'json', // Set content type to JSON
+            data: {
+                id: idTim
+            }, // Send idTim as JSON
             beforeSend: addAuthorizationHeader,
-            success: function (response) {
+            success: function(response) {
                 if (response.status === 'success') {
                     Swal.fire({
-                        title: 'Berhasil!',
-                        text: 'Email undangan telah berhasil dikirim.',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
+                        icon: "success",
+                        title: "berhasil",
+                        text: "Email undangan telah berhasil dikirim!!",
+                        showConfirmButton: false,
+                        timer: 2000
                     });
+
                 } else {
                     Swal.fire({
-                        title: 'Gagal!',
-                        text: 'Gagal mengirim email undangan: ' + response.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
+                        title: "gagal!",
+                        icon: "eror",
+                        text: "Gagal mengirim email undangan!" + response.message,
+                        showConfirmButton: false,
+                        timer: 2000
                     });
                 }
                 $('#kirimModal').modal('hide');
             },
-            error: function (error) {
+            error: function(error) {
                 Swal.fire({
-                    title: 'Error!',
-                    text: 'Gagal mengirim email undangan.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
+                    title: "gagal!",
+                    icon: "eror",
+                    text: "Gagal mengirim email undangan!",
+                    showConfirmButton: false,
+                    timer: 2000
                 });
                 $('#kirimModal').modal('hide');
             }
         });
     }
-
-
-
-
-
 </script>
 
 
