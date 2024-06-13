@@ -387,7 +387,7 @@
         <div class="row justify-content d-flex content-above-navbar">
             <div class="col-md-5 d-flex justify-content-left align-items-left wow fadeInUp" data-wow-delay="0.1s">
                 <h4 class="mb-0 ms-2 mt-4 wow fadeInUp w-660" style="padding-top:8px;">
-                    Selamat Datang <span class="fw-semibold nama-pengguna" style="color: #df3131;"></span>!<p class="pt-2">Yuk! Temukan Calon Customermu
+                    Selamat Datang <span class="fw-semibold nama-pengguna" style="color: #df3131;"></span>!<p class="pt-2">Ayo Temukan Calon Customer Anda!
                     <p>
                 </h4>
             </div>
