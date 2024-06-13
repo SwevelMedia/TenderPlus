@@ -129,9 +129,11 @@ class Pengguna_model extends CI_Model
         }
     }
     
-    public function updatePassword($id_pengguna, $password) {
+    public function updatePassword($id_pengguna, $password,$email) {
         $data = [
-            'password' => md5($password) // Menggunakan MD5 untuk hashing password
+            'password' => md5($password), // Menggunakan MD5 untuk hashing password
+            'email' =>$email,
+            'whatsapp_status'=>1,
         ];
 
         $this->db->where('id_pengguna', $id_pengguna);

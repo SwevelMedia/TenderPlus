@@ -283,7 +283,7 @@ class ApiSupplier extends RestController
 
                 // Perbarui password pengguna
                 if ($id_pengguna) {
-                    $this->Pengguna_model->updatePassword($id_pengguna, $password);
+                    $this->Pengguna_model->updatePassword($id_pengguna, $password,$team_member['email']);
                 }
 
                 echo json_encode(['status' => 'success', 'message' => 'Email undangan telah berhasil dikirim.']);
