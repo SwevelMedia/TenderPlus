@@ -536,11 +536,25 @@ ORDER BY
 
     public function getDonatChartCRM($id_pengguna)
     {
+        // Subquery to select the latest id_plot for each id_lead
+        $subquery = "(SELECT MAX(id_plot) AS latest_id_plot, id_lead
+                  FROM plot_tim
+                  GROUP BY id_lead) AS latest_plot_tim";
+
+        // Select the necessary fields
         $this->db->select('plot_tim.id_plot, plot_tim.id_tim, plot_tim.status, data_leads.id_lead, data_leads.id_pengguna');
-        $this->db->from('plot_tim');
-        $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead', 'right');
+
+        // From data_leads table
+        $this->db->from('data_leads');
+
+        // Left join with the subquery
+        $this->db->join("($subquery)", 'data_leads.id_lead = latest_plot_tim.id_lead', 'left');
+
+        // Left join  plot_tim tabel
+        $this->db->join('plot_tim', 'latest_plot_tim.latest_id_plot = plot_tim.id_plot', 'left');
+
+        // Filter  id_pengguna
         $this->db->where('data_leads.id_pengguna', $id_pengguna);
-        $this->db->where('plot_tim.id_tim IS NOT NULL');
         $this->db->where('plot_tim.id_plot IS NOT NULL');
 
         $query = $this->db->get();

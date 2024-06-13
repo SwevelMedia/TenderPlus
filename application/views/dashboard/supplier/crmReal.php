@@ -843,7 +843,6 @@
           <option class="select-status-option" value="" selected>All</option>
           <option class="select-status-option" value="sedang-dihubungi">Sedang Dihubungi</option>
           <option class="select-status-option" value="proses-negosiasi">Proses Negosiasi</option>
-          <option class="select-status-option" value="ditunda">Ditunda</option>
           <option class="select-status-option" value="disetujui">Disetujui</option>
           <option class="select-status-option" value="dibatalkan">Dibatalkan</option>
         </select>
@@ -1020,7 +1019,6 @@
         var validStatuses = [
           "sedang-dihubungi",
           "proses-negosiasi",
-          "ditunda",
           "disetujui",
           "dibatalkan"
         ];
@@ -1029,7 +1027,6 @@
           <option value="" ${!value.status || !validStatuses.includes(value.status) ? 'selected' : ''} disabled></option>
           <option value="sedang-dihubungi" ${value.status === 'sedang-dihubungi' ? 'selected' : ''}>Sedang Dihubungi</option>
           <option value="proses-negosiasi" ${value.status === 'proses-negosiasi' ? 'selected' : ''}>Proses Negosiasi</option>
-          <option value="ditunda" ${value.status === 'ditunda' ? 'selected' : ''}>Ditunda</option>
           <option value="disetujui" ${value.status === 'disetujui' ? 'selected' : ''}>Disetujui</option>
           <option value="dibatalkan" ${value.status === 'dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
         `;
@@ -1237,7 +1234,6 @@
             <option value="" disabled selected></option>
             <option value="sedang-dihubungi">Sedang Dihubungi</option>
             <option value="proses-negosiasi">Proses Negosiasi</option>
-            <option value="ditunda">Ditunda</option>
             <option value="disetujui">Disetujui</option>
             <option value="dibatalkan">Dibatalkan</option>
         </select>

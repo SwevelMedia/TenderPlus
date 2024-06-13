@@ -412,19 +412,22 @@ class Supplier_model extends CI_Model
     public function getDataLeadByIdTim($id_tim)
     {
         $sql = "SELECT  
-        plot_tim.*,
-        data_leads.*,
-        IFNULL(pemenang.lokasi_pekerjaan, '') AS lokasi_pekerjaan,
-        IFNULL(lpse.nama_lpse, '') AS nama_lpse,
-        IFNULL(wilayah.wilayah, '') AS wilayah
-            FROM plot_tim
-            JOIN data_leads ON plot_tim.id_lead = data_leads.id_lead 
-            LEFT JOIN pemenang ON data_leads.id_pemenang = pemenang.id_pemenang
-            LEFT JOIN lpse ON pemenang.id_lpse = lpse.id_lpse
-            LEFT JOIN wilayah ON lpse.id_wilayah = wilayah.id_wilayah
-            WHERE plot_tim.id_tim = " . $id_tim . ";
-        ";
-        $query = $this->db->query($sql);
+                    plot_tim.*,
+                    data_leads.*,
+                    IFNULL(pemenang.lokasi_pekerjaan, '') AS lokasi_pekerjaan,
+                    IFNULL(lpse.nama_lpse, '') AS nama_lpse,
+                    IFNULL(wilayah.wilayah, '') AS wilayah
+                FROM plot_tim
+                JOIN data_leads ON plot_tim.id_lead = data_leads.id_lead 
+                LEFT JOIN pemenang ON data_leads.id_pemenang = pemenang.id_pemenang
+                LEFT JOIN lpse ON pemenang.id_lpse = lpse.id_lpse
+                LEFT JOIN wilayah ON lpse.id_wilayah = wilayah.id_wilayah
+                WHERE plot_tim.id_tim = $id_tim 
+                GROUP BY data_leads.id_lead
+                ;
+            ";
+
+        $query = $this->db->query($sql, array($id_tim));
         return $query->result_array();
     }
     public function getDataLeadById($id)
@@ -481,7 +484,7 @@ class Supplier_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
-    
+
     public function getNamaPerusahaanNonPlot($id_pengguna)
     {
         $this->db->select('data_leads.id_lead, nama_perusahaan, pemenang.lokasi_pekerjaan');
@@ -503,7 +506,8 @@ class Supplier_model extends CI_Model
         }
     }
 
-    public function getTotalNamaPerusahaanNonPlot($id_pengguna) {
+    public function getTotalNamaPerusahaanNonPlot($id_pengguna)
+    {
         $this->db->select('data_leads.id_lead');
         $this->db->from('data_leads');
         $this->db->join('pemenang', 'data_leads.id_pemenang = pemenang.id_pemenang', 'left');
@@ -592,9 +596,20 @@ class Supplier_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+    // public function getTimBySupplierId($id_supplier)
+    // {
+    //     $this->db->select('tm.*, (SELECT COUNT(*) FROM plot_tim pt WHERE pt.id_tim = tm.id_tim) AS jumlah');
+    //     $this->db->from('tim_marketing tm');
+    //     $this->db->where('tm.id_supplier', $id_supplier);
+    //     $query = $this->db->get();
+    //     return $query->result_array();
+    // }
     public function getTimBySupplierId($id_supplier)
     {
-        $this->db->select('tm.*, (SELECT COUNT(*) FROM plot_tim pt WHERE pt.id_tim = tm.id_tim) AS jumlah');
+        $this->db->select('tm.*, 
+        (SELECT COUNT(DISTINCT pt.id_lead) 
+         FROM plot_tim pt 
+         WHERE pt.id_tim = tm.id_tim) AS jumlah');
         $this->db->from('tim_marketing tm');
         $this->db->where('tm.id_supplier', $id_supplier);
         $query = $this->db->get();
