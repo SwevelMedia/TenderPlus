@@ -1294,7 +1294,6 @@
                         showConfirmButton: false,
                         timer: 2000
                     });
-
                 } else {
                     Swal.fire({
                         title: "gagal!",
