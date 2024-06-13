@@ -416,6 +416,7 @@ $route['api/supplier/get'] = 'api/ApiSupplier';
 // MSIB 6
 $route['api/supplier/getTotalTimMarketingById'] = 'api/ApiSupplier/getTotalTimMarketingById';
 $route['api/supplier/getTimMarketingByIdSup'] = 'api/ApiSupplier/getTimMarketingByIdSup';
+$route['api/supplier/before-send-mail'] = 'api/ApiSupplier/beforSendEmail';
 $route['api/supplier/send-email'] = 'api/ApiSupplier/sendEmail';
 
 // END MSIB 6
@@ -438,6 +439,7 @@ $route['api/supplier/getPemenangByNPWP/(:any)'] = 'api/ApiSupplier/getPemenangBy
 $route['api/supplier/getPemenangFilter'] = 'api/ApiSupplier/pemenangFiltered';
 $route['api/supplier/getCount'] = 'api/ApiSupplier/getCountLeadNull';
 $route['api/supplier/getTotal'] = 'api/ApiSupplier/getTotalLeads';
+$route['api/supplier/getTotalTim'] = 'api/ApiSupplier/getTotalLeadTim';
 $route['api/supplier/getLead'] = 'api/ApiSupplier/getLeads';
 $route['api/supplier/getCRMLeads'] = 'api/ApiSupplier/getCRMLeads';
 $route['api/supplier/getDataLeadCRM'] = 'api/ApiSupplier/getDataLeadCRM';
