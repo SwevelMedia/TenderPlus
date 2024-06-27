@@ -341,6 +341,7 @@ class Supplier_api extends CI_Model
 
         return $this->db->query($sql);
     }
+    
     public function updateDataLeadCRM($data, $id)
     {
         $valid_fields = ['status', 'jadwal', 'catatan', 'waktu'];
@@ -535,6 +536,7 @@ class Supplier_api extends CI_Model
         $this->db->from('plot_tim');
         $this->db->join('data_leads', 'plot_tim.id_lead = data_leads.id_lead');
         $this->db->where('plot_tim.id_tim', $id_tim);
+        $this->db->group_by('data_leads.nama_perusahaan');
         $query = $this->db->get();
 
         if ($query->num_rows() > 0) {

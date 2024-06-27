@@ -705,7 +705,7 @@
 
                         <div class="d-flex justify-content-center mt-3 mb-2">
 
-                            <img src="<?= base_url("assets/img/email-kirim.svg") ?>" style=" width: 100px; height: 100px; ">
+                            <img src="<?= base_url("assets/img/email.svg") ?>" style=" width: 100px; height: 100px; ">
 
                         </div>
                         <input type="hidden" id="idTim" value="">
@@ -1269,14 +1269,22 @@
 
         });
 
+        let isRequestInProgress = false;
+
         $('#confirmSendEmail').on('click', function() {
+            if (isRequestInProgress) return; // Cegah permintaan ganda
+
+            isRequestInProgress = true; // Set flag ke true untuk menandakan permintaan sedang berlangsung
             let idTim = $('#idTim').val();
             console.log('id tim sebelum kirim email :', idTim)
-            sendEmail(idTim);
+             
+            sendEmail(idTim, function() {
+                isRequestInProgress = false; // Set flag ke false setelah permintaan selesai
+            });
         });
     }
 
-    function sendEmail(idTim) {
+    function sendEmail(idTim, callback) {
         $.ajax({
             url: "<?= base_url('/api/supplier/send-email'); ?>", // Ganti dengan URL API backend Anda
             type: 'POST',
@@ -1297,23 +1305,25 @@
                 } else {
                     Swal.fire({
                         title: "gagal!",
-                        icon: "eror",
-                        text: "Gagal mengirim email undangan!" + response.message,
+                        icon: "error",
+                        text: "Gagal mengirim email undangan! " + response.message,
                         showConfirmButton: false,
                         timer: 2000
                     });
                 }
                 $('#kirimModal').modal('hide');
+                if (callback) callback(); // Panggil callback setelah permintaan selesai
             },
             error: function(error) {
                 Swal.fire({
                     title: "gagal!",
-                    icon: "eror",
+                    icon: "error",
                     text: "Gagal mengirim email undangan!",
                     showConfirmButton: false,
                     timer: 2000
                 });
                 $('#kirimModal').modal('hide');
+                if (callback) callback(); // Panggil callback setelah permintaan selesai
             }
         });
     }

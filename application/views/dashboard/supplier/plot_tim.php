@@ -363,7 +363,7 @@
                             icon: "success",
                             title: "Data berhasil ditambahkan!",
                             showConfirmButton: false,
-                            timer: 2000
+                            timer: 1000
                         }).then(function() {
                             // Hide the modal
                             closeModal();
@@ -381,7 +381,7 @@
                             icon: "error",
                             title: "Data gagal ditambahkan!",
                             showConfirmButton: false,
-                            timer: 2000
+                            timer: 1000
                         });
                     }
                 },

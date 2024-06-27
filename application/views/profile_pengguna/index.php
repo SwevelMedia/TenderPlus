@@ -275,7 +275,7 @@
                             <div class="mb-3 row input-npwp" style="display: none;">
                                 <label for="npwp" class="col-sm-4 col-xl-3 col-form-label">NPWP</label>
                                 <div class="col-sm-8 col-xl-9">
-                                    <input type="text" name="npwp" id="npwp" placeholder="##.###.###.#-###.###" class="form-control" readonly>
+                                    <input type="text" name="npwp" id="npwp" placeholder="##.###.###.#-###.###" class="form-control" >
                                 </div>
                             </div>
 
