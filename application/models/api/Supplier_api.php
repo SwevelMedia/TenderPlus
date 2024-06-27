@@ -292,40 +292,52 @@ class Supplier_api extends CI_Model
 
         return $this->db->query($sql);
     }
-    public function getDataLeadCRM($id_pengguna, $page_size, $page_number)
+    public function getDataLeadCRM($kategori, $id, $page_size, $page_number)
     {
         // Subquery to select the latest id_plot for each id_lead
         $subquery = "(SELECT MAX(id_plot) AS latest_id_plot, id_lead
-    FROM plot_tim
-    GROUP BY id_lead) AS latest_plot_tim";
+                  FROM plot_tim
+                  GROUP BY id_lead) AS latest_plot_tim";
 
         $offset = ($page_number - 1) * $page_size;
 
+        // Determine the appropriate WHERE condition and join based on kategori
+        if ($kategori == 4) {
+            $whereCondition = "data_leads.id_pengguna = $id";
+            $joinTimMarketing = "";
+        } elseif ($kategori == 5) {
+            $whereCondition = "tim_marketing.id_supplier = $id";
+            $joinTimMarketing = "JOIN tim_marketing ON tim_marketing.id_tim = plot_tim.id_tim";
+        } else {
+            throw new Exception("Invalid kategori value");
+        }
+
         $sql = "SELECT
-   data_leads.id_lead AS id,
-   data_leads.id_pengguna,
-   data_leads.nama_perusahaan,
-   data_leads.profil,
-   kontak_lead.*,
-   COUNT(kontak_lead.id_kontak) AS jumlah_kontak,
-   plot_tim.*
-FROM
-   data_leads
-LEFT JOIN
-   kontak_lead ON data_leads.id_lead = kontak_lead.id_lead
-LEFT JOIN
-   $subquery ON data_leads.id_lead = latest_plot_tim.id_lead
-LEFT JOIN
-   plot_tim ON latest_plot_tim.latest_id_plot = plot_tim.id_plot
-WHERE
-   data_leads.id_pengguna = $id_pengguna
-   AND kontak_lead.id_kontak IS NOT NULL
-   AND plot_tim.id_lead IS NOT NULL
-GROUP BY
-   data_leads.id_lead
-ORDER BY
-   data_leads.id_lead DESC
-            LIMIT {$page_number}, {$page_size}";
+               data_leads.id_lead AS id,
+               data_leads.id_pengguna,
+               data_leads.nama_perusahaan,
+               data_leads.profil,
+               kontak_lead.*,
+               COUNT(kontak_lead.id_kontak) AS jumlah_kontak,
+               plot_tim.*
+            FROM
+               data_leads
+            LEFT JOIN
+               kontak_lead ON data_leads.id_lead = kontak_lead.id_lead
+            LEFT JOIN
+               $subquery ON data_leads.id_lead = latest_plot_tim.id_lead
+            LEFT JOIN
+               plot_tim ON latest_plot_tim.latest_id_plot = plot_tim.id_plot
+            $joinTimMarketing
+            WHERE
+               $whereCondition
+               AND kontak_lead.id_kontak IS NOT NULL
+               AND plot_tim.id_lead IS NOT NULL
+            GROUP BY
+               data_leads.id_lead
+            ORDER BY
+               data_leads.id_lead DESC
+            LIMIT $offset, $page_size";
 
         return $this->db->query($sql);
     }
@@ -417,8 +429,9 @@ ORDER BY
         $query = $this->db->get();
         return $query->row()->total;
     }
-    public function getTotalLeadTim($id_pengguna)
+    public function getTotalLeadTim($kategori, $id)
     {
+        // Subquery to select the latest id_plot for each id_lead and id_tim
         $subquery = $this->db->select('MAX(id_plot) as id_plot, id_lead, id_tim')
             ->from('plot_tim')
             ->group_by(['id_lead', 'id_tim'])
@@ -428,7 +441,17 @@ ORDER BY
         $this->db->from('data_leads');
         $this->db->join("($subquery) latest_plot_tim", 'data_leads.id_lead = latest_plot_tim.id_lead', 'left');
         $this->db->join('plot_tim', 'latest_plot_tim.id_plot = plot_tim.id_plot', 'left');
-        $this->db->where('data_leads.id_pengguna', $id_pengguna);
+
+        // Determine the appropriate WHERE condition based on kategori
+        if ($kategori == 4) {
+            $this->db->where('data_leads.id_pengguna', $id);
+        } elseif ($kategori == 5) {
+            $this->db->join('tim_marketing', 'plot_tim.id_tim = tim_marketing.id_tim', 'left');
+            $this->db->where('tim_marketing.id_supplier', $id);
+        } else {
+            throw new Exception("Invalid kategori value");
+        }
+
         $this->db->where('plot_tim.id_tim IS NOT NULL');
         $query = $this->db->get();
 

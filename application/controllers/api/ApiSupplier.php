@@ -283,7 +283,7 @@ class ApiSupplier extends RestController
 
                 // Perbarui password pengguna
                 if ($id_pengguna) {
-                    $this->Pengguna_model->updatePassword($id_pengguna, $password,$team_member['email']);
+                    $this->Pengguna_model->updatePassword($id_pengguna, $password, $team_member['email']);
                 }
 
                 echo json_encode(['status' => 'success', 'message' => 'Email undangan telah berhasil dikirim.']);
@@ -645,14 +645,28 @@ class ApiSupplier extends RestController
     }
     public function getDataLeadCRM_get()
     {
-        $id_pengguna = $this->input->get('id_pengguna');
-        $page_size = $_GET['pageSize'];
-        $page_number = ($_GET['pageNumber'] - 1) * $page_size;
-        $response = $this->Supplier_api->getDataLeadCRM($id_pengguna, $page_size, $page_number)->result();
-        // foreach ($response as &$lead) {
-        //     // Assuming 'jadwal' is the key for the date field in your data
-        //     $lead->jadwal = date('Y-m-d H:i:s', strtotime($this->input->post('jadwal')));
-        // }
+        $kategori = $this->input->get('kategori');
+        $id = $this->input->get('id'); // This could be either id_pengguna or id_supplier based on the kategori
+        $page_size = $this->input->get('pageSize');
+        $page_number = $this->input->get('pageNumber');
+
+        // Validate the input
+        if (is_null($kategori) || is_null($id) || is_null($page_size) || is_null($page_number)) {
+            $this->output
+                ->set_status_header(400)
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['error' => 'Missing required parameters'], JSON_PRETTY_PRINT))
+                ->_display();
+            exit;
+        }
+
+        // Calculate the offset for pagination
+        $page_number = ($page_number - 1) * $page_size;
+
+        // Call the model function with the appropriate parameters
+        $response = $this->Supplier_api->getDataLeadCRM($kategori, $id, $page_size, $page_number)->result();
+
+        // Set the output
         $this->output
             ->set_status_header(200)
             ->set_content_type('application/json')
@@ -728,8 +742,20 @@ class ApiSupplier extends RestController
     }
     public function getTotalLeadTIM_get()
     {
-        $id_pengguna = $this->input->get('id_pengguna');
-        $data = $this->Supplier_api->getTotalLeadTim($id_pengguna);
+        $kategori = $this->input->get('kategori');
+        $id = $this->input->get('id'); // This could be either id_pengguna or id_supplier based on the kategori
+
+        // Validate the input
+        if (is_null($kategori) || is_null($id)) {
+            $this->response([
+                'status' => false,
+                'message' => 'Missing required parameters'
+            ], RestController::HTTP_BAD_REQUEST);
+            return;
+        }
+
+        // Call the model function with the appropriate parameters
+        $data = $this->Supplier_api->getTotalLeadTim($kategori, $id);
 
         if ($data) {
             $this->response([

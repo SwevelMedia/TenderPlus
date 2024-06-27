@@ -981,7 +981,7 @@
             }
           },
           callback: function(data, pagination) {
-            console.log("Pagination callback triggered");
+            // console.log("Pagination callback triggered");
             if (data != '') {
               currentPage = pagination.pageNumber;
               let html = setTableLeads(data);
@@ -1068,7 +1068,7 @@
           </tr>`;
         $(leads).data('.jadwal', value.jadwal);
       });
-      console.log("Table leads set");
+      // console.log("Table leads set");
       $(document).on('click', '.riwayat', function() {
         var idLead = $(this).data('id');
         var $riwayatRow = $('tr.riwayat[data-id="' + idLead + '"]');
@@ -1121,27 +1121,24 @@
     }
 
     function bindTableEvents() {
-      console.log("Binding table events");
-      // Unbind any existing event handlers to prevent duplicate bindings
+      // console.log("Binding table events");
       $(document).off('click', '.edit-lead');
       $(document).off('click', '.save-lead');
       $(document).off('click', '.cancel-lead');
-      // $(document).off('click', '.tambah');
 
-      // Bind new event handlers
+
       $(document).on('click', '.edit-lead', function() {
-        console.log("Edit lead clicked");
+        // console.log("Edit lead clicked");
         var $row = $(this).closest('tr');
         var id = $row.data('id');
         var idPlot = $(this).data('id-plot');
         var idTim = $(this).data('id-tim');
-        console.log(idPlot);
+        // console.log(idPlot);
         $row.find('td[contenteditable="false"]').prop('contenteditable', true);
         $row.find('.jadwal input.datepicker').prop('disabled', false).datepicker({
           format: 'dd mmmm yyyy',
           todayHighlight: true,
           language: 'id',
-          // uiLibrary: 'bootstrap3',
           onSelect: function() {
             $(this).data('datepicker-selected', true);
           }
@@ -1156,15 +1153,14 @@
         $row.find('.riwayat').addClass('hidden');
         $row.find('.edit-lead').addClass('hidden');
         $row.find('.save-lead, .cancel-lead').removeClass('hidden');
-        // $row.find('.status-select').prop('disabled', false);
       });
 
       $(document).on('click', '.save-lead', function() {
-        console.log("Save lead clicked");
+        // console.log("Save lead clicked");
         var $row = $(this).closest('tr');
         var idPlot = $(this).data('id-plot');
         var idTim = $(this).data('id-tim');
-        console.log(idPlot);
+        // console.log(idPlot);
         var perusahaan = $row.find('.perusahaan').text();
         var no_telp = $row.find('.no_telp').text();
         var status = $row.find('.status-select').val();
@@ -1172,23 +1168,28 @@
         var time = $row.find('.jadwal input.timepicker').val();
         var catatan = $row.find('.catatan').text();
 
+        var csrfName = $('meta[name="csrf-name"]').attr('content'); // CSRF Token name
+        var csrfHash = $('meta[name="csrf-token"]').attr('content'); // CSRF hash
+
+        var data = {};
+        data[csrfName] = csrfHash; // Adding CSRF token to data
+        data['id'] = idPlot;
+        data['id_tim'] = idTim;
+        data['status'] = status;
+        data['jadwal'] = date; // Only send date part to the server
+        data['catatan'] = catatan;
+        data['waktu'] = `${time} WIB`;
+
         $.ajax({
           url: `<?= base_url() ?>api/supplier/updateDataLeadCRM/${idPlot}`,
           type: "POST",
           headers: {
             Authorization: `Basic ${basicAuth}`
           },
-          data: JSON.stringify({
-            id: idPlot,
-            id_tim: idTim,
-            status: status,
-            jadwal: date, // Only send date part to the server
-            catatan: catatan,
-            waktu: `${time} WIB`
-          }),
+          data: JSON.stringify(data),
           contentType: "application/json",
           success: function(response) {
-            console.log("Save success: ", response);
+            // console.log("Save success: ", response);
             $row.find('.tambah').removeClass('hidden');
             $row.find('.riwayat').removeClass('hidden');
             $row.find('.edit-lead').removeClass('hidden');
@@ -1208,7 +1209,7 @@
       });
 
       $(document).on('click', '.cancel-lead', function() {
-        console.log("Cancel lead clicked");
+        // console.log("Cancel lead clicked");
         var $row = $(this).closest('tr');
         $row.find('td[contenteditable="true"]').prop('contenteditable', false);
         $row.find('.tambah').removeClass('hidden');
@@ -1225,7 +1226,7 @@
         var id = $row.data('id');
         var idPlot = $(this).data('id-plot');
         var idTim = $(this).data('id-tim');
-        console.log(idPlot, idTim);
+        // console.log(idPlot, idTim);
         $row.find('.riwayat').addClass('hidden');
         $row.find('.edit-lead').addClass('hidden');
         // Add input fields for new data
@@ -1274,7 +1275,7 @@
         var catatan = $row.find('.catatan-input').val();
         var formattedDate = new Date(date).toISOString().split('T')[0];
 
-        console.log(idPlot, idTim);
+        // console.log(idPlot, idTim);
 
         // Validate inputs
         if (!status || !date || !time || !catatan) {
@@ -1299,7 +1300,7 @@
           }),
           contentType: "application/json",
           success: function(response) {
-            console.log("Save success: ", response);
+            // console.log("Save success: ", response);
             refreshDashboard();
             $('#pagination-container').pagination('refresh');
 

@@ -527,14 +527,14 @@ class DashboardUserSupplier extends CI_Controller
     }
 
     //crm
-    public function crmReal()
+    public function crm()
     {
         $data = [
             'title' => 'CRM Page'
         ];
         $this->load->view('templates/header', $data);
         $this->load->view('profile_pengguna/templates/navbar');
-        $this->load->view('dashboard/supplier/crmReal');
+        $this->load->view('dashboard/supplier/crm');
         $this->load->view('templates/footer');
     }
     public function plottim()

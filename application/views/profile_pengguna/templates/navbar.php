@@ -340,14 +340,14 @@
                                 </a>
                             </li>
                             <!-- <?php if ($companyType == CompanyType::PERSONAL_CONSULTANT || $companyType == CompanyType::ENT_BUSINESS_CONSULTANT) : ?> -->
-                                <li>
-                                    <a class="py-2 dropdown-item d-flex position-relative rounded-bottom" href="<?= base_url('competitor') ?>">
-                                        <div class="shape-rounded">
-                                            <iconify-icon icon="ic:outline-analytics" style="color: white;" width="18px" height="25px"></iconify-icon>
-                                        </div>
-                                        <p class="px-2 text-dropdown">Analisis Kompetitor</p>
-                                    </a>
-                                </li>
+                            <li>
+                                <a class="py-2 dropdown-item d-flex position-relative rounded-bottom" href="<?= base_url('competitor') ?>">
+                                    <div class="shape-rounded">
+                                        <iconify-icon icon="ic:outline-analytics" style="color: white;" width="18px" height="25px"></iconify-icon>
+                                    </div>
+                                    <p class="px-2 text-dropdown">Analisis Kompetitor</p>
+                                </a>
+                            </li>
                             <!-- <?php endif; ?> -->
                         </ul>
                     </li>
@@ -505,7 +505,7 @@
 </nav>
 
 <script>
-    var id_pengguna, nama_pengguna, foto;
+    var id_pengguna, kategori, nama_pengguna, foto;
 
     $(document).ready(function() {
         id_pengguna = Cookies.get('id_pengguna', {
@@ -513,7 +513,9 @@
             domain: 'tenderplus.test'
             // domain = 'localhost/tenderplus'
         });
-
+        kategori = Cookies.get('kategori', {
+            domain: 'tenderplus.test'
+        })
         if (id_pengguna) {
             $.ajax({
                 type: 'GET',
@@ -548,7 +550,7 @@
                         if (kategori == '2') url_dashboard = "<?= base_url('user-dashboard') ?>";
                         else if (kategori == '3') url_dashboard = "<?= base_url('asosiasi') ?>";
                         else if (kategori == '4') url_dashboard = "<?= base_url('suplier') ?>";
-                        else if (kategori == '5') url_dashboard = "<?= base_url('marketing') ?>";
+                        else if (kategori == '5') url_dashboard = "<?= base_url('crm') ?>";
 
                         $('#nav_dashboard').prop('href', url_dashboard);
                         $('.nama-pengguna').html(nama_pengguna);
